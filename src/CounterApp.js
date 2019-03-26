@@ -8,6 +8,10 @@ import {
 } from 'react-native'
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8673e6b5624dfe319ae83b290d98b7f9cdb99951
 class CounterApp extends Component {
   state = {
     counter: 0
