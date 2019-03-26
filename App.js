@@ -1,15 +1,35 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import {
+  AppRegistry,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  View,
+} from 'react-native';
 
-export default class App extends React.Component {
+import { createStore } from 'redux';
+import CounterApp from './src/CounterApp';
+
+/** What is redux?
+ * Store - holds our state - THERE IS ONLY ONE STATE
+ * Action - State can be modified using actions - SIMPLE OBJECTS
+ * Dispatcher - Action needs to be sent by someone - known as dispatching an action
+ * Reducer - receives the action and modifies the state to give us a new state
+ *  - pure functions
+ *  - only mandatory argument is the 'type'
+ * Subscriber - listens for state change to update the ui
+ */
+
+class App extends Component {
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
+      <CounterApp/>
     );
   }
 }
+
+export default App
 
 const styles = StyleSheet.create({
   container: {
