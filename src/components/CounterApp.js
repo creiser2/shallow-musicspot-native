@@ -22,13 +22,7 @@ class CounterApp extends Component {
       <View style={styles.container}>
         <View style={{ flexDirection: 'row', width: 200,
         justifyContent: 'space-around' }}>
-          <TouchableOpacity onPress={() => this.increaseCount()}>
-            <Text style={{ fontSize: 50 }}>+</Text>
-          </TouchableOpacity>
-          <Text style={{ fontSize: 50 }}>{this.state.counter}</Text>
-          <TouchableOpacity onPress={() => this.decreaseCount()}>
-            <Text style={{ fontSize: 50 }}>-</Text>
-          </TouchableOpacity>
+          <Text>Hello</Text>
         </View>
       </View>
     );
