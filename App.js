@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import { createStore } from 'redux';
-import CounterApp from './src/components/Login';
+import Login from './src/components/Login';
 
 /** What is redux?
  * Store - holds our state - THERE IS ONLY ONE STATE
@@ -22,9 +22,10 @@ import CounterApp from './src/components/Login';
 
 class App extends Component {
 
+
   render() {
     return (
-      <CounterApp/>
+      <Login/>
     );
   }
 }

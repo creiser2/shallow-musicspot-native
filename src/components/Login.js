@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import SvgIcon from 'react-native-svg-icon';
-import Icon from './Icon'; // point to your Icon.js location
+// import SvgIcon from 'react-native-svg-icon';
+// import Icon from './Icon'; // point to your Icon.js location
 //<Icon name="SpotifyIcon" width="50" height="50"/>
 import {
   AppRegistry,
@@ -13,19 +13,34 @@ import {
 
 class Login extends Component {
   state = {
-    counter: 0
+    WelcomeClicked: false
   }
 
-  increaseCount = () => {this.setState({counter: this.state.counter + 1})}
+  // increaseCount = () => {this.setState({counter: this.state.counter + 1})}
+  //
+  // decreaseCount = () => {this.setState({counter: this.state.counter - 1})}
 
-  decreaseCount = () => {this.setState({counter: this.state.counter - 1})}
+  handleWelcomeClicked = () => {
+    this.setState({
+      WelcomeClicked: !this.state.WelcomeClicked
+    })
+    console.log("WELCOMESTATE: ", this.state.WelcomeClicked)
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.topBar}>
-          <Text style={styles.login}>Welcome</Text>
-          <Text style={styles.info}>Login Below to Get Started.</Text>
+
+          <TouchableOpacity style={styles.login} onPress={() => {this.handleWelcomeClicked()}}>
+            <Text style={styles.login}>Android</Text>
+          </TouchableOpacity>
+          {this.state.WelcomeClicked ?
+            <Text style={styles.info}>Login Below to Get Started.</Text>
+          :
+            <Text style={styles.info}>Rolf.</Text>
+          }
+
         </View>
         <View style={{flex: 3, backgroundColor: 'white'}}>
 
