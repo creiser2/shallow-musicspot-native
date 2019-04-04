@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 //<Icon name="SpotifyIcon" width="50" height="50"/>
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
 import Test from './Test';
-// import SvgIcon from 'react-native-svg-icon';
-// import Icon from './Icon'; // point to your Icon.js location
-//<Icon name="SpotifyIcon" width="50" height="50"/>
+
 
 
 import {
@@ -42,7 +40,7 @@ class Login extends Component {
 
   render() {
     //once logged into spotify, conditionally render homescreen components
-    if (this.state.isLoggedIn) { 
+    if (this.state.isLoggedIn) {
       return (
         <Test />
       );
