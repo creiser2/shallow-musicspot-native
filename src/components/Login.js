@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+//<Icon name="SpotifyIcon" width="50" height="50"/>
+import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
 // import SvgIcon from 'react-native-svg-icon';
 // import Icon from './Icon'; // point to your Icon.js location
 //<Icon name="SpotifyIcon" width="50" height="50"/>
+
+
 import {
   AppRegistry,
   StyleSheet,
@@ -13,7 +17,7 @@ import {
 
 class Login extends Component {
   state = {
-    WelcomeClicked: false
+    WelcomeClicked: true
   }
 
   // increaseCount = () => {this.setState({counter: this.state.counter + 1})}
@@ -31,18 +35,14 @@ class Login extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.topBar}>
-
-          <TouchableOpacity style={styles.login} onPress={() => {this.handleWelcomeClicked()}}>
-            <Text style={styles.login}>Android</Text>
-          </TouchableOpacity>
+          <Text style={styles.info} onPress={() => this.handleWelcomeClicked()}>Login Below to Get Started.</Text>
           {this.state.WelcomeClicked ?
-            <Text style={styles.info}>Login Below to Get Started.</Text>
+            <Text style={styles.info}>Welcome</Text>
           :
             <Text style={styles.info}>Rolf.</Text>
           }
         </View>
         <View style={{flex: 3, backgroundColor: 'white'}}>
-
         </View>
       </View>
     );
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topBar: {
+    height: 200,
     height: 200,
     backgroundColor: '#292c34',
     justifyContent: 'center',
