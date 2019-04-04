@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 //<Icon name="SpotifyIcon" width="50" height="50"/>
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
+import Test from './Test';
 // import SvgIcon from 'react-native-svg-icon';
 // import Icon from './Icon'; // point to your Icon.js location
 //<Icon name="SpotifyIcon" width="50" height="50"/>
@@ -17,7 +18,8 @@ import {
 
 class Login extends Component {
   state = {
-    WelcomeClicked: true
+    WelcomeClicked: true,
+    isLoggedIn: false
   }
 
   // increaseCount = () => {this.setState({counter: this.state.counter + 1})}
@@ -31,21 +33,35 @@ class Login extends Component {
     console.log("WELCOMESTATE: ", this.state.WelcomeClicked)
   }
 
+  //not maps yet but test for now
+  toggleMaps = () => {
+    this.setState({
+      isLoggedIn: true
+    })
+  }
+
   render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.topBar}>
-          <Text style={styles.info} onPress={() => this.handleWelcomeClicked()}>Login Below to Get Started.</Text>
-          {this.state.WelcomeClicked ?
-            <Text style={styles.info}>Welcome</Text>
-          :
-            <Text style={styles.info}>Rolf.</Text>
-          }
+    //once logged into spotify, conditionally render homescreen components
+    if (this.state.isLoggedIn) { 
+      return (
+        <Test />
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+          <View style={styles.topBar}>
+            <Text style={styles.login} onPress={() => this.handleWelcomeClicked()}>Login Below to Get Started.</Text>
+            {this.state.WelcomeClicked ?
+              <Text style={styles.welcome}>Welcome to QueueMe</Text>
+              :
+              <Text style={styles.info} onPress={() => this.toggleMaps()}>Go to Maps.</Text>
+            }
+          </View>
+          <View style={{flex: 3, backgroundColor: 'white'}}>
+          </View>
         </View>
-        <View style={{flex: 3, backgroundColor: 'white'}}>
-        </View>
-      </View>
-    );
+      );
+    }
   }
 }
 
@@ -69,6 +85,11 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 15,
     color: 'white',
+    fontWeight: 'bold'
+  },
+  welcome: {
+    fontSize: 15,
+    color: '#80aaff',
     fontWeight: 'bold'
   }
 });
