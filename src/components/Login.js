@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
 import SpotifyLogo from '../../assets/svg/SpotifyLogo';
 import { Font } from 'expo';
+import MapView from './MapView';
 
 
 
@@ -64,10 +65,12 @@ class Login extends Component {
 
   render() {
     //once logged into spotify, conditionally render homescreen components
-    return (
-      <View style={styles.container}>
-        <View style={styles.topBar}>
-          {this.state.fontLoaded ? (
+
+    {this.state.isLoggedIn  ?
+      return (
+        <View style={styles.container}>
+          <View style={styles.topBar}>
+            {this.state.fontLoaded ? (
               <Text style={styles.login} onPress={() => this.handleWelcomeClicked()}>
                 Login Below to Get Started.
               </Text>
@@ -83,6 +86,12 @@ class Login extends Component {
           <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
         </View>
       </View>
+    :
+      return(
+        <MapView />
+      )
+    }
+
     );
   }
 }
