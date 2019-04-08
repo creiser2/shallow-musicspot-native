@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //<Icon name="SpotifyIcon" width="50" height="50"/>
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
-import Test from './Test';
+import SpotifyLogo from './SpotifyLogo';
 
 
 
@@ -42,7 +42,7 @@ class Login extends Component {
     //once logged into spotify, conditionally render homescreen components
     if (this.state.isLoggedIn) {
       return (
-        <Test />
+        <SpotifyLogo />
       );
     } else {
       return (
@@ -56,6 +56,7 @@ class Login extends Component {
             }
           </View>
           <View style={{flex: 3, backgroundColor: 'white'}}>
+            <SpotifyLogo />
           </View>
         </View>
       );
