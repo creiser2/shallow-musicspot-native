@@ -66,7 +66,7 @@ class Login extends Component {
   render() {
     //once logged into spotify, conditionally render homescreen components
 
-    {this.state.isLoggedIn  ?
+    if(this.state.isLoggedIn) {
       return (
         <View style={styles.container}>
           <View style={styles.topBar}>
@@ -82,17 +82,17 @@ class Login extends Component {
             <Text style={styles.info} onPress={() => this.toggleMaps()}>Go to Maps.</Text>
           }
         </View>
-        <View style={{flex: 3, backgroundColor: 'white'}}>
-          <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
+          <View style={{flex: 3, backgroundColor: 'white'}}>
+            <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
+          </View>
         </View>
-      </View>
-    :
+      );
+    }
+    else {
       return(
         <MapView />
-      )
+      );
     }
-
-    );
   }
 }
 
