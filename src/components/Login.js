@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //<Icon name="SpotifyIcon" width="50" height="50"/>
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
-import SpotifyLogo from './SpotifyLogo';
+import SpotifyLogo from '../../assets/SpotifyLogo';
 
 
 
@@ -17,7 +17,11 @@ import {
 class Login extends Component {
   state = {
     WelcomeClicked: true,
-    isLoggedIn: false
+    isLoggedIn: false,
+    spotifyLogo: {
+      foregroundColor:  "#57b560",
+      backgroundColor:  "#58605B",
+    }
   }
 
   // increaseCount = () => {this.setState({counter: this.state.counter + 1})}
@@ -38,29 +42,36 @@ class Login extends Component {
     })
   }
 
+  spotifyLogoClick = () => {
+    let tempColor = this.state.spotifyLogo.backgroundColor
+    console.log(tempColor)
+    //request to spotify API
+    this.setState({
+      spotifyLogo: {
+        ...this.state.spotifyLogo,
+          backgroundColor:  this.state.spotifyLogo.foregroundColor,
+          foregroundColor:  tempColor
+      }
+    })
+  }
+
   render() {
     //once logged into spotify, conditionally render homescreen components
-    if (this.state.isLoggedIn) {
-      return (
-        <SpotifyLogo />
-      );
-    } else {
-      return (
-        <View style={styles.container}>
-          <View style={styles.topBar}>
-            <Text style={styles.login} onPress={() => this.handleWelcomeClicked()}>Login Below to Get Started.</Text>
-            {this.state.WelcomeClicked ?
-              <Text style={styles.welcome}>Welcome to QueueMe</Text>
-              :
-              <Text style={styles.info} onPress={() => this.toggleMaps()}>Go to Maps.</Text>
-            }
-          </View>
-          <View style={{flex: 3, backgroundColor: 'white'}}>
-            <SpotifyLogo />
-          </View>
+    return (
+      <View style={styles.container}>
+        <View style={styles.topBar}>
+          <Text style={styles.login} onPress={() => this.handleWelcomeClicked()}>Login Below to Get Started.</Text>
+          {this.state.WelcomeClicked ?
+            <Text style={styles.welcome}>Welcome to QueueMe</Text>
+            :
+            <Text style={styles.info} onPress={() => this.toggleMaps()}>Go to Maps.</Text>
+          }
         </View>
-      );
-    }
+        <View style={{flex: 3, backgroundColor: 'white'}}>
+          <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
+        </View>
+      </View>
+    );
   }
 }
 
