@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
 import SpotifyLogo from '../../assets/svg/SpotifyLogo';
 import { Font } from 'expo';
-import MapView from './MapView';
+import MapScreen from './MapScreen';
 
 
 
@@ -65,8 +65,11 @@ class Login extends Component {
 
   render() {
     //once logged into spotify, conditionally render homescreen components
-
-    if(this.state.isLoggedIn) {
+    if (this.state.isLoggedIn) {
+      return (
+        <MapScreen />
+      );
+    } else {
       return (
         <View style={styles.container}>
           <View style={styles.topBar}>
@@ -82,15 +85,10 @@ class Login extends Component {
             <Text style={styles.info} onPress={() => this.toggleMaps()}>Go to Maps.</Text>
           }
         </View>
-          <View style={{flex: 3, backgroundColor: 'white'}}>
-            <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
-          </View>
+        <View style={{flex: 3, backgroundColor: 'white'}}>
+          <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
         </View>
-      );
-    }
-    else {
-      return(
-        <MapView />
+      </View>
       );
     }
   }
