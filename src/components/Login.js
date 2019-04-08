@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 //<Icon name="SpotifyIcon" width="50" height="50"/>
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
-import SpotifyLogo from '../../assets/SpotifyLogo';
+import SpotifyLogo from '../../assets/svg/SpotifyLogo';
+import { Font } from 'expo';
 
 
 
@@ -18,15 +19,22 @@ class Login extends Component {
   state = {
     WelcomeClicked: true,
     isLoggedIn: false,
+    fontLoaded: false,
     spotifyLogo: {
       foregroundColor:  "#57b560",
       backgroundColor:  "#58605B",
     }
   }
 
-  // increaseCount = () => {this.setState({counter: this.state.counter + 1})}
-  //
-  // decreaseCount = () => {this.setState({counter: this.state.counter - 1})}
+
+  async componentDidMount() {
+    await Font.loadAsync({
+      'MyriadProRegular': require('../../assets/fonts/MyriadProRegular.ttf'),
+    });
+
+    this.setState({ fontLoaded: true });
+  }
+
 
   handleWelcomeClicked = () => {
     this.setState({
@@ -44,7 +52,6 @@ class Login extends Component {
 
   spotifyLogoClick = () => {
     let tempColor = this.state.spotifyLogo.backgroundColor
-    console.log(tempColor)
     //request to spotify API
     this.setState({
       spotifyLogo: {
@@ -60,7 +67,12 @@ class Login extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.topBar}>
-          <Text style={styles.login} onPress={() => this.handleWelcomeClicked()}>Login Below to Get Started.</Text>
+          {this.state.fontLoaded ? (
+              <Text style={styles.login} onPress={() => this.handleWelcomeClicked()}>
+                Login Below to Get Started.
+              </Text>
+            ) : null
+          }
           {this.state.WelcomeClicked ?
             <Text style={styles.welcome}>Welcome to QueueMe</Text>
             :
@@ -90,7 +102,8 @@ const styles = StyleSheet.create({
   },
   login: {
     fontSize: 30,
-    color: 'white'
+    color: 'white',
+    fontFamily: 'MyriadProRegular'
   },
   info: {
     fontSize: 15,
