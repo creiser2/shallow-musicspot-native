@@ -69,7 +69,21 @@ export default class MapScreen extends React.Component<{}, AppState> {
               latitudeDelta: 0.001,
               longitudeDelta: 0.01,
             }}
+          >
+          <MapView.Marker
+            coordinate={{latitude: latitude,
+            longitude: longitude}}
+            title={"FOO PLACE"}
+            description={"great job"}
           />
+          <MapView.Circle
+            center = {{latitude: latitude,  longitude: longitude} }
+            radius = { 100 }
+            strokeWidth = { 1 }
+            strokeColor = { '#1a66ff' }
+            fillColor = { '#1a66ff' }
+          />
+          </MapView>
         </View>
       );
     }
