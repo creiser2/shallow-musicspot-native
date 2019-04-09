@@ -75,7 +75,7 @@ class Login extends Component {
           <View style={styles.topBar}>
             {this.state.fontLoaded ? (
               <Text style={styles.login} onPress={() => this.handleWelcomeClicked()}>
-                Login Below to Get Started.
+                Login Below to Get Started!
               </Text>
             ) : null
           }
