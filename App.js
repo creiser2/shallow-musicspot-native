@@ -7,12 +7,8 @@ import {
   View,
 } from 'react-native';
 
-import Reducer from './reducers/reducer'
-import { Provider } from 'react-redux';
-import CounterApp from './src/CounterApp';
 import { createStore } from 'redux';
-
-const store = createStore(Reducer);
+import Login from './src/components/Login';
 
 /** What is redux?
  * Store - holds our state - THERE IS ONLY ONE STATE
@@ -26,11 +22,10 @@ const store = createStore(Reducer);
 
 class App extends Component {
 
+
   render() {
     return (
-      <Provider store={store}>
-        <CounterApp/>
-      </Provider>
+      <Login/>
     );
   }
 }
