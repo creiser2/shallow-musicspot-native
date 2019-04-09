@@ -104,7 +104,7 @@ export default class MapScreen extends React.Component<{}, AppState> {
             coordinate={{latitude: latitude + 0.0005,
             longitude: longitude  + 0.001}}
             title={"Second list"}
-            description={"ok"}
+            description={"ok..."}
             opacity={1}
             pinColor={"#000"}
           />
