@@ -71,18 +71,49 @@ export default class MapScreen extends React.Component<{}, AppState> {
             }}
           >
           <MapView.Marker
-            coordinate={{latitude: latitude,  longitude: longitude}}
+            coordinate={{latitude: latitude - 0.002,
+            longitude: longitude}}
             title={"FOO PLACE"}
             description={"great job"}
-            pinColor={'#ffffff'}
-            opacity={0.5}
+            opacity={1}
+            pinColor={"#4CFF4F"}
           />
           <MapView.Circle
-            center = {{latitude: latitude,  longitude: longitude} }
+            center = {{latitude: latitude - 0.002,  longitude: longitude} }
             radius = { 100 }
             strokeWidth = { 1 }
             strokeColor = { '#1a66ff' }
-            fillColor = { 'rgba(212, 212, 246, 0.69)' }
+            fillColor = { 'rgba(63, 63, 191, 0.26)' }
+          />
+          <MapView.Marker
+            coordinate={{latitude: latitude + 0.001,
+            longitude: longitude}}
+            title={"Second list"}
+            description={"ok"}
+            opacity={1}
+            pinColor={"#000"}
+          />
+          <MapView.Circle
+            center = {{latitude: latitude + 0.001,  longitude: longitude} }
+            radius = { 100 }
+            strokeWidth = { 1 }
+            strokeColor = { '#fff' }
+            fillColor = { 'rgba(0, 0, 0, 0.68)' }
+          />
+          <MapView.Marker
+            coordinate={{latitude: latitude + 0.0005,
+            longitude: longitude  + 0.001}}
+            title={"Second list"}
+            description={"ok..."}
+            opacity={1}
+            pinColor={"#000"}
+          />
+          <MapView.Circle
+            center = {{latitude: latitude + 0.0005,  longitude: longitude + 0.001} }
+            radius = { 100 }
+            strokeWidth = { 1 }
+            strokeColor = { '#fff' }
+            fillColor = { 'rgba(0, 0, 0, 0.68)' }
           />
           </MapView>
         </View>
