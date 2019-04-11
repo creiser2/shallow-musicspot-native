@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { SafeAreaView } from 'react-native';
 //<Icon name="SpotifyIcon" width="50" height="50"/>
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
-import { HOMESCREEN_BACKGROUND } from '../../constants/colors';
+import { HOMESCREEN_BACKGROUND, WHITE } from '../../constants/colors';
 import SpotifyLogo from '../../assets/svg/SpotifyLogo';
 import GuestSvg from  '../../assets/svg/GuestSvg';
 import { Font } from 'expo';
@@ -84,11 +84,7 @@ class Login extends Component {
                 </Text>
               ) : null
             }
-            {this.state.WelcomeClicked ?
-              <Text style={styles.welcome}>Go to Maps</Text>
-              :
-              <Text style={styles.info} onPress={() => this.toggleMaps()}> >>Login or Continue as Guest</Text>
-            }
+            <Text style={styles.info} onPress={() => this.toggleMaps()}> >>Login or Continue as Guest</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
             <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
@@ -96,9 +92,7 @@ class Login extends Component {
           </View>
           <View style={styles.bottomBar}>
               {this.state.fontLoaded ? (
-                <Text style={styles.info} onPress={() => this.handleWelcomeClicked()}>
-                  >>Login or Continue as Guest
-                </Text>
+                null
               ) : null
             }
           </View>
@@ -121,8 +115,8 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // alignItems: 'center',
     
-    //borderBottomColor: 'white',
-    //borderBottomWidth: 1,
+    // borderBottomColor: 'white',
+    // borderBottomWidth: 1,
   },
   title: {
     fontSize: 50,
@@ -136,7 +130,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'MyriadProRegular',
     left: 30,
-
+    top:  10
   },
   welcome: {
     fontSize: 15,

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Permissions, Location, MapView } from 'expo';
+import {DAY_MAP_STYLE, WILD_MAP_STYLE} from '../../constants/mapstyles';
 
 import {
   AppRegistry,
@@ -62,13 +63,15 @@ export default class MapScreen extends React.Component<{}, AppState> {
     } else {
       return (
         <View style={styles.container}>
-          <MapView style={styles.map}  provider="google"
+          <MapView style={styles.map}  provider="google" customMapStyle={WILD_MAP_STYLE}
               initialRegion={{
               latitude,
               longitude,
               latitudeDelta: 0.001,
               longitudeDelta: 0.01,
             }}
+            showsScale={true}
+            showsUserLocation={true}
           >
           <MapView.Marker
             coordinate={{latitude: latitude - 0.002,
