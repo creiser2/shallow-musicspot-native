@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { SafeAreaView } from 'react-native';
 //<Icon name="SpotifyIcon" width="50" height="50"/>
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
 import { HOMESCREEN_BACKGROUND } from '../../constants/colors';
@@ -74,33 +75,35 @@ class Login extends Component {
       );
     } else {
       return (
-        <View style={styles.container}>
-          <View style={styles.topBar}>
-            {this.state.fontLoaded ? (
-              <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
-                QueueMe
-              </Text>
-            ) : null
-          }
-          {this.state.WelcomeClicked ?
-            <Text style={styles.welcome}>Go to Maps</Text>
-            :
-            <Text style={styles.info} onPress={() => this.toggleMaps()}>Go to Maps.</Text>
-          }
+        <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
+          <View style={styles.container}>
+            <View style={styles.topBar}>
+              {this.state.fontLoaded ? (
+                <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
+                  QueueMe
+                </Text>
+              ) : null
+            }
+            {this.state.WelcomeClicked ?
+              <Text style={styles.welcome}>Go to Maps</Text>
+              :
+              <Text style={styles.info} onPress={() => this.toggleMaps()}> >>Login or Continue as Guest</Text>
+            }
+          </View>
+          <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
+            <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
+            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND}/>
+          </View>
+          <View style={styles.bottomBar}>
+              {this.state.fontLoaded ? (
+                <Text style={styles.info} onPress={() => this.handleWelcomeClicked()}>
+                  >>Login or Continue as Guest
+                </Text>
+              ) : null
+            }
+          </View>
         </View>
-        <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
-          <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
-          <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND}/>
-        </View>
-        <View style={styles.bottomBar}>
-            {this.state.fontLoaded ? (
-              <Text style={styles.info} onPress={() => this.handleWelcomeClicked()}>
-                >>Login or Continue as Guest
-              </Text>
-            ) : null
-          }
-        </View>
-      </View>
+        </SafeAreaView>
       );
     }
   }
@@ -115,15 +118,18 @@ const styles = StyleSheet.create({
   topBar: {
     height: 200,
     backgroundColor: HOMESCREEN_BACKGROUND,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomColor: 'white',
-    borderBottomWidth: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    
+    //borderBottomColor: 'white',
+    //borderBottomWidth: 1,
   },
   title: {
     fontSize: 50,
     color: 'white',
-    fontFamily: 'MyriadProRegular'
+    fontFamily: 'MyriadProRegular',
+    left: 20,
+    top: 10
   },
   info: {
     fontSize: 20,
@@ -139,7 +145,7 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     height: 100,
-    backgroundColor: HOMESCREEN_BACKGROUND,
+    backgroundColor:  HOMESCREEN_BACKGROUND,
     justifyContent: 'center',
     
   },
