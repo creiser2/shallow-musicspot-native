@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 //<Icon name="SpotifyIcon" width="50" height="50"/>
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
+import { HOMESCREEN_BACKGROUND } from '../../constants/colors';
 import SpotifyLogo from '../../assets/svg/SpotifyLogo';
+import GuestSvg from  '../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from './MapScreen';
 
@@ -63,6 +65,7 @@ class Login extends Component {
     })
   }
 
+
   render() {
     //once logged into spotify, conditionally render homescreen components
     if (this.state.isLoggedIn) {
@@ -74,19 +77,28 @@ class Login extends Component {
         <View style={styles.container}>
           <View style={styles.topBar}>
             {this.state.fontLoaded ? (
-              <Text style={styles.login} onPress={() => this.handleWelcomeClicked()}>
-                Login Below to Get Started!
+              <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
+                QueueMe
               </Text>
             ) : null
           }
           {this.state.WelcomeClicked ?
-            <Text style={styles.welcome}>Welcome to QueueMe</Text>
+            <Text style={styles.welcome}>Go to Maps</Text>
             :
             <Text style={styles.info} onPress={() => this.toggleMaps()}>Go to Maps.</Text>
           }
         </View>
-        <View style={{flex: 3, backgroundColor: 'white'}}>
+        <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
           <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
+          <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND}/>
+        </View>
+        <View style={styles.bottomBar}>
+            {this.state.fontLoaded ? (
+              <Text style={styles.info} onPress={() => this.handleWelcomeClicked()}>
+                >>Login or Continue as Guest
+              </Text>
+            ) : null
+          }
         </View>
       </View>
       );
@@ -102,24 +114,33 @@ const styles = StyleSheet.create({
   },
   topBar: {
     height: 200,
-    height: 200,
-    backgroundColor: '#292c34',
+    backgroundColor: HOMESCREEN_BACKGROUND,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderBottomColor: 'white',
+    borderBottomWidth: 1,
   },
-  login: {
-    fontSize: 30,
+  title: {
+    fontSize: 50,
     color: 'white',
     fontFamily: 'MyriadProRegular'
   },
   info: {
-    fontSize: 15,
+    fontSize: 20,
     color: 'white',
-    fontWeight: 'bold'
+    fontFamily: 'MyriadProRegular',
+    left: 30,
+
   },
   welcome: {
     fontSize: 15,
     color: '#80aaff',
     fontWeight: 'bold'
-  }
+  },
+  bottomBar: {
+    height: 100,
+    backgroundColor: HOMESCREEN_BACKGROUND,
+    justifyContent: 'center',
+    
+  },
 });

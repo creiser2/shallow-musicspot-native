@@ -4,7 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  View,
+  View
 } from 'react-native';
 
 import { createStore } from 'redux';
@@ -20,9 +20,11 @@ import Login from './src/components/Login';
  * Subscriber - listens for state change to update the ui
  */
 
+
 class App extends Component {
   render() {
     return (
+      
       <Login/>
     );
   }
