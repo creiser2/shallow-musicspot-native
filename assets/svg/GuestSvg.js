@@ -30,6 +30,7 @@ export default class GuestSvg extends Component {
                 fill="#fff"
                 stroke="#000"
                 strokeWidth={7}
+                onPress={() => this.props.guestLogoClick()}
             />
         </Svg>
       </View>

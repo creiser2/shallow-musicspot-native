@@ -56,6 +56,7 @@ class Login extends Component {
 
   spotifyLogoClick = () => {
     let tempColor = this.state.spotifyLogo.backgroundColor
+    console.log("spot click")
     //request to spotify API
     this.setState({
       spotifyLogo: {
@@ -64,6 +65,10 @@ class Login extends Component {
           foregroundColor:  tempColor
       }
     })
+  }
+
+  guestLogoClick  = ()  =>  {
+    console.log("guest")
   }
 
 
@@ -86,11 +91,11 @@ class Login extends Component {
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
             <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
-            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND}/>
+            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.props.navigation.navigate('Map')}/>
           </View>
           <View style={styles.bottomBar}>
               <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
-                  QueueMe
+                  [][][][][][][][][][]
               </Text>
           </View>
         </View>
