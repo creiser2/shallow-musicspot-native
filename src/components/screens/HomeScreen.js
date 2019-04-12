@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { SafeAreaView } from 'react-native';
-//<Icon name="SpotifyIcon" width="50" height="50"/>
-import { AUTHORIZE_SPOTIFY, HEADERS } from '../../constants/api/spotify';
-import { HOMESCREEN_BACKGROUND, WHITE } from '../../constants/colors';
-import SpotifyLogo from '../../assets/svg/SpotifyLogo';
-import GuestSvg from  '../../assets/svg/GuestSvg';
+import { AUTHORIZE_SPOTIFY, HEADERS } from '../../../constants/api/spotify';
+import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
+import SpotifyLogo from '../../../assets/svg/SpotifyLogo';
+import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from './MapScreen';
 
@@ -91,7 +90,7 @@ class Login extends Component {
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
             <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
-            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.props.navigation.navigate('Map')}/>
+            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.guestLogoClick()}/>
           </View>
           <View style={styles.bottomBar}>
               <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Permissions, Location, MapView } from 'expo';
-import {DAY_MAP_STYLE, WILD_MAP_STYLE} from '../../constants/mapstyles';
+import {DAY_MAP_STYLE, WILD_MAP_STYLE} from '../../../constants/mapstyles';
 
 import {
   AppRegistry,
