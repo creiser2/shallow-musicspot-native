@@ -32,11 +32,11 @@ class Login extends Component {
 
 
   async componentDidMount() {
-    await Font.loadAsync({
-      'MyriadProRegular': require('../../assets/fonts/MyriadProRegular.ttf'),
-    });
+    // await Font.loadAsync({
+    //   'MyriadProRegular': require('../../assets/fonts/MyriadProRegular.ttf'),
+    // });
 
-    this.setState({ fontLoaded: true });
+    // this.setState({ fontLoaded: true });
   }
 
 
@@ -78,12 +78,10 @@ class Login extends Component {
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
           <View style={styles.container}>
             <View style={styles.topBar}>
-              {this.state.fontLoaded ? (
-                <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
-                  QueueMe
-                </Text>
-              ) : null
-            }
+              <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
+                QueueMe
+              </Text>
+            
             <Text style={styles.info} onPress={() => this.toggleMaps()}> >>Login or Continue as Guest</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
@@ -91,10 +89,9 @@ class Login extends Component {
             <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND}/>
           </View>
           <View style={styles.bottomBar}>
-              {this.state.fontLoaded ? (
-                null
-              ) : null
-            }
+              <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
+                  QueueMe
+              </Text>
           </View>
         </View>
         </SafeAreaView>
@@ -121,14 +118,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 50,
     color: 'white',
-    fontFamily: 'MyriadProRegular',
     left: 20,
     top: 10
   },
   info: {
     fontSize: 20,
     color: 'white',
-    fontFamily: 'MyriadProRegular',
     left: 30,
     top:  10
   },
