@@ -90,11 +90,11 @@ class Login extends Component {
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
             <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
-            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.guestLogoClick()}/>
+            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.props.navigation.navigate('MapScreen')}/>
           </View>
           <View style={styles.bottomBar}>
               <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
-                  [][][][][][][][][][]
+                  
               </Text>
           </View>
         </View>
