@@ -73,16 +73,11 @@ class Login extends Component {
 
   render() {
     //once logged into spotify, conditionally render homescreen components
-    if (this.state.isLoggedIn) {
-      return (
-        <MapScreen />
-      );
-    } else {
       return (
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
           <View style={styles.container}>
             <View style={styles.topBar}>
-              <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
+              <Text style={styles.title}>
                 QueueMe
               </Text>
             
@@ -93,7 +88,7 @@ class Login extends Component {
             <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.props.navigation.navigate('MapScreen')}/>
           </View>
           <View style={styles.bottomBar}>
-              <Text style={styles.title} onPress={() => this.handleWelcomeClicked()}>
+              <Text style={styles.title}>
                   
               </Text>
           </View>
@@ -102,7 +97,6 @@ class Login extends Component {
       );
     }
   }
-}
 
 export default Login
 
@@ -140,6 +134,7 @@ const styles = StyleSheet.create({
     height: 100,
     backgroundColor:  HOMESCREEN_BACKGROUND,
     justifyContent: 'center',
+    borderTopColor: 'white',
     
   },
 });

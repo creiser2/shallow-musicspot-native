@@ -8,7 +8,7 @@ export default class GuestSvg extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Svg height="80%" width="80%" viewBox="0 100 500 500">
+        <Svg height="80%" width="80%" viewBox="0 100 500 500" onPress={() => this.props.guestLogoClick()}>
             <Svg.Circle
                 cx="249.56"
                 cy="249.69"
@@ -30,7 +30,6 @@ export default class GuestSvg extends Component {
                 fill="#fff"
                 stroke="#000"
                 strokeWidth={7}
-                onPress={() => this.props.guestLogoClick()}
             />
         </Svg>
       </View>

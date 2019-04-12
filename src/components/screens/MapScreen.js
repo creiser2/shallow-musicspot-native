@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Permissions, Location, MapView } from 'expo';
-import {DAY_MAP_STYLE, WILD_MAP_STYLE} from '../../../constants/mapstyles';
+import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
+import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
 
 import {
   AppRegistry,
@@ -9,6 +10,7 @@ import {
   Text,
   View,
   ActivityIndicator,
+  StatusBar
 } from 'react-native'
 
 
@@ -63,7 +65,8 @@ export default class MapScreen extends React.Component<{}, AppState> {
     } else {
       return (
         <View style={styles.container}>
-          <MapView style={styles.map}  provider="google" customMapStyle={WILD_MAP_STYLE}
+          <StatusBar backgroundColor="blue" barStyle="light-content" />
+          <MapView style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
               initialRegion={{
               latitude,
               longitude,
@@ -119,6 +122,11 @@ export default class MapScreen extends React.Component<{}, AppState> {
             fillColor = { 'rgba(0, 0, 0, 0.68)' }
           />
           </MapView>
+          <View style={styles.bottomBar}>
+              <Text style={styles.backText} onPress={() => this.props.navigation.navigate('HomeScreen')}>
+                  Back
+              </Text>
+          </View>
         </View>
       );
     }
@@ -129,9 +137,11 @@ export default class MapScreen extends React.Component<{}, AppState> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: HOMESCREEN_BACKGROUND
   },
   map: {
     flex: 1,
+    flexDirection: 'column'
   },
   loadingTxt: {
     textAlign: 'center', // <-- the magic
@@ -146,5 +156,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#292c34',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  bottomBar: {
+    height: 100,
+    backgroundColor:  HOMESCREEN_BACKGROUND,
+    borderTopColor: 'white',
+    borderTopWidth: 1,
+    justifyContent: 'center',
+  },
+  backText: {
+    color: 'white',
+    marginLeft: 20,
+    fontSize: 30
   }
 });
