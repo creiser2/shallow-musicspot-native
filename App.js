@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
-// import {
-//   AppRegistry,
-//   StyleSheet,
-//   TouchableOpacity,
-//   Text,
-//   View
-// } from 'react-native';
-
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { createStore } from 'redux';
 import AppNavigator from './src/components/AppNavigator';
-
+import { config } from './FirebaseConfig';
 /** What is redux?
  * Store - holds our state - THERE IS ONLY ONE STATE
  * Action - State can be modified using actions - SIMPLE OBJECTS
@@ -20,6 +14,8 @@ import AppNavigator from './src/components/AppNavigator';
  * Subscriber - listens for state change to update the ui
  */
 
+firebase.initializeApp(config);
+const firestore = firebase.firestore();
 
 export default class App extends Component {
   render() {
