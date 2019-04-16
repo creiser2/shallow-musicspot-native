@@ -6,7 +6,7 @@ import SpotifyLogo from '../../../assets/svg/SpotifyLogo';
 import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from './MapScreen';
-
+import { db } from '../../../FirebaseConfig';
 
 
 import {
@@ -30,12 +30,21 @@ class Login extends Component {
   }
 
 
-  async componentDidMount() {
+  componentDidMount = () => {
     // await Font.loadAsync({
     //   'MyriadProRegular': require('../../assets/fonts/MyriadProRegular.ttf'),
     // });
 
     // this.setState({ fontLoaded: true });
+    
+    db.collection("test").add({
+        name: "Johnny",
+        age: -1,
+      }).then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+      }).catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
   }
 
 
@@ -66,6 +75,10 @@ class Login extends Component {
     })
   }
 
+  handleQueueMeText = () => {
+    console.log("QUE TEXT CLICKED")
+  }
+
   guestLogoClick  = ()  =>  {
     console.log("guest")
   }
@@ -77,7 +90,7 @@ class Login extends Component {
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
           <View style={styles.container}>
             <View style={styles.topBar}>
-              <Text style={styles.title}>
+              <Text style={styles.title} onPress={() => this.handleQueueMeText()}>
                 QueueMe
               </Text>
             

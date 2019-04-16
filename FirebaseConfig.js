@@ -1,4 +1,7 @@
-export const config = {
+import * as firebase from 'firebase';
+import 'firebase/firestore';
+
+let config = {
     apiKey: "AIzaSyCcHjMQ5jDHlemN7qTubjYQmJzu9TDGXA4",
     authDomain: "queueme-back.firebaseapp.com",
     databaseURL: "https://queueme-back.firebaseio.com",
@@ -6,3 +9,8 @@ export const config = {
     storageBucket: "queueme-back.appspot.com",
     messagingSenderId: "259585678006"
 }
+
+
+firebase.initializeApp(config);
+
+export const db = firebase.firestore();
