@@ -74,10 +74,12 @@ class Login extends Component {
           name: `${doc.data().name}`,
           age: `${doc.data().age}`,
         };
+        console.log(user.name)
         users.push(user);
         });
       });
     this.setState({users});
+    //this.state.users.forEach( (user) => console.log(user.name));
   }
 
   _addUserToTest = (inName, inAge) => {
