@@ -1,0 +1,17 @@
+[debug] [2019-04-16T17:49:29.605Z] ----------------------------------------------------------------------
+[debug] [2019-04-16T17:49:29.607Z] Command:       /usr/local/bin/node /usr/local/bin/firebase database:profile
+[debug] [2019-04-16T17:49:29.607Z] CLI Version:   6.6.0
+[debug] [2019-04-16T17:49:29.607Z] Platform:      darwin
+[debug] [2019-04-16T17:49:29.607Z] Node Version:  v11.12.0
+[debug] [2019-04-16T17:49:29.608Z] Time:          Tue Apr 16 2019 13:49:29 GMT-0400 (Eastern Daylight Time)
+[debug] [2019-04-16T17:49:29.608Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-04-16T17:49:29.616Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-04-16T17:49:29.617Z] > authorizing via signed-in user
+[debug] [2019-04-16T17:49:29.617Z] [iam] checking project queueme-back for permissions ["firebase.projects.get","firebasedatabase.instances.update"]
+[debug] [2019-04-16T17:49:29.618Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/queueme-back:testIamPermissions  
+
+[debug] [2019-04-16T17:49:29.877Z] <<< HTTP RESPONSE 200
+[debug] [2019-04-16T17:49:29.880Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/queueme-back  
+ 
+[debug] [2019-04-16T17:49:30.128Z] <<< HTTP RESPONSE 200

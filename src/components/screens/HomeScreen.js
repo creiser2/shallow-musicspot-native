@@ -25,13 +25,9 @@ class Login extends Component {
     WelcomeClicked: true,
     isLoggedIn: false,
     fontLoaded: false,
-    spotifyLogo: {
-      foregroundColor:  "#57b560",
-      backgroundColor:  "#58605B",
-    }
   }
 
-  handleGuestUser = () => {
+  _handleGuestUser = () => {
     firebase.auth().signInAnonymously()
     .then((res) => {
       console.log("RES:", res)
@@ -65,21 +61,12 @@ class Login extends Component {
     // this.setState({ fontLoaded: true });
   }
 
+  printUsers = () => {
+    console.log(this.state.users)
+  }
+
   _getUsersFromTest = () => {
-    console.log('Entered GET');
-      users = [];
-      db.collection("test").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-        user= {
-          name: `${doc.data().name}`,
-          age: `${doc.data().age}`,
-        };
-        console.log(user.name)
-        users.push(user);
-        });
-      });
-    this.setState({users});
-    //this.state.users.forEach( (user) => console.log(user.name));
+   
   }
 
   _addUserToTest = (inName, inAge) => {
@@ -109,19 +96,9 @@ class Login extends Component {
   }
 
   spotifyLogoClick = () => {
-    let tempColor = this.state.spotifyLogo.backgroundColor
-    console.log("spot click")
-    //request to spotify API
-    this.setState({
-      spotifyLogo: {
-        ...this.state.spotifyLogo,
-          backgroundColor:  this.state.spotifyLogo.foregroundColor,
-          foregroundColor:  tempColor
-      }
-    })
-    this._getUsersFromTest();
+    //this._getUsersFromTest();
 
-    this._addUserToTest("Tony", 132)
+    //this._addUserToTest("Tony", 132)
   }
 
   handleQueueMeText = () => {
@@ -129,7 +106,7 @@ class Login extends Component {
   }
 
   guestLogoClick  = ()  =>  {
-    this.handleGuestUser()
+    this._handleGuestUser()
   }
 
 
@@ -146,7 +123,7 @@ class Login extends Component {
             <Text style={styles.info} onPress={() => this.toggleMaps()}> >>Login or Continue as Guest</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
-            <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
+            <SpotifyLogo foregroundColor={'#57b560'} backgroundColor={'#58605B'} spotifyLogoClick={() => this.spotifyLogoClick()}/>
             <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.guestLogoClick()}/>
           </View>
           <View style={styles.bottomBar}>
@@ -169,11 +146,6 @@ const styles = StyleSheet.create({
   topBar: {
     height: 200,
     backgroundColor: HOMESCREEN_BACKGROUND,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    
-    // borderBottomColor: 'white',
-    // borderBottomWidth: 1,
   },
   title: {
     fontSize: 50,
@@ -197,6 +169,5 @@ const styles = StyleSheet.create({
     backgroundColor:  HOMESCREEN_BACKGROUND,
     justifyContent: 'center',
     borderTopColor: 'white',
-    
   },
 });
