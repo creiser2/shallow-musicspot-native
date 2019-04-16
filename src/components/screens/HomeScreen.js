@@ -7,6 +7,7 @@ import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from './MapScreen';
 import { db } from '../../../FirebaseConfig';
+import firebase from 'firebase';
 
 
 import {
@@ -29,21 +30,55 @@ class Login extends Component {
     }
   }
 
+  handleGuestUser = () => {
+    firebase.auth().signInAnonymously()
+    .then((res) => {
+      console.log("RES:", res)
+      this.props.navigation.navigate('MapScreen')
+    })
+    .catch(function(error) {
+        // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // ...
+    });
+  }
+
+  waitForAuth = () => {
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+        var isAnonymous = user.isAnonymous;
+        var uid = user.uid;
+        console.log("\nUID: ", uid)
+  
+        db.collection("test").get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+          console.log(`${doc.id} => ${doc.data()}`);
+          });
+        });
+      }
+    });
+  }
+
 
   componentDidMount = () => {
+    // this.waitForAuth();
     // await Font.loadAsync({
     //   'MyriadProRegular': require('../../assets/fonts/MyriadProRegular.ttf'),
     // });
 
     // this.setState({ fontLoaded: true });
-    
+  }
+
+  _addUserToTest = (inName, inAge) => {
     db.collection("test").add({
-        name: "Johnny",
-        age: -1,
-      }).then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
-      }).catch(function(error) {
-        console.error("Error adding document: ", error);
+      name: inName,
+      age: inAge,
+    }).then(function(docRef) {
+      console.log("Document written with ID: ", docRef.id);
+    }).catch(function(error) {
+      console.error("Error adding document: ", error);
     });
   }
 
@@ -73,6 +108,8 @@ class Login extends Component {
           foregroundColor:  tempColor
       }
     })
+
+    this._addUserToTest("Tony", 132)
   }
 
   handleQueueMeText = () => {
@@ -80,7 +117,7 @@ class Login extends Component {
   }
 
   guestLogoClick  = ()  =>  {
-    console.log("guest")
+    this.handleGuestUser()
   }
 
 
@@ -98,7 +135,7 @@ class Login extends Component {
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
             <SpotifyLogo foregroundColor={this.state.spotifyLogo.foregroundColor} backgroundColor={this.state.spotifyLogo.backgroundColor} spotifyLogoClick={() => this.spotifyLogoClick()}/>
-            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.props.navigation.navigate('MapScreen')}/>
+            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.guestLogoClick()}/>
           </View>
           <View style={styles.bottomBar}>
               <Text style={styles.title}>
