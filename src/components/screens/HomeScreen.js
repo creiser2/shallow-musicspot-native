@@ -21,6 +21,7 @@ import {
 
 class Login extends Component {
   state = {
+    users: [],
     WelcomeClicked: true,
     isLoggedIn: false,
     fontLoaded: false,
@@ -51,24 +52,32 @@ class Login extends Component {
         var isAnonymous = user.isAnonymous;
         var uid = user.uid;
         console.log("\nUID: ", uid)
-  
-        db.collection("test").get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-          console.log(`${doc.id} => ${doc.data()}`);
-          });
-        });
       }
     });
   }
 
 
   componentDidMount = () => {
-    // this.waitForAuth();
     // await Font.loadAsync({
     //   'MyriadProRegular': require('../../assets/fonts/MyriadProRegular.ttf'),
     // });
 
     // this.setState({ fontLoaded: true });
+  }
+
+  _getUsersFromTest = () => {
+    console.log('Entered GET');
+      users = [];
+      db.collection("test").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+        user= {
+          name: `${doc.data().name}`,
+          age: `${doc.data().age}`,
+        };
+        users.push(user);
+        });
+      });
+    this.setState({users});
   }
 
   _addUserToTest = (inName, inAge) => {
@@ -108,6 +117,7 @@ class Login extends Component {
           foregroundColor:  tempColor
       }
     })
+    this._getUsersFromTest();
 
     this._addUserToTest("Tony", 132)
   }
