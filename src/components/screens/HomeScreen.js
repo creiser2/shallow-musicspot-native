@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../../constants/api/spotify';
 import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
@@ -31,6 +32,7 @@ class HomeScreen extends Component {
     firebase.auth().signInAnonymously()
     .then((res) => {
       //console.log(res.keys[3].uid)
+      //this.props.makeGuest()
       this.props.navigation.navigate('MapScreen')
   
     })
@@ -134,7 +136,22 @@ class HomeScreen extends Component {
     }
   }
 
-export default HomeScreen
+//Redux setup
+
+//mapStateToProps
+function msp(state) {
+  return {
+    isGuest: state.isGuest
+  }
+}
+
+function mdp(state) { 
+  return {
+    makeGuest  : () => dispatch({type: "MAKE_GUEST"})
+  }
+}
+
+export default connect(msp, mdp)(HomeScreen)
 
 const styles = StyleSheet.create({
   container: {

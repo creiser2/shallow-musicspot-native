@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
+
+//database
 import * as firebase from 'firebase';
 import 'firebase/firestore';
-import { createStore } from 'redux';
+
+//navigation
 import AppNavigator from './src/components/AppNavigator';
+
+//redux stuff
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import reducer from './reducers/reducer';
+import composeWithDevTools from 'redux-devtools-extension';
+// import ReduxThunk from 'redux-thunk';
 
 /** What is redux?
  * Store - holds our state - THERE IS ONLY ONE STATE
@@ -13,12 +23,16 @@ import AppNavigator from './src/components/AppNavigator';
  *  - only mandatory argument is the 'type'
  * Subscriber - listens for state change to update the ui
  */
+// const store = createStore(reducer, composeWithDevTools(applyMiddleware(ReduxThunk)))
 
+const store = createStore(reducer)
 
 export default class App extends Component {
   render() {
     return (
-      <AppNavigator/>
+      <Provider store={store}>
+        <AppNavigator/>
+      </Provider>
     );
   }
 }
