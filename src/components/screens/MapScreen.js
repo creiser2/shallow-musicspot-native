@@ -1,5 +1,6 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import { Permissions, Location, MapView } from 'expo';
+import { connect } from 'react-redux';
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
 
@@ -34,7 +35,7 @@ type Position = {
 };
 
 
-export default class MapScreen extends React.Component<{}, AppState> {
+class MapScreen extends Component<{}, AppState> {
   state = {
     ready: false,
   };
@@ -78,7 +79,7 @@ export default class MapScreen extends React.Component<{}, AppState> {
           > 
             <MapView.Marker
               coordinate={{latitude: latitude - 0.002,  longitude: longitude}}
-              title={"FOO PLACE"}
+              title={this.props.isGuest.toString()}
               description={"great job"}
               opacity={0.5}
               pinColor={"#4CFF4F"}
@@ -131,6 +132,26 @@ export default class MapScreen extends React.Component<{}, AppState> {
     }
   }
 }
+
+//Redux setup
+
+//mapStateToProps
+function msp(state) {
+  return {
+    isGuest: state.isGuest
+  }
+}
+
+//mapDispatchToProps
+function mdp(dispatch) { 
+  return {
+    makeGuest: () => {
+      dispatch({type: "MAKE_GUEST"})
+    }
+  }
+}
+
+export default connect(msp, mdp)(MapScreen)
 
 
 const styles = StyleSheet.create({

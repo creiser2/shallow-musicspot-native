@@ -5,7 +5,9 @@ const defaultState = {
 export default reducer = (state = defaultState, action) => {
     switch(action.type) {
         case "MAKE_GUEST": 
-            return { isGuest: true  }
+            return { 
+                ...state, isGuest: true  
+            }
         default: 
             return state
     }

@@ -32,7 +32,8 @@ class HomeScreen extends Component {
     firebase.auth().signInAnonymously()
     .then((res) => {
       //console.log(res.keys[3].uid)
-      //this.props.makeGuest()
+      this.props.makeGuest()
+      console.log("GUEST: ", this.props.isGuest)
       this.props.navigation.navigate('MapScreen')
   
     })
@@ -145,9 +146,12 @@ function msp(state) {
   }
 }
 
-function mdp(state) { 
+//mapDispatchToProps
+function mdp(dispatch) { 
   return {
-    makeGuest  : () => dispatch({type: "MAKE_GUEST"})
+    makeGuest: () => {
+      dispatch({type: "MAKE_GUEST"})
+    }
   }
 }
 

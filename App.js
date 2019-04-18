@@ -11,7 +11,7 @@ import AppNavigator from './src/components/AppNavigator';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from './reducers/reducer';
-import composeWithDevTools from 'redux-devtools-extension';
+// import composeWithDevTools from 'redux-devtools-extension';
 // import ReduxThunk from 'redux-thunk';
 
 /** What is redux?
@@ -23,7 +23,8 @@ import composeWithDevTools from 'redux-devtools-extension';
  *  - only mandatory argument is the 'type'
  * Subscriber - listens for state change to update the ui
  */
-// const store = createStore(reducer, composeWithDevTools(applyMiddleware(ReduxThunk)))
+// When we want to add a middleware later 
+//const store = createStore(reducer, composeWithDevTools(applyMiddleware(ReduxThunk)))
 
 const store = createStore(reducer)
 
