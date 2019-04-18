@@ -19,7 +19,7 @@ import {
 } from 'react-native'
 
 
-class Login extends Component {
+class HomeScreen extends Component {
   state = {
     users: [],
     WelcomeClicked: true,
@@ -30,18 +30,17 @@ class Login extends Component {
   _handleGuestUser = () => {
     firebase.auth().signInAnonymously()
     .then((res) => {
-      console.log("RES:", res)
+      //console.log(res.keys[3].uid)
       this.props.navigation.navigate('MapScreen')
+  
     })
     .catch(function(error) {
-        // Handle Errors here.
       var errorCode = error.code;
       var errorMessage = error.message;
-      // ...
     });
   }
 
-  waitForAuth = () => {
+  _waitForAuth = () => {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           // User is signed in.
@@ -105,9 +104,7 @@ class Login extends Component {
     console.log("QUE TEXT CLICKED")
   }
 
-  guestLogoClick  = ()  =>  {
-    this._handleGuestUser()
-  }
+  
 
 
   render() {
@@ -124,7 +121,7 @@ class Login extends Component {
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
             <SpotifyLogo foregroundColor={'#57b560'} backgroundColor={'#58605B'} spotifyLogoClick={() => this.spotifyLogoClick()}/>
-            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.guestLogoClick()}/>
+            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this._handleGuestUser()}/>
           </View>
           <View style={styles.bottomBar}>
               <Text style={styles.title}>
@@ -137,7 +134,7 @@ class Login extends Component {
     }
   }
 
-export default Login
+export default HomeScreen
 
 const styles = StyleSheet.create({
   container: {
