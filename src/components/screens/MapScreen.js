@@ -86,19 +86,11 @@ class MapScreen extends Component {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     })
-  }
 
-
-  //this could contain bugs, we are setting the redux state of our user to initial state if they click back button
-  handleBackButtonClicked = () => {
-    this.props.destroyUser();
-    this.props.navigation.navigate('HomeScreen');
-  }
-
-  onPress = async () => {
     //begin geofencing based on current regions
     //These regions will be stored in redux, and we will fetch them with an action such as "GET_REGIONS"
     //For now we will apply this to our test region
+    //we are basically checking to see if our location is in one of the above regions
     const regions = [
       {
         latitude: 45.886834, 
@@ -108,10 +100,17 @@ class MapScreen extends Component {
         notifyOnExit: true
       }
     ]
-
-    // //we are basically checking to see if our location is in one of the above regions
-    await Location.startGeofencingAsync("HANDLE_REGION", regions)
+    Location.startGeofencingAsync("HANDLE_REGION", regions)
+    
   }
+
+
+  //this could contain bugs, we are setting the redux state of our user to initial state if they click back button
+  handleBackButtonClicked = () => {
+    this.props.destroyUser();
+    this.props.navigation.navigate('HomeScreen');
+  }
+
 
 
   render() {
@@ -128,7 +127,7 @@ class MapScreen extends Component {
           <View style={styles.container}>
             <StatusBar backgroundColor="blue" barStyle="light-content" />
             <View style={styles.topBar}>
-                <Text onPress={this.onPress} style={styles.cityText}>
+                <Text style={styles.cityText}>
                     {this.state.city}, {this.state.region}
                 </Text>
                 <Text style={styles.usernameText}>
@@ -180,9 +179,11 @@ TaskManager.defineTask("HANDLE_REGION", ({ data: { eventType, region }, error })
     return;
   }
 	if (eventType === Location.GeofencingEventType.Enter) {
-		console.log("entered");
+    console.log("entered")
+    return "entered"
 	} else if (eventType === Location.GeofencingEventType.Exit) {
-	  console.log("exited");
+    console.log("exited")
+	  return "exited"
 	}
 });
 
