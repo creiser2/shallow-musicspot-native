@@ -7,6 +7,7 @@ import SpotifyLogo from '../../../assets/svg/SpotifyLogo';
 import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from './MapScreen';
+import { addGuest } from '../../../store/actions/userActions';
 import { db } from '../../../FirebaseConfig';
 import firebase from 'firebase';
 
@@ -23,7 +24,6 @@ import {
 class HomeScreen extends Component {
   state = {
     users: [],
-    WelcomeClicked: true,
     isLoggedIn: false,
     fontLoaded: false,
   }
@@ -31,11 +31,11 @@ class HomeScreen extends Component {
   _handleGuestUser = () => {
     firebase.auth().signInAnonymously()
     .then((res) => {
-      //console.log(res.keys[3].uid)
+      //we will need middleware like redux-thunk here to only navigate after the state is set, but for now it is fine technically
       this.props.makeGuest()
-      console.log("GUEST: ", this.props.isGuest)
+      //save the uid username to redux
+      // console.log("\n\nRESPONSE: ", res.key("uid"))
       this.props.navigation.navigate('MapScreen')
-  
     })
     .catch(function(error) {
       var errorCode = error.code;
@@ -103,33 +103,43 @@ class HomeScreen extends Component {
     //this._addUserToTest("Tony", 132)
   }
 
-  handleQueueMeText = () => {
-    console.log("QUE TEXT CLICKED")
+  handleGuestClicked = () => {
+    this.props.addGuest()
   }
+
+  renderAccountCreationFailed = () => {
+    if(this.props.guestCreationFailed) {
+      return <Text style={styles.title}>Error Creating Account</Text>
+    } 
+    return null
+  }
+
 
   
 
 
   render() {
+    let accountCreationFailed = this.renderAccountCreationFailed();
+    if(this.props.isGuest) {
+      this.props.navigation.navigate('MapScreen')
+    }
     //once logged into spotify, conditionally render homescreen components
       return (
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
           <View style={styles.container}>
             <View style={styles.topBar}>
-              <Text style={styles.title} onPress={() => this.handleQueueMeText()}>
+              <Text style={styles.title}>
                 QueueMe
               </Text>
             
             <Text style={styles.info} onPress={() => this.toggleMaps()}> >>Login or Continue as Guest</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
-            <SpotifyLogo foregroundColor={'#57b560'} backgroundColor={'#58605B'} spotifyLogoClick={() => this.spotifyLogoClick()}/>
-            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this._handleGuestUser()}/>
+            <SpotifyLogo spotifyLogoClick={() => this.spotifyLogoClick()}/>
+            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.handleGuestClicked()}/>
           </View>
           <View style={styles.bottomBar}>
-              <Text style={styles.title}>
-                  
-              </Text>
+              {accountCreationFailed}
           </View>
         </View>
         </SafeAreaView>
@@ -140,18 +150,18 @@ class HomeScreen extends Component {
 //Redux setup
 
 //mapStateToProps
-function msp(state) {
+const msp = (state) => {
+  let userState = state.user
   return {
-    isGuest: state.isGuest
+    isGuest: userState.isGuest,
+    guestCreationFailed: userState.guestCreationFailed
   }
 }
 
 //mapDispatchToProps
-function mdp(dispatch) { 
+const mdp = (dispatch) => { 
   return {
-    makeGuest: () => {
-      dispatch({type: "MAKE_GUEST"})
-    }
+    addGuest: () => dispatch(addGuest())
   }
 }
 

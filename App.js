@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 //database
-import * as firebase from 'firebase';
+// import * as firebase from 'firebase';
 import 'firebase/firestore';
 
 //navigation
@@ -10,9 +10,10 @@ import AppNavigator from './src/components/AppNavigator';
 //redux stuff
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import reducer from './reducers/reducer';
+import rootReducer from './store/reducers/rootReducer';
+//when someone figures out how to configure these devtools
 // import composeWithDevTools from 'redux-devtools-extension';
-// import ReduxThunk from 'redux-thunk';
+import ReduxThunk from 'redux-thunk';
 
 /** What is redux?
  * Store - holds our state - THERE IS ONLY ONE STATE
@@ -24,9 +25,13 @@ import reducer from './reducers/reducer';
  * Subscriber - listens for state change to update the ui
  */
 // When we want to add a middleware later 
-//const store = createStore(reducer, composeWithDevTools(applyMiddleware(ReduxThunk)))
+// const store = createStore(reducer, composeWithDevTools());
 
-const store = createStore(reducer)
+
+const store = createStore(
+  rootReducer, 
+  applyMiddleware(ReduxThunk),
+);
 
 export default class App extends Component {
   render() {

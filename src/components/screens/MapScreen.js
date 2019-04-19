@@ -137,16 +137,20 @@ class MapScreen extends Component<{}, AppState> {
 
 //mapStateToProps
 function msp(state) {
+  //since we have multiple reducers, we need to reference our user reducer
+  const userState = state.user
   return {
-    isGuest: state.isGuest
+    isGuest: userState.isGuest
   }
 }
 
 //mapDispatchToProps
 function mdp(dispatch) { 
+  //since we have multiple reducers, we need to reference our user reducer
+  const userDispatch = dispatch.user
   return {
     makeGuest: () => {
-      dispatch({type: "MAKE_GUEST"})
+      userDispatch({type: "MAKE_GUEST"})
     }
   }
 }
