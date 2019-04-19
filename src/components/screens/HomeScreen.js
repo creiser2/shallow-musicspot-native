@@ -26,21 +26,6 @@ class HomeScreen extends Component {
 
   }
 
-  _handleGuestUser = () => {
-    firebase.auth().signInAnonymously()
-    .then((res) => {
-      //we will need middleware like redux-thunk here to only navigate after the state is set, but for now it is fine technically
-      this.props.makeGuest()
-      //save the uid username to redux
-      // console.log("\n\nRESPONSE: ", res.key("uid"))
-      this.props.navigation.navigate('MapScreen')
-    })
-    .catch(function(error) {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-    });
-  }
-
 
 
   componentDidMount = () => {
@@ -134,7 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topBar: {
-    height: 200,
+    height: '15%',
     backgroundColor: HOMESCREEN_BACKGROUND,
   },
   title: {

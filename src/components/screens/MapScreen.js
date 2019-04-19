@@ -48,7 +48,7 @@ class MapScreen extends Component<{}, AppState> {
     latitude: null,
     region: "",
     city: "",
-  }
+  }  
 
 
   async componentDidMount() {
@@ -97,8 +97,8 @@ class MapScreen extends Component<{}, AppState> {
                 initialRegion={{
                 latitude,
                 longitude,
-                latitudeDelta: 0.001,
-                longitudeDelta: 0.01,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.001,
               }}
               showsScale={true}
               showsUserLocation={true}
@@ -207,12 +207,14 @@ const styles = StyleSheet.create({
     height: '10%',
     backgroundColor: HOMESCREEN_BACKGROUND,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderBottomColor: 'grey',
+    borderBottomWidth: 1
   },
   bottomBar: {
-    height: 100,
+    height: '10%',
     backgroundColor:  HOMESCREEN_BACKGROUND,
-    borderTopColor: 'white',
+    borderTopColor: 'grey',
     borderTopWidth: 1,
     justifyContent: 'center',
   },
