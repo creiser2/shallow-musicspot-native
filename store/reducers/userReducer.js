@@ -2,7 +2,8 @@ const defaultState = {
     isGuest: false,
     guestCreationFailed: false,
     user: {
-        username: null
+        username: null,
+        uid: null
     }
 }
 
@@ -14,7 +15,11 @@ export default userReducer = (state = defaultState, action) => {
         case "MAKE_GUEST": 
             //spread operator takes all values of state and destructures them so we can edit the outside layer easily
             return { 
-                ...state, isGuest: true  
+                ...state, isGuest: true,
+                user: {
+                    ...state.user,
+                    uid: action.payload
+                }  
             }
         case "MAKE_GUEST_ERROR":
             return {
@@ -28,6 +33,17 @@ export default userReducer = (state = defaultState, action) => {
                     username: action.payload
                 }
             }
+        case "SET_UID":
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    uid: action.payload
+                }
+            }
+        //resets all user settings to default
+        case "DESTROY_USER":
+            return defaultState
         //default case always returns the state of the application
         default: 
             return state

@@ -23,9 +23,7 @@ import {
 
 class HomeScreen extends Component {
   state = {
-    users: [],
-    isLoggedIn: false,
-    fontLoaded: false,
+
   }
 
   _handleGuestUser = () => {
@@ -43,16 +41,6 @@ class HomeScreen extends Component {
     });
   }
 
-  _waitForAuth = () => {
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          // User is signed in.
-        var isAnonymous = user.isAnonymous;
-        var uid = user.uid;
-        console.log("\nUID: ", uid)
-      }
-    });
-  }
 
 
   componentDidMount = () => {
@@ -63,26 +51,6 @@ class HomeScreen extends Component {
     // this.setState({ fontLoaded: true });
   }
 
-  printUsers = () => {
-    console.log(this.state.users)
-  }
-
-  _getUsersFromTest = () => {
-   
-  }
-
-  _addUserToTest = (inName, inAge) => {
-    db.collection("test").add({
-      name: inName,
-      age: inAge,
-    }).then(function(docRef) {
-      console.log("Document written with ID: ", docRef.id);
-    }).catch(function(error) {
-      console.error("Error adding document: ", error);
-    });
-  }
-
-
   handleWelcomeClicked = () => {
     this.setState({
       WelcomeClicked: !this.state.WelcomeClicked
@@ -90,12 +58,6 @@ class HomeScreen extends Component {
     console.log("WELCOMESTATE: ", this.state.WelcomeClicked)
   }
 
-  //not maps yet but test for now
-  toggleMaps = () => {
-    this.setState({
-      isLoggedIn: true
-    })
-  }
 
   spotifyLogoClick = () => {
     //this._getUsersFromTest();
@@ -132,7 +94,7 @@ class HomeScreen extends Component {
                 QueueMe
               </Text>
             
-            <Text style={styles.info} onPress={() => this.toggleMaps()}> >>Login or Continue as Guest</Text>
+            <Text style={styles.info}> >>Login or Continue as Guest</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
             <SpotifyLogo spotifyLogoClick={() => this.spotifyLogoClick()}/>

@@ -27,7 +27,7 @@ import ReduxThunk from 'redux-thunk';
 // When we want to add a middleware later 
 // const store = createStore(reducer, composeWithDevTools());
 
-
+console.disableYellowBox = true;
 const store = createStore(
   rootReducer, 
   applyMiddleware(ReduxThunk),
