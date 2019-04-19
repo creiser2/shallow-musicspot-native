@@ -10,38 +10,13 @@ import { destroyUser } from '../../../store/actions/userActions';
 import {
   AppRegistry,
   StyleSheet,
-  TouchableOpacity,
   Text,
   View,
-  ActivityIndicator,
   StatusBar
 } from 'react-native'
 
 
-type AppState = {
-  ready: boolean,
-  latitude: number,
-  longitude: number,
-  physicalState: string,
-  city: string
-}
-
-type Position = {
-  coords: {
-    accuracy: number,
-    altitude: number,
-    altitudeAccuracy: number,
-    heading: number,
-    latitude: number,
-    longitude: number,
-    speed: number,
-  },
-  timestamp: number,
-};
-
-
-
-class MapScreen extends Component<{}, AppState> {
+class MapScreen extends Component {
   state = {
     ready: false,
     longitude: null,
@@ -62,6 +37,10 @@ class MapScreen extends Component<{}, AppState> {
       alert("We couldn't get your location");
       this.props.destroyUser();
     }
+  }
+
+  componentWillUnmount = () => {
+    
   }
 
 
