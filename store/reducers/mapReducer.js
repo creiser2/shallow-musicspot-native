@@ -13,15 +13,15 @@ const defaultState = {
     // this.map in frontend will somewhat mirror this 
     //default to san francisco
     reduxMap: {
-        latitude: 37.773972,
-        longitude: -122.431297,
+        latitude: null,
+        longitude: null,
         latitudeDelta: 0.01,
         longitudeDelta: 0.001
     },
     geofenceRegions: [
         // {
         //  latitude: null,
-        //  longitude: null,
+        //  longitude: null, 
         //  radius: null,
         //  notifyOnEnter: true,
         //  notifyOnExit: true
@@ -56,18 +56,3 @@ export default mapReducer = (state = defaultState, action) => {
             return state
     }
 }
-
-
-// <MapView 
-//                 ref={this.map}
-//                 style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
-//                 initialRegion={{
-//                 latitude: this.props.user.location.latitude,
-//                 longitude: this.props.user.location.longitude,
-//                 latitudeDelta: 0.01,
-//                 longitudeDelta: 0.001,
-//               }}
-//               showsScale={true}
-//               showsUserLocation={true}
-//               onChange={(event) => this.handleMapViewChange(event)}
-//             > 

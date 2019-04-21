@@ -6,8 +6,8 @@ const defaultState = {
         //the location of the user, constantly updated
         //default to san francisco
         location: {
-            latitude: 37.773972,
-            longitude: -122.431297
+            latitude: 37.774,
+            longitude: -122.431
         },
         uid: null
     }

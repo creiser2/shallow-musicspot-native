@@ -4,14 +4,15 @@ import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
+import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
 import { destroyUser, updateCoords } from '../../../store/actions/userActions';
 import { updateMap } from '../../../store/actions/mapActions';
 
 
 import {
-  AppRegistry,
   StyleSheet,
   Text,
+  Button,
   View,
   StatusBar
 } from 'react-native'
@@ -55,7 +56,13 @@ class MapScreen extends Component {
       const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync();
       //get city and state
       const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
-      this.props.updateCoords({latitude: latitude, longitude: longitude})
+
+      //if our map has null values in lat and long, just use user location to update
+      if(!(this.props.reduxMap.latitude || this.props.reduxMap.longitude)) {
+        this.props.updateMap({latitude, longitude})
+      }
+      this.props.updateCoords({latitude, longitude})
+
       this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
 
       //start watching position
@@ -80,7 +87,6 @@ class MapScreen extends Component {
   //called when we physically move on map
   onNewPosition = (position: Position) => {
     //animate the map to track your movements away from mapview
-    this.map.current.animateToCoordinate(position.coords, 1000);
     //set coordinates in redux, no action for this as of now
     this.props.updateCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
 
@@ -115,7 +121,6 @@ class MapScreen extends Component {
   //when you scroll away or zoom out this function is called
   handleMapViewChange = (event) => {
     //we will save the information about our map in redux
-    debugger;
     //redux setting the state of all of these map attributes
     const {latitude, longitude, latitudeDelta, longitudeDelta} = event.nativeEvent.region;
 
@@ -125,6 +130,50 @@ class MapScreen extends Component {
       latitudeDelta,
       longitudeDelta
     })
+  }
+
+  // renderRelevantQueues = () => {
+  //   return (
+  //       <MapView.Marker
+  //       coordinate={{latitude: 45.886834,  longitude: 5.124}}
+  //       title={this.props.isGuest.toString()}
+  //       description={"great job"}
+  //       opacity={0.5}
+  //       pinColor={"#4CFF4F"}
+  //     />
+  //     <MapView.Circle
+  //       center = {{latitude: 45.886834,  longitude: 5.124} }
+  //       radius = { 100 }
+  //       strokeWidth = { 1 }
+  //       strokeColor = { '#1a66ff' }
+  //       fillColor = { 'rgba(63, 63, 191, 0.26)' }
+  //     />  
+  //   )
+  // }
+
+
+  //this function decides whether or not to render the little return to home
+  //target svg 
+  renderReturnToCurrentLocationSvg = () => {
+    //basically, if the map redux doesnt match the position redux, we have the button
+    //round to three decimals
+    const roundedLat = Math.round((this.props.reduxMap.latitude*10000))/10000
+    const roundedLong = Math.round((this.props.reduxMap.longitude*10000))/10000
+    const userPropsRoundedLat = Math.round((this.props.user.location.latitude*10000))/10000
+    const userPropsRoundedLong = Math.round((this.props.user.location.longitude*10000))/10000
+
+    if((roundedLat != userPropsRoundedLat) || (roundedLong != userPropsRoundedLong)) {
+      return (
+        <Text style={styles.returnToHome} onPress={this.snapMapViewToUser} >Return to home</Text>
+      )
+    } 
+    return null
+  }
+
+  snapMapViewToUser = () => {
+    const { latitude, longitude }  = this.props.user.location
+    this.map.current.animateToCoordinate(this.props.user.location, 1000);
+    this.props.updateMap({latitude: latitude, longitude: longitude, latitudeDelta:  DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
   }
 
 
@@ -155,34 +204,23 @@ class MapScreen extends Component {
                 ref={this.map}
                 style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
                 initialRegion={{
-                  latitude: this.props.user.location.latitude,
-                  longitude: this.props.user.location.longitude,
+                  latitude: this.props.reduxMap.latitude,
+                  longitude: this.props.reduxMap.longitude,
                   latitudeDelta: this.props.reduxMap.latitudeDelta,
                   longitudeDelta: this.props.reduxMap.longitudeDelta,
               }}
               showsScale={true}
               showsUserLocation={true}
               onChange={(event) => this.handleMapViewChange(event)}
-            > 
-              <MapView.Marker
-                coordinate={{latitude: 45.886834,  longitude: 5.124}}
-                title={this.props.isGuest.toString()}
-                description={"great job"}
-                opacity={0.5}
-                pinColor={"#4CFF4F"}
-              />
-              <MapView.Circle
-                center = {{latitude: 45.886834,  longitude: 5.124} }
-                radius = { 100 }
-                strokeWidth = { 1 }
-                strokeColor = { '#1a66ff' }
-                fillColor = { 'rgba(63, 63, 191, 0.26)' }
-              />
+            >             
+            
+              {/* {this.renderRelevantQueues()} */}
             </MapView>
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
                     Back
                 </Text>
+                {this.renderReturnToCurrentLocationSvg()}
             </View>
           </View>
         </SafeAreaView>
@@ -245,6 +283,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column'
   },
+  returnToHome: {
+    color: 'white',
+    justifyContent: 'center',
+    fontSize: 30,
+    marginLeft: '10%'
+  },
   loadingTxt: {
     textAlign: 'center', // <-- the magic
     fontSize: 18,
@@ -263,13 +307,13 @@ const styles = StyleSheet.create({
   bottomBar: {
     height: '10%',
     backgroundColor:  HOMESCREEN_BACKGROUND,
+    flexDirection: 'row',
     borderTopColor: 'grey',
     borderTopWidth: 1,
     justifyContent: 'center',
   },
   backText: {
     color: 'white',
-    marginLeft: 20,
     fontSize: 30
   },
   cityText: {
