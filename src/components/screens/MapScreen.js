@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native';
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
 import { destroyUser, updateCoords } from '../../../store/actions/userActions';
+import { updateMap } from '../../../store/actions/mapActions';
 
 
 import {
@@ -54,8 +55,8 @@ class MapScreen extends Component {
       const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync();
       //get city and state
       const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
-      this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
       this.props.updateCoords({latitude: latitude, longitude: longitude})
+      this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
 
       //start watching position
       const options = { enableHighAccuracy: true, timeInterval: 1000, distanceInterval: 1 };
@@ -97,16 +98,10 @@ class MapScreen extends Component {
       }
     ]
     Location.startGeofencingAsync("HANDLE_REGION", regions)
-    
   }
 
 
-  //find the regions that are relevant to our window
-  loadRelevantRegions = () => {
-
-  }
-
-  //get the circles and pins to render from redux, justloa
+  //get the circles and pins to render from redux and load them from regions
   renderCirclesAndPins = () => {
 
   }
@@ -116,6 +111,22 @@ class MapScreen extends Component {
     this.props.destroyUser();
     this.props.navigation.navigate('HomeScreen');
   }
+
+  //when you scroll away or zoom out this function is called
+  handleMapViewChange = (event) => {
+    //we will save the information about our map in redux
+    debugger;
+    //redux setting the state of all of these map attributes
+    const {latitude, longitude, latitudeDelta, longitudeDelta} = event.nativeEvent.region;
+
+    this.props.updateMap({
+      latitude,
+      longitude,
+      latitudeDelta,
+      longitudeDelta
+    })
+  }
+
 
 
 
@@ -144,13 +155,14 @@ class MapScreen extends Component {
                 ref={this.map}
                 style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
                 initialRegion={{
-                latitude: this.props.user.location.latitude,
-                longitude: this.props.user.location.longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.001,
+                  latitude: this.props.user.location.latitude,
+                  longitude: this.props.user.location.longitude,
+                  latitudeDelta: this.props.reduxMap.latitudeDelta,
+                  longitudeDelta: this.props.reduxMap.longitudeDelta,
               }}
               showsScale={true}
               showsUserLocation={true}
+              onChange={(event) => this.handleMapViewChange(event)}
             > 
               <MapView.Marker
                 coordinate={{latitude: 45.886834,  longitude: 5.124}}
@@ -199,8 +211,10 @@ TaskManager.defineTask("HANDLE_REGION", ({ data: { eventType, region }, error })
 const msp = (state) => {
   //since we have multiple reducers, we need to reference our user reducer
   const userState = state.user
+  const mapState = state.map
   return {
-    ...userState
+    ...userState,
+    ...mapState
   }
 }
 
@@ -210,7 +224,8 @@ const mdp = (dispatch) => {
   
   return {
     destroyUser: () => dispatch(destroyUser()),
-    updateCoords: (coords) => dispatch(updateCoords(coords))
+    updateCoords: (coords) => dispatch(updateCoords(coords)),
+    updateMap: (mapData) => dispatch(updateMap(mapData))
   }
 }
 

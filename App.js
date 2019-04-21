@@ -1,3 +1,5 @@
+//npm run debug will give redux devtools pop up to view and manage state
+
 import React, { Component } from 'react';
 
 //database
@@ -12,7 +14,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './store/reducers/rootReducer';
 //when someone figures out how to configure these devtools
-// import composeWithDevTools from 'redux-devtools-extension';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import ReduxThunk from 'redux-thunk';
 
 /** What is redux?
@@ -30,7 +32,7 @@ import ReduxThunk from 'redux-thunk';
 console.disableYellowBox = true;
 const store = createStore(
   rootReducer, 
-  applyMiddleware(ReduxThunk),
+  composeWithDevTools(applyMiddleware(ReduxThunk)),
 );
 
 export default class App extends Component {

@@ -4,6 +4,7 @@ const defaultState = {
     user: {
         username: null,
         //the location of the user, constantly updated
+        //default to san francisco
         location: {
             latitude: 37.773972,
             longitude: -122.431297
