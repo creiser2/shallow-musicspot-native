@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
-import { destroyUser } from '../../../store/actions/userActions';
+import { destroyUser, updateCoords } from '../../../store/actions/userActions';
 
 
 import {
@@ -38,8 +38,6 @@ class MapScreen extends Component {
 
   state = {
     ready: false,
-    longitude: null,
-    latitude: null,
     region: "",
     city: "",
   };  
@@ -56,7 +54,8 @@ class MapScreen extends Component {
       const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync();
       //get city and state
       const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
-      this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region, longitude, latitude });
+      this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
+      this.props.updateCoords({latitude: latitude, longitude: longitude})
 
       //start watching position
       const options = { enableHighAccuracy: true, timeInterval: 1000, distanceInterval: 1 };
@@ -81,11 +80,8 @@ class MapScreen extends Component {
   onNewPosition = (position: Position) => {
     //animate the map to track your movements away from mapview
     this.map.current.animateToCoordinate(position.coords, 1000);
-    //set the state of the application
-    this.setState({
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude
-    })
+    //set coordinates in redux, no action for this as of now
+    this.props.updateCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
 
     //begin geofencing based on current regions
     //These regions will be stored in redux, and we will fetch them with an action such as "GET_REGIONS"
@@ -105,6 +101,16 @@ class MapScreen extends Component {
   }
 
 
+  //find the regions that are relevant to our window
+  loadRelevantRegions = () => {
+
+  }
+
+  //get the circles and pins to render from redux, justloa
+  renderCirclesAndPins = () => {
+
+  }
+
   //this could contain bugs, we are setting the redux state of our user to initial state if they click back button
   handleBackButtonClicked = () => {
     this.props.destroyUser();
@@ -114,7 +120,7 @@ class MapScreen extends Component {
 
 
   render() {
-    const { ready, longitude, latitude } = this.state;
+    const { ready } = this.state;
     if(!ready) {
       return (
         <View style={styles.container}>
@@ -138,8 +144,8 @@ class MapScreen extends Component {
                 ref={this.map}
                 style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
                 initialRegion={{
-                latitude,
-                longitude,
+                latitude: this.props.user.location.latitude,
+                longitude: this.props.user.location.longitude,
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.001,
               }}
@@ -147,14 +153,14 @@ class MapScreen extends Component {
               showsUserLocation={true}
             > 
               <MapView.Marker
-                coordinate={{latitude: 45.886834,  longitude: longitude}}
+                coordinate={{latitude: 45.886834,  longitude: 5.124}}
                 title={this.props.isGuest.toString()}
                 description={"great job"}
                 opacity={0.5}
                 pinColor={"#4CFF4F"}
               />
               <MapView.Circle
-                center = {{latitude: 45.886834,  longitude: longitude} }
+                center = {{latitude: 45.886834,  longitude: 5.124} }
                 radius = { 100 }
                 strokeWidth = { 1 }
                 strokeColor = { '#1a66ff' }
@@ -203,7 +209,8 @@ const mdp = (dispatch) => {
   //since we have multiple reducers, we need to reference our user reducer
   
   return {
-    destroyUser: () => dispatch(destroyUser())
+    destroyUser: () => dispatch(destroyUser()),
+    updateCoords: (coords) => dispatch(updateCoords(coords))
   }
 }
 

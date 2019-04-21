@@ -15,6 +15,14 @@ export const addGuest = () => {
 };
 
 
+export const updateCoords = (coords) => {
+    //maybe? do a new dispatch to update important regions on this
+    return (dispatch) => {
+        dispatch({type: "UPDATE_COORDS", payload: coords})
+    }
+}
+
+
 export const destroyUser = () => {
     //firebase call to remove anonymous user?
     return(dispatch) => {

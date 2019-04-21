@@ -3,6 +3,11 @@ const defaultState = {
     guestCreationFailed: false,
     user: {
         username: null,
+        //the location of the user, constantly updated
+        location: {
+            latitude: 37.773972,
+            longitude: -122.431297
+        },
         uid: null
     }
 }
@@ -24,6 +29,18 @@ export default userReducer = (state = defaultState, action) => {
         case "MAKE_GUEST_ERROR":
             return {
                 ...state, guestCreationFailed: true
+            }
+        case "UPDATE_COORDS": 
+            console.log("\nupdating coords\n")
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    location: {
+                        latitude: action.payload.latitude,
+                        longitude:  action.payload.longitude
+                    }
+                }
             }
         case "SET_USERNAME":
             return {
