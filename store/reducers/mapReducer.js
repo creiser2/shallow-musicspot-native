@@ -9,14 +9,16 @@ Storing this information will do a couple things for us
         here we will need to update our regions
     
 */
+
+import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../constants/map-constants';
 const defaultState = {
     // this.map in frontend will somewhat mirror this 
     //default to san francisco
     reduxMap: {
         latitude: null,
         longitude: null,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.001
+        latitudeDelta: DEFAULT_LATITUDE_DELTA,
+        longitudeDelta: DEFAULT_LONGITUDE_DELTA
     },
     geofenceRegions: [
         // {

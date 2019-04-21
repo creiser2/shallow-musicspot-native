@@ -156,7 +156,7 @@ class MapScreen extends Component {
   //target svg 
   renderReturnToCurrentLocationSvg = () => {
     //basically, if the map redux doesnt match the position redux, we have the button
-    //round to three decimals
+    //round to four decimals
     const roundedLat = Math.round((this.props.reduxMap.latitude*10000))/10000
     const roundedLong = Math.round((this.props.reduxMap.longitude*10000))/10000
     const userPropsRoundedLat = Math.round((this.props.user.location.latitude*10000))/10000
