@@ -1,0 +1,2 @@
+export const spotify_client_id = 57d4048f0a944cc7b74afc0609746fa8;
+export const spotify_client_secret = f1768d96ad574a8784317dca580cd471;

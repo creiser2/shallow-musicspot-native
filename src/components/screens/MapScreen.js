@@ -59,7 +59,7 @@ class MapScreen extends Component {
 
       //if our map has null values in lat and long, just use user location to update
       if(!(this.props.reduxMap.latitude || this.props.reduxMap.longitude)) {
-        this.props.updateMap({latitude, longitude})
+        this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
       }
       this.props.updateCoords({latitude, longitude})
 
@@ -209,18 +209,19 @@ class MapScreen extends Component {
                   latitudeDelta: this.props.reduxMap.latitudeDelta,
                   longitudeDelta: this.props.reduxMap.longitudeDelta,
               }}
+              showsCompass={true}
               showsScale={true}
               showsUserLocation={true}
               onChange={(event) => this.handleMapViewChange(event)}
             >             
             
               {/* {this.renderRelevantQueues()} */}
+              {this.renderReturnToCurrentLocationSvg()}
             </MapView>
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
                     Back
                 </Text>
-                {this.renderReturnToCurrentLocationSvg()}
             </View>
           </View>
         </SafeAreaView>
@@ -285,9 +286,8 @@ const styles = StyleSheet.create({
   },
   returnToHome: {
     color: 'white',
-    justifyContent: 'center',
+    position: 'absolute',
     fontSize: 30,
-    marginLeft: '10%'
   },
   loadingTxt: {
     textAlign: 'center', // <-- the magic
