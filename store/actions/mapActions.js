@@ -21,7 +21,9 @@ export const createQueue = (coords, radius=100, hostname, region, city) => {
         db.collection('queueLocation').doc(region).collection(city).add({
             coords: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude),
             radius: radius,
-            numMembers: 1
+            numMembers: 1,
+            name: "default-queue",
+            currentSong: ""
         }).then((res) => {
             db.collection('queueContributors').doc(res.id).collection('users').doc(hostname).set({
                 numVotes: 0
