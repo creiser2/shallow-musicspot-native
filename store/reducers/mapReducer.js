@@ -54,6 +54,11 @@ export default mapReducer = (state = defaultState, action) => {
             return {
                 defaultState
             }
+        case "GET_QUEUES_BY_CITY":
+            return {
+                ...state,
+                renderRegions: action.payload
+            }
         default: 
             return state
     }
