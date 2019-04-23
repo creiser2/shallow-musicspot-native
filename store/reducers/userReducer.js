@@ -10,6 +10,10 @@ const defaultState = {
             longitude: -122.431
         },
         uid: null
+    },
+    queue: {
+        isHost: false,
+        id: null
     }
 }
 
@@ -57,6 +61,14 @@ export default userReducer = (state = defaultState, action) => {
                 user: {
                     ...state.user,
                     uid: action.payload
+                }
+            }
+        case "CREATE_QUEUE":
+            return {
+                ...state,
+                queue: {
+                    isHost: true,
+                    id: action.payload.id
                 }
             }
         //resets all user settings to default

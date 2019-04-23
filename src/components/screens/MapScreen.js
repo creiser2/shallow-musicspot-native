@@ -6,7 +6,7 @@ import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
 import { destroyUser, updateCoords } from '../../../store/actions/userActions';
-import { updateMap } from '../../../store/actions/mapActions';
+import { updateMap, createQueue } from '../../../store/actions/mapActions';
 
 
 import {
@@ -94,16 +94,16 @@ class MapScreen extends Component {
     //These regions will be stored in redux, and we will fetch them with an action such as "GET_REGIONS"
     //For now we will apply this to our test region
     //we are basically checking to see if our location is in one of the above regions
-    const regions = [
-      {
-        latitude: 45.886834, 
-        longitude: 5.124,
-        radius: 100,
-        notifyOnEnter: true,
-        notifyOnExit: true
-      }
-    ]
-    Location.startGeofencingAsync("HANDLE_REGION", regions)
+    // const regions = [
+    //   {
+    //     latitude: 45.886834, 
+    //     longitude: 5.124,
+    //     radius: 100,
+    //     notifyOnEnter: true,
+    //     notifyOnExit: true
+    //   }
+    // ]
+    // Location.startGeofencingAsync("HANDLE_REGION", regions)
   }
 
 
@@ -157,10 +157,10 @@ class MapScreen extends Component {
   renderReturnToCurrentLocationSvg = () => {
     //basically, if the map redux doesnt match the position redux, we have the button
     //round to four decimals
-    const roundedLat = Math.round((this.props.reduxMap.latitude*10000))/10000
-    const roundedLong = Math.round((this.props.reduxMap.longitude*10000))/10000
-    const userPropsRoundedLat = Math.round((this.props.user.location.latitude*10000))/10000
-    const userPropsRoundedLong = Math.round((this.props.user.location.longitude*10000))/10000
+    const roundedLat = Math.round((this.props.reduxMap.latitude*1000))/1000
+    const roundedLong = Math.round((this.props.reduxMap.longitude*1000))/1000
+    const userPropsRoundedLat = Math.round((this.props.user.location.latitude*1000))/1000
+    const userPropsRoundedLong = Math.round((this.props.user.location.longitude*1000))/1000
 
     if((roundedLat != userPropsRoundedLat) || (roundedLong != userPropsRoundedLong)) {
       return (
@@ -174,6 +174,12 @@ class MapScreen extends Component {
     const { latitude, longitude }  = this.props.user.location
     this.map.current.animateToCoordinate(this.props.user.location, 1000);
     this.props.updateMap({latitude: latitude, longitude: longitude, latitudeDelta:  DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
+  }
+
+
+  createQueue = () => {
+    //if logged into spotify this is different
+    this.props.createQueue(this.props.user.location, 100, this.props.user.uid)
   }
 
 
@@ -214,14 +220,15 @@ class MapScreen extends Component {
               showsUserLocation={true}
               onChange={(event) => this.handleMapViewChange(event)}
             >             
-            
-              {/* {this.renderRelevantQueues()} */}
-              {this.renderReturnToCurrentLocationSvg()}
+                          
             </MapView>
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
-                    Back
+                    Back  
                 </Text>
+                <Text style={styles.returnToHome} onPress={this.snapMapViewToUser} >Center</Text>
+                <Text style={styles.createQueue} onPress={this.createQueue} >Create</Text>
+                {/* {this.renderReturnToCurrentLocationSvg()} */}
             </View>
           </View>
         </SafeAreaView>
@@ -230,19 +237,19 @@ class MapScreen extends Component {
   }
 }
 
-TaskManager.defineTask("HANDLE_REGION", ({ data: { eventType, region }, error }) => {
-  if (error) {
-    // Error occurred - check `error.message` for more details.
-    return;
-  }
-	if (eventType === Location.GeofencingEventType.Enter) {
-    console.log("entered")
-    return "entered"
-	} else if (eventType === Location.GeofencingEventType.Exit) {
-    console.log("exited")
-	  return "exited"
-	}
-});
+// TaskManager.defineTask("HANDLE_REGION", ({ data: { eventType, region }, error }) => {
+//   if (error) {
+//     // Error occurred - check `error.message` for more details.
+//     return;
+//   }
+// 	if (eventType === Location.GeofencingEventType.Enter) {
+//     console.log("entered")
+//     return "entered"
+// 	} else if (eventType === Location.GeofencingEventType.Exit) {
+//     console.log("exited")
+// 	  return "exited"
+// 	}
+// });
 
 //Redux setup
 
@@ -264,7 +271,8 @@ const mdp = (dispatch) => {
   return {
     destroyUser: () => dispatch(destroyUser()),
     updateCoords: (coords) => dispatch(updateCoords(coords)),
-    updateMap: (mapData) => dispatch(updateMap(mapData))
+    updateMap: (mapData) => dispatch(updateMap(mapData)),
+    createQueue: (coords, radius, hostname) => dispatch(createQueue(coords, radius, hostname))
   }
 }
 
@@ -288,6 +296,12 @@ const styles = StyleSheet.create({
     color: 'white',
     position: 'absolute',
     fontSize: 30,
+    marginLeft: '30%'
+  },
+  createQueue: {
+    color: 'white',
+    marginLeft: '50%',
+    fontSize: 30
   },
   loadingTxt: {
     textAlign: 'center', // <-- the magic
@@ -310,11 +324,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderTopColor: 'grey',
     borderTopWidth: 1,
-    justifyContent: 'center',
   },
   backText: {
     color: 'white',
-    fontSize: 30
+    fontSize: 30,
+    marginLeft: 0
   },
   cityText: {
     color: 'white',
