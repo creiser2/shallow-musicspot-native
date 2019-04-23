@@ -54,7 +54,7 @@ class MapScreen extends Component {
 
       //get initial location to render in map, this will be later updated by our watcher
       const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync();
-      //get city and state
+      //get city and region/state
       const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
 
       //if our map has null values in lat and long, just use user location to update
@@ -135,14 +135,16 @@ class MapScreen extends Component {
     })
   }
 
+  //this is where the queues are physically mapped to our UI from redux
   renderRelevantQueues = () => {
-
+    //if there are no redux regions just return null
     if(this.props.renderRegions.length == 0) {
-      console.log("hello!")
       return null
     } 
+
+    let iterator = -1;
     return this.props.renderRegions.map(point => (
-      <View>
+      <View key={iterator++}>
         <MapView.Marker
           coordinate={point.coords}
           title={point.id}
@@ -186,7 +188,7 @@ class MapScreen extends Component {
   }
 
 
-  createQueue = () => {
+  createQueue = () => {  
     //if logged into spotify this is different
     this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city)
   }

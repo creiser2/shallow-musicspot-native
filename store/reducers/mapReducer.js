@@ -59,6 +59,28 @@ export default mapReducer = (state = defaultState, action) => {
                 ...state,
                 renderRegions: action.payload
             }
+        case "ADD_QUEUE_TO_MAP":
+            let tempState = state.renderRegions
+            tempState.push({
+                id: action.payload.id,
+                coords: {
+                    latitude: action.payload.coords.latitude,
+                    longitude: action.payload.coords.longitude
+                },
+                radius: action.payload.radius,
+                numMembers: 1
+            })
+            //we also need to trigger the map to re render
+            return {
+                ...state,
+                renderRegions: tempState,
+                reduxMap: {
+                    latitude: state.reduxMap.latitude,
+                    longitude: state.reduxMap.longitude,
+                    latitudeDelta: state.reduxMap.latitudeDelta + 0.00001,
+                    longitudeDelta: state.reduxMap.longitudeDelta
+                }
+            }
         default: 
             return state
     }

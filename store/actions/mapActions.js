@@ -33,14 +33,16 @@ export const createQueue = (coords, radius=100, hostname, region, city) => {
                 hostId: hostname
             })
             dispatch({type: "CREATE_QUEUE", payload: {id: res.id}})
+            //optimistically render the queue you just created
+            dispatch({type: "ADD_QUEUE_TO_MAP", payload: {id: res.id, coords: coords, radius: radius}})
         }).catch((err) => {
             console.log("collection add failed")
         })
     }
 }
 
-
-export const getQueuesByCity = (region, city) => {
+//Get the queue
+export const getQueuesByCity = (region="anonymous", city="anonymous") => {
     return (dispatch) => {
         let positionArry = []
         db.collection('queueLocation').doc(region).collection(city).get().then((querySnapshot) => {
