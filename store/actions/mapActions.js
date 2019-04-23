@@ -9,18 +9,16 @@ import 'firebase/firestore';
         we are rendering
 */
 export const updateMap = (mapData) => {
-    
     return (dispatch) => {
         dispatch({type: "UPDATE_REDUX_MAP", payload: mapData})
     }
 }
 
 
-export const createQueue = (coords, radius=100, hostname) => {
-
+export const createQueue = (coords, radius=100, hostname, region, city) => {
     return (dispatch) => {
         //add queuelocation table
-        db.collection('queueLocation').add({
+        db.collection('queueLocation').doc(region).collection(city).add({
             coords: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude),
             radius: radius,
             numMembers: 1
@@ -37,6 +35,30 @@ export const createQueue = (coords, radius=100, hostname) => {
             dispatch({type: "CREATE_QUEUE", payload: {id: res.id}})
         }).catch((err) => {
             console.log("collection add failed")
+        })
+    }
+}
+
+
+export const getQueuesByCity = (region, city) => {
+    return (dispatch) => {
+        let positionArry = []
+        db.collection('queueLocation').doc(region).collection(city).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                positionArry.push({
+                    id: doc.id,
+                    coords: {
+                        latitude: doc.data().coords._lat,
+                        longitude: doc.data().coords._long
+                    },
+                    radius: doc.data().radius,
+                    numMembers: doc.data().numMembers
+                })
+            })
+        }).then(() => {
+            dispatch({type: "GET_QUEUES_BY_CITY", payload: positionArry})
+        }).catch((err) => {
+            console.log("city does not exist")
         })
     }
 }

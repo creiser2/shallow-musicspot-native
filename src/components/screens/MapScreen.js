@@ -6,7 +6,7 @@ import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
 import { destroyUser, updateCoords } from '../../../store/actions/userActions';
-import { updateMap, createQueue } from '../../../store/actions/mapActions';
+import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
 
 
 import {
@@ -69,8 +69,11 @@ class MapScreen extends Component {
       const options = { enableHighAccuracy: true, timeInterval: 1000, distanceInterval: 1 };
 
       //the onNewPosition function will be called for each new position captured after 1 second
-      this.watcher = await Location.watchPositionAsync(options, this.onNewPosition);
-      
+      this.watcher = await Location.watchPositionAsync(options, this.onNewPosition); 
+
+      //get all cities based on city and region
+      this.props.getQueuesByCity(this.state.region, this.state.city)
+
     } else {
       alert("We couldn't get your location");
       this.props.destroyUser();
@@ -132,24 +135,30 @@ class MapScreen extends Component {
     })
   }
 
-  // renderRelevantQueues = () => {
-  //   return (
-  //       <MapView.Marker
-  //       coordinate={{latitude: 45.886834,  longitude: 5.124}}
-  //       title={this.props.isGuest.toString()}
-  //       description={"great job"}
-  //       opacity={0.5}
-  //       pinColor={"#4CFF4F"}
-  //     />
-  //     <MapView.Circle
-  //       center = {{latitude: 45.886834,  longitude: 5.124} }
-  //       radius = { 100 }
-  //       strokeWidth = { 1 }
-  //       strokeColor = { '#1a66ff' }
-  //       fillColor = { 'rgba(63, 63, 191, 0.26)' }
-  //     />  
-  //   )
-  // }
+  renderRelevantQueues = () => {
+
+    if(this.props.renderRegions.length == 0) {
+      console.log("hello!")
+      return null
+    } 
+    return this.props.renderRegions.map(point => (
+      <View>
+        <MapView.Marker
+          coordinate={point.coords}
+          title={point.id}
+          pinColor={"#4CFF4F"}
+          opacity={0.5}
+        />
+        <MapView.Circle
+          center={point.coords}
+          radius={point.radius}
+          strokeWidth = { 1 }
+          strokeColor = { '#1a66ff' }
+          fillColor = { 'rgba(63, 63, 191, 0.26)' }
+        />
+      </View>
+    ))
+  }
 
 
   //this function decides whether or not to render the little return to home
@@ -179,7 +188,7 @@ class MapScreen extends Component {
 
   createQueue = () => {
     //if logged into spotify this is different
-    this.props.createQueue(this.props.user.location, 100, this.props.user.uid)
+    this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city)
   }
 
 
@@ -220,7 +229,7 @@ class MapScreen extends Component {
               showsUserLocation={true}
               onChange={(event) => this.handleMapViewChange(event)}
             >             
-                          
+              {this.renderRelevantQueues()}     
             </MapView>
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
@@ -272,7 +281,8 @@ const mdp = (dispatch) => {
     destroyUser: () => dispatch(destroyUser()),
     updateCoords: (coords) => dispatch(updateCoords(coords)),
     updateMap: (mapData) => dispatch(updateMap(mapData)),
-    createQueue: (coords, radius, hostname) => dispatch(createQueue(coords, radius, hostname))
+    createQueue: (coords, radius, hostname, region, city) => dispatch(createQueue(coords, radius, hostname, region, city)),
+    getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city))
   }
 }
 
