@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Permissions, Location, MapView, TaskManager } from 'expo';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
+import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
+
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
@@ -43,6 +45,7 @@ class MapScreen extends Component {
     ready: false,
     region: "",
     city: "",
+    canCreateQueueAtLocation: false
   };  
 
 
@@ -64,17 +67,18 @@ class MapScreen extends Component {
       //update in redux the user position
       this.props.updateCoords({latitude, longitude})
 
+      
       this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
-
+      
       //start watching position
       const options = { enableHighAccuracy: true, timeInterval: 1000, distanceInterval: 1 };
-
+      
       //the onNewPosition function will be called for each new position captured after 1 second
       this.watcher = await Location.watchPositionAsync(options, this.onNewPosition); 
-
+      
       //get all cities based on city and region
       this.props.getQueuesByCity(this.state.region, this.state.city)
-
+      
     } else {
       alert("We couldn't get your location");
       this.props.destroyUser();
@@ -93,6 +97,28 @@ class MapScreen extends Component {
     //animate the map to track your movements away from mapview
     //set coordinates in redux, no action for this as of now
     this.props.updateCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
+    this.checkQueueCreationAbility(this.props.user.location.latitude, this.props.user.location.longitude)
+  }
+
+
+  //this function checks to see if a user can create a queue at their current location
+  // if they are too close to another queue, it will fail
+  checkQueueCreationAbility = (latitude, longitude) => {
+    let availability = true
+    this.props.renderRegions.forEach((region) => {
+      const roundedLat = Math.round((region.coords.latitude*10000))/10000
+      const roundedLong = Math.round((region.coords.longitude*10000))/10000
+      const userPropsRoundedLat = Math.round((latitude*10000))/10000
+      const userPropsRoundedLong = Math.round((longitude*10000))/10000
+      if((roundedLat == userPropsRoundedLat) && (roundedLong == userPropsRoundedLong)) {
+        availability = false
+      } 
+      console.log(availability)
+    })
+    
+    this.setState({
+      canCreateQueueAtLocation: availability
+    })
   }
 
 
@@ -165,7 +191,11 @@ class MapScreen extends Component {
 
 
 
-   createQueue = async () => {  
+   createQueueClicked = async () => {  
+     //if the user cannot create a queue, just return
+    if(!this.state.canCreateQueueAtLocation) {
+      return
+    }
     //if logged into spotify this is different
     [latitude, longitude] = [this.props.user.location.latitude, this.props.user.location.longitude]
     try {
@@ -225,10 +255,10 @@ class MapScreen extends Component {
                   >             
                 {this.renderRelevantQueues()}     
               </MapView>
-              <View style={styles.createAndCenterView}>
+              {/* <View style={styles.createAndCenterView}>
                 <Text style={styles.createQueue} onPress={this.createQueue} >Create</Text>
-
-              </View>
+              </View> */}
+              <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
             </View>
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
@@ -300,7 +330,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 30,
     marginLeft: '50%',
-    bottom: '50%',
   },
   loadingTxt: {
     textAlign: 'center', // <-- the magic
