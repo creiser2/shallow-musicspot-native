@@ -106,10 +106,10 @@ class MapScreen extends Component {
   checkQueueCreationAbility = (latitude, longitude) => {
     let availability = true
     this.props.renderRegions.forEach((region) => {
-      const roundedLat = Math.round((region.coords.latitude*10000))/10000
-      const roundedLong = Math.round((region.coords.longitude*10000))/10000
-      const userPropsRoundedLat = Math.round((latitude*10000))/10000
-      const userPropsRoundedLong = Math.round((longitude*10000))/10000
+      const roundedLat = Math.round((region.coords.latitude*1000))/1000
+      const roundedLong = Math.round((region.coords.longitude*1000))/1000
+      const userPropsRoundedLat = Math.round((latitude*1000))/1000
+      const userPropsRoundedLong = Math.round((longitude*1000))/1000
       if((roundedLat == userPropsRoundedLat) && (roundedLong == userPropsRoundedLong)) {
         availability = false
       } 
@@ -176,10 +176,11 @@ class MapScreen extends Component {
   renderReturnToCurrentLocationSvg = () => {
     //basically, if the map redux doesnt match the position redux, we have the button
     //round to four decimals
-    const roundedLat = Math.round((this.props.reduxMap.latitude*1000))/1000
-    const roundedLong = Math.round((this.props.reduxMap.longitude*1000))/1000
-    const userPropsRoundedLat = Math.round((this.props.user.location.latitude*1000))/1000
-    const userPropsRoundedLong = Math.round((this.props.user.location.longitude*1000))/1000
+    const roundedLat = Math.round((this.props.reduxMap.latitude*500))/500
+    const roundedLong = Math.round((this.props.reduxMap.longitude*500))/500
+    const userPropsRoundedLat = Math.round((this.props.user.location.latitude*500))/500
+    const userPropsRoundedLong = Math.round((this.props.user.location.longitude*500))/500
+    
 
     if((roundedLat != userPropsRoundedLat) || (roundedLong != userPropsRoundedLong)) {
       return (
