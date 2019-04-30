@@ -40,7 +40,6 @@ class HomeScreen extends Component {
     this.setState({
       WelcomeClicked: !this.state.WelcomeClicked
     })
-    console.log("WELCOMESTATE: ", this.state.WelcomeClicked)
   }
 
 

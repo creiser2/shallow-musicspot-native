@@ -15,19 +15,12 @@ const defaultState = {
     // this.map in frontend will somewhat mirror this 
     //default to san francisco
     reduxMap: {
-        latitude: null,
-        longitude: null,
+        latitude: 122.4194,
+        longitude: 37.7749,
         latitudeDelta: DEFAULT_LATITUDE_DELTA,
         longitudeDelta: DEFAULT_LONGITUDE_DELTA
     },
     geofenceRegions: [
-        // {
-        //  latitude: null,
-        //  longitude: null, 
-        //  radius: null,
-        //  notifyOnEnter: true,
-        //  notifyOnExit: true
-        // }
     ],
     //TBD these will be fetched based on reduxMap delta values (most likely)
     renderRegions: [

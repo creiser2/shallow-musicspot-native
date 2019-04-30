@@ -7,6 +7,7 @@ import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
 import { destroyUser, updateCoords } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
+import { Feather as Icon } from '@expo/vector-icons';
 
 
 import {
@@ -57,10 +58,10 @@ class MapScreen extends Component {
       //get city and region/state
       const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
 
-      //if our map has null values in lat and long, just use user location to update
-      if(!(this.props.reduxMap.latitude || this.props.reduxMap.longitude)) {
-        this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
-      }
+      //snap map to user location
+      this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
+      
+      //update in redux the user position
       this.props.updateCoords({latitude, longitude})
 
       this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
@@ -92,28 +93,9 @@ class MapScreen extends Component {
     //animate the map to track your movements away from mapview
     //set coordinates in redux, no action for this as of now
     this.props.updateCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
-
-    //begin geofencing based on current regions
-    //These regions will be stored in redux, and we will fetch them with an action such as "GET_REGIONS"
-    //For now we will apply this to our test region
-    //we are basically checking to see if our location is in one of the above regions
-    // const regions = [
-    //   {
-    //     latitude: 45.886834, 
-    //     longitude: 5.124,
-    //     radius: 100,
-    //     notifyOnEnter: true,
-    //     notifyOnExit: true
-    //   }
-    // ]
-    // Location.startGeofencingAsync("HANDLE_REGION", regions)
   }
 
 
-  //get the circles and pins to render from redux and load them from regions
-  renderCirclesAndPins = () => {
-
-  }
 
   //this could contain bugs, we are setting the redux state of our user to initial state if they click back button
   handleBackButtonClicked = () => {
@@ -181,16 +163,24 @@ class MapScreen extends Component {
     return null
   }
 
-  snapMapViewToUser = () => {
-    const { latitude, longitude }  = this.props.user.location
-    this.map.current.animateToCoordinate(this.props.user.location, 1000);
-    this.props.updateMap({latitude: latitude, longitude: longitude, latitudeDelta:  DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
-  }
 
 
-  createQueue = () => {  
+   createQueue = async () => {  
     //if logged into spotify this is different
-    this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city)
+    [latitude, longitude] = [this.props.user.location.latitude, this.props.user.location.longitude]
+    try {
+      const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
+
+      this.setState({
+        region: strLoc[0].region,
+        city: strLoc[0].city
+      })
+
+      this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city)
+
+    } catch(error) {
+      console.log("error getting new geocode")
+    }
   }
 
 
@@ -217,29 +207,33 @@ class MapScreen extends Component {
                   {this.props.user.uid}
                 </Text>
             </View>
-            <MapView 
-                ref={this.map}
-                style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
-                initialRegion={{
-                  latitude: this.props.reduxMap.latitude,
-                  longitude: this.props.reduxMap.longitude,
-                  latitudeDelta: this.props.reduxMap.latitudeDelta,
-                  longitudeDelta: this.props.reduxMap.longitudeDelta,
-              }}
-              showsCompass={true}
-              showsScale={true}
-              showsUserLocation={true}
-              onChange={(event) => this.handleMapViewChange(event)}
-            >             
-              {this.renderRelevantQueues()}     
-            </MapView>
+            <View style={styles.mapContainer}>
+              <MapView 
+                  ref={this.map}
+                  style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
+                  initialRegion={{
+                    latitude: this.props.reduxMap.latitude,
+                    longitude: this.props.reduxMap.longitude,
+                    latitudeDelta: this.props.reduxMap.latitudeDelta,
+                    longitudeDelta: this.props.reduxMap.longitudeDelta,
+                  }}
+                  showsCompass={true}
+                  showsScale={true}
+                  showsUserLocation={true}
+                  showsMyLocationButton={true}
+                  onChange={(event) => this.handleMapViewChange(event)}
+                  >             
+                {this.renderRelevantQueues()}     
+              </MapView>
+              <View style={styles.createAndCenterView}>
+                <Text style={styles.createQueue} onPress={this.createQueue} >Create</Text>
+
+              </View>
+            </View>
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
                     Back  
                 </Text>
-                <Text style={styles.returnToHome} onPress={this.snapMapViewToUser} >Center</Text>
-                <Text style={styles.createQueue} onPress={this.createQueue} >Create</Text>
-                {/* {this.renderReturnToCurrentLocationSvg()} */}
             </View>
           </View>
         </SafeAreaView>
@@ -248,19 +242,6 @@ class MapScreen extends Component {
   }
 }
 
-// TaskManager.defineTask("HANDLE_REGION", ({ data: { eventType, region }, error }) => {
-//   if (error) {
-//     // Error occurred - check `error.message` for more details.
-//     return;
-//   }
-// 	if (eventType === Location.GeofencingEventType.Enter) {
-//     console.log("entered")
-//     return "entered"
-// 	} else if (eventType === Location.GeofencingEventType.Exit) {
-//     console.log("exited")
-// 	  return "exited"
-// 	}
-// });
 
 //Redux setup
 
@@ -300,20 +281,26 @@ const styles = StyleSheet.create({
     height: 200,
     backgroundColor: HOMESCREEN_BACKGROUND,
   },
+  mapContainer: {
+    flex: 1
+  },
   map: {
     flex: 1,
-    flexDirection: 'column'
   },
   returnToHome: {
     color: 'white',
-    position: 'absolute',
     fontSize: 30,
     marginLeft: '30%'
   },
+  createAndCenterView: {
+    position: 'absolute',
+    bottom: 0
+  },
   createQueue: {
     color: 'white',
+    fontSize: 30,
     marginLeft: '50%',
-    fontSize: 30
+    bottom: '50%',
   },
   loadingTxt: {
     textAlign: 'center', // <-- the magic
