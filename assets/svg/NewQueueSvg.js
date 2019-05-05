@@ -9,11 +9,13 @@ export default class NewQueueSvg extends Component {
     //function renders the color of the createqueuesvg 
     //based on their abiliy to create the queue at the current location
     getColors = () => {
-        let color = 'red'
-        this.props.canCreateQueueAtLocation ? 
-            color = 'green'
+        
+        
+        let color = this.props.canCreateQueueAtLocation ? 
+            'green'
         :
-            color = 'red'
+            'red'
+        console.log(color)
         return color
     }
 
