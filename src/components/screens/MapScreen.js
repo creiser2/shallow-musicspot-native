@@ -9,7 +9,6 @@ import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
 import { destroyUser, updateCoords } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
-import { Feather as Icon } from '@expo/vector-icons';
 
 
 import {
@@ -106,18 +105,21 @@ class MapScreen extends Component {
   //this function checks to see if a user can create a queue at their current location
   // if they are too close to another queue, it will fail
   checkQueueCreationAbility = (latitude, longitude) => {
-    
-    let availability = this.props.renderRegions.length > 0
+    //set availability = not null
+    let availability = !!this.props.renderRegions
 
-    this.props.renderRegions.forEach((region) => {
-      const roundedLat = Math.round((region.coords.latitude*1000))/1000
-      const roundedLong = Math.round((region.coords.longitude*1000))/1000
-      const userPropsRoundedLat = Math.round((latitude*1000))/1000
-      const userPropsRoundedLong = Math.round((longitude*1000))/1000
-      if((roundedLat == userPropsRoundedLat) && (roundedLong == userPropsRoundedLong)) {
-        availability = false
-      } 
-    })
+    //if availability not null (= [] or [1,2,3])
+    if(availability) {
+      this.props.renderRegions.forEach((region) => {
+        const roundedLat = Math.round((region.coords.latitude*1000))/1000
+        const roundedLong = Math.round((region.coords.longitude*1000))/1000
+        const userPropsRoundedLat = Math.round((latitude*1000))/1000
+        const userPropsRoundedLong = Math.round((longitude*1000))/1000
+        if((roundedLat == userPropsRoundedLat) && (roundedLong == userPropsRoundedLong)) {
+          availability = false
+        } 
+      })
+    }
   
     if(availability != this.state.canCreateQueueAtLocation) {
       this.setState({
@@ -151,16 +153,19 @@ class MapScreen extends Component {
   //this is where the queues are physically mapped to our UI from redux
   renderRelevantQueues = () => {
     //if there are no redux regions just return null
-    if(this.props.renderRegions.length == 0) {
+    if(!this.props.renderRegions) {
       return null
     } 
+    else if(this.props.renderRegions.length == 0) {
+      return null
+    }
 
 
     //set create queue at location svg color if they are too close to a marker
     [latitude, longitude] = [this.props.user.location.latitude, this.props.user.location.longitude]    
     this.checkQueueCreationAbility(latitude, longitude)
-    console.log("called")
-    let iterator = -1;
+
+    let iterator = 0;
     return this.props.renderRegions.map(point => (
       <View key={iterator++}>
         <MapView.Marker

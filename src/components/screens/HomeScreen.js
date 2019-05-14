@@ -44,9 +44,7 @@ class HomeScreen extends Component {
 
 
   spotifyLogoClick = () => {
-    //this._getUsersFromTest();
-
-    //this._addUserToTest("Tony", 132)
+    
   }
 
   handleGuestClicked = () => {

@@ -23,9 +23,7 @@ const defaultState = {
     geofenceRegions: [
     ],
     //TBD these will be fetched based on reduxMap delta values (most likely)
-    renderRegions: [
-
-    ]
+    renderRegions: null
 }
 
 
@@ -53,7 +51,7 @@ export default mapReducer = (state = defaultState, action) => {
                 renderRegions: action.payload
             }
         case "ADD_QUEUE_TO_MAP":
-            let tempState = state.renderRegions
+            let tempState = state.renderRegions ? state.renderRegions : []
             tempState.push({
                 id: action.payload.id,
                 coords: {
