@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Permissions, Location, MapView, TaskManager } from 'expo';
+import { Permissions, Location, MapView } from 'expo';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
+import QueueDetails from '../customScreens/QueueDetails';
 
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
@@ -173,7 +174,9 @@ class MapScreen extends Component {
           title={point.id}
           pinColor={"#4CFF4F"}
           opacity={0.5}
-        />
+        >
+          <QueueDetails numMembers={point.numMembers} name={point.id} coordinate={point.coords} />
+        </MapView.Marker>
         <MapView.Circle
           center={point.coords}
           radius={point.radius}
@@ -380,5 +383,6 @@ const styles = StyleSheet.create({
   },
   usernameText: {
     color: 'grey'
-  }
+  },
+
 });
