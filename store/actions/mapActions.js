@@ -46,8 +46,8 @@ export const createQueue = (coords, radius=100, hostname, region, city) => {
 //Get the queue
 export const getQueuesByCity = (region="anonymous", city="anonymous") => {
     return (dispatch) => {
-        let positionArry = []
-        db.collection('queueLocation').doc(region).collection(city).get().then((querySnapshot) => {
+        db.collection('queueLocation').doc(region).collection(city).onSnapshot(function(querySnapshot) {
+            let positionArry = []
             querySnapshot.forEach((doc) => {
                 positionArry.push({
                     id: doc.id,
@@ -59,10 +59,29 @@ export const getQueuesByCity = (region="anonymous", city="anonymous") => {
                     numMembers: doc.data().numMembers
                 })
             })
-        }).then(() => {
             dispatch({type: "GET_QUEUES_BY_CITY", payload: positionArry})
-        }).catch((err) => {
-            console.log("city does not exist")
-        })
+        }, function(error) {
+            console.log("ERROR! getting queues!")
+        });
+        
+        
+        // db.collection('queueLocation').doc(region).collection(city).get().then((querySnapshot) => {
+        //     let positionArry = []
+        //     querySnapshot.forEach((doc) => {
+        //         positionArry.push({
+        //             id: doc.id,
+        //             coords: {
+        //                 latitude: doc.data().coords._lat,
+        //                 longitude: doc.data().coords._long
+        //             },
+        //             radius: doc.data().radius,
+        //             numMembers: doc.data().numMembers
+        //         })
+        //     })
+        // }).then(() => {
+        //     dispatch({type: "GET_QUEUES_BY_CITY", payload: positionArry})
+        // }).catch((err) => {
+        //     console.log("city does not exist")
+        // })
     }
 }

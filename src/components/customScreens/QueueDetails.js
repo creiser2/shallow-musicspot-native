@@ -17,7 +17,7 @@ export default class QueueDetails extends Component {
         return (
             <MapView.Callout tooltip={true}>
                 <View style={styles.container}>
-                    <View style={styles.titleContainer}>
+                    <View style={styles.titleContainer}> 
                         <Text style={styles.title}>Current Song: {props.name}</Text>
                     </View>
                     <View style={styles.horizontalRule}/>                    
@@ -33,9 +33,11 @@ export default class QueueDetails extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
+    width: '50%',
     height: 200,
     backgroundColor: HOMESCREEN_BACKGROUND,
+    borderColor: 'white',
+    borderWidth: 1,
     alignItems: 'center'
   },
   title: {
