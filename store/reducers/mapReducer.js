@@ -72,6 +72,15 @@ export default mapReducer = (state = defaultState, action) => {
                     longitudeDelta: state.reduxMap.longitudeDelta
                 }
             }
+            case "DELETE_QUEUE":
+                let tempState2 = state.renderRegions
+                let tempState3 = tempState2.filter((val) => {
+                    return val.id != (action.payload.id);
+                })
+                return {
+                    ...state,
+                    renderRegions: tempState3
+                }
         default: 
             return state
     }

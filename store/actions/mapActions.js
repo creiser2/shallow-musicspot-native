@@ -43,6 +43,26 @@ export const createQueue = (coords, radius=100, hostname, region, city) => {
     }
 }
 
+//delete a queue
+export const deleteQueue = (queueId, region, city) => {
+    return (dispatch) => {
+        //add queuelocation table
+        db.collection('queueLocation').doc(region).collection(city).doc(queueId).delete()
+        .then((res) => {
+        /*  db.collection('queueVotes').doc(queueId).delete()
+            .catch((err) => {
+                console.log("deleting queue / queueVotes failed")
+            }) */
+
+            //optimistically render the queue you just deleted
+            console.log("dispatching")
+            dispatch({type: "DELETE_QUEUE", payload: {id: queueId}})
+        }).catch((err) => {
+            console.log("queue delete failed")
+        })
+    }
+}
+
 //Get the queue
 export const getQueuesByCity = (region="anonymous", city="anonymous") => {
     return (dispatch) => {
