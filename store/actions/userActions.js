@@ -22,6 +22,35 @@ export const updateCoords = (coords) => {
     }
 }
 
+//user id gets added to the user list, and changes the page to the new queue page
+export const joinQueue = (queueId, userId, region, city, nextFunc) => {
+    return (dispatch) => {
+        db.collection('queueContributors').doc(queueId).collection('users').add({
+            userId
+        }).then((res)=> {
+            console.log('add user worked');
+            db.collection('queueLocation').doc(region).collection(city).doc(queueId).get()
+            .then((res) => {
+                newNumMembers = res.data().numMembers +1;
+                console.log("getQueue worked")
+                db.collection('queueLocation').doc(region).collection(city).doc(queueId).update({
+                    numMembers: newNumMembers
+                }).then((res) => {
+                    console.log("update numMembers worked");
+                    //should pass the number of members here as the payload but action doesnt have that as a state
+                    dispatch({type: "JOIN_QUEUE"})
+                 }).catch((err) => {
+                    console.log("updating numUsers failed");
+                 })
+            }).catch((err) => {
+                console.log("Getting queue to update failed");
+            })
+        }).catch((err)=>{
+            console.log("join/add user failed");
+        })
+    }
+}
+
 
 export const destroyUser = () => {
     //firebase call to remove anonymous user?

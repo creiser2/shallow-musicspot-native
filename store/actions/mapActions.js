@@ -14,7 +14,6 @@ export const updateMap = (mapData) => {
     }
 }
 
-
 export const createQueue = (coords, radius=100, hostname, region, city) => {
     return (dispatch) => {
         //add queuelocation table

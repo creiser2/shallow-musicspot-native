@@ -8,7 +8,7 @@ import QueueDetails from '../customScreens/QueueDetails';
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
-import { destroyUser, updateCoords } from '../../../store/actions/userActions';
+import { destroyUser, updateCoords, joinQueue } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
 
 
@@ -103,6 +103,7 @@ class MapScreen extends Component {
 
   joinQueue = () => {
     console.log("queue joined button pressed");
+    this.props.joinQueue(this.state.currentQueue.id,this.props.user.uid, this.state.region, this.state.city, this.props.navigation.navigate('QueueScreen'));
   }
 
   markerClickedPopup = () => {
@@ -358,7 +359,8 @@ const mdp = (dispatch) => {
     updateCoords: (coords) => dispatch(updateCoords(coords)),
     updateMap: (mapData) => dispatch(updateMap(mapData)),
     createQueue: (coords, radius, hostname, region, city) => dispatch(createQueue(coords, radius, hostname, region, city)),
-    getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city))
+    getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
+    joinQueue: (queueId, userId, region, city, nextFunc) => dispatch(joinQueue(queueId, userId, region, city, nextFunc))
   }
 }
 
