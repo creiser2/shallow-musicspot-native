@@ -102,22 +102,23 @@ class MapScreen extends Component {
   }
 
   joinQueue = () => {
-    console.log("queue joined button pressed");
     this.props.joinQueue(this.state.currentQueue.id,this.props.user.uid, this.state.region, this.state.city, this.props.navigation.navigate('QueueScreen'));
   }
 
   markerClickedPopup = () => {
     if(this.state.queueClicked){
+      let objIndex = this.props.renderRegions.findIndex((obj => obj.id == this.state.currentQueue.id));
+      let queueClicked = this.props.renderRegions[objIndex];
       return(
         <View style={styles.moreQueueInfo}>
-          <Text style={styles.moreInfoText}>Queue Name: {this.state.currentQueue.name}</Text>
-          <Text style={styles.moreInfoText}>Current Song: {this.state.currentQueue.currentSong}</Text>
+          <Text style={styles.moreInfoText}>Queue Name: {queueClicked.name}</Text>
+          <Text style={styles.moreInfoText}>Current Song: {queueClicked.currentSong}</Text>
           <View style={styles.rowFlex}>
             <Image
               style={styles.groupIcon}
               source={require('../../../assets/groupIcon.png')}
             />
-            <Text style={styles.moreInfoText}>{this.state.currentQueue.numMembers}</Text>
+            <Text style={styles.moreInfoText}>{queueClicked.numMembers}</Text>
           </View>
           <TouchableOpacity
             style={styles.joinButton}
@@ -208,6 +209,7 @@ class MapScreen extends Component {
     this.checkQueueCreationAbility(latitude, longitude)
 
     let iterator = 0;
+    //going to need to add other fields to the render regions
     return this.props.renderRegions.map(point => (
       <View key={iterator++}>
         <MapView.Marker
@@ -216,12 +218,7 @@ class MapScreen extends Component {
           pinColor={"#4CFF4F"}
           opacity={0.5}
           onPress={() => this.markerClicked(point)}
-        >
-         <MapView.Callout tooltip={true}>
-          <Text>{point.id}</Text>
-         </MapView.Callout>
-          {/* <QueueDetails numMembers={point.numMembers} name={point.id} coordinate={point.coords} /> */}
-        </MapView.Marker>
+        />
         <MapView.Circle
           center={point.coords}
           radius={point.radius}

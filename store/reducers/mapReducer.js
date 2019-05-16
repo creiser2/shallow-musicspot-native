@@ -81,6 +81,16 @@ export default mapReducer = (state = defaultState, action) => {
                     ...state,
                     renderRegions: tempState3
                 }
+            //updates the number of members in the queue  
+            case "JOIN_QUEUE":
+                //console.log("join queue dispatch called");
+                let tempRegions = state.renderRegions ? state.renderRegions : [];
+                let objIndex = tempRegions.findIndex((obj => obj.id == action.payload));
+                tempRegions[objIndex].numMembers +=1;
+                return {
+                    ...state,
+                    renderRegions: tempRegions
+                }
         default: 
             return state
     }

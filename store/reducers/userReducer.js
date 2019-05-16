@@ -73,12 +73,6 @@ export default userReducer = (state = defaultState, action) => {
         //resets all user settings to default
         case "DESTROY_USER":
             return defaultState
-        //this needs to be updated    
-        case "JOIN_QUEUE":
-            console.log("join queue dispatch called");
-            return {
-                ...state
-            }
         //default case always returns the state of the application
         default: 
             return state
