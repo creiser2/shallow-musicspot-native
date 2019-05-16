@@ -8,10 +8,15 @@ import {
     Text,
     Button,
     View,
+    TouchableHighlight,
+    TouchableOpacity,
+    TextInput
   } from 'react-native'
 
 export default class QueueDetails extends Component {
-
+    clickedJoin = () => {
+        console.log("joined clicked");
+    }
     render() {
         const props = this.props
         return (
@@ -20,9 +25,20 @@ export default class QueueDetails extends Component {
                     <View style={styles.titleContainer}> 
                         <Text style={styles.title}>Current Song: {props.name}</Text>
                     </View>
-                    <View style={styles.horizontalRule}/>                    
+                    <TextInput
+                        style={{height: 40, width: 60,borderColor: 'gray', borderWidth: 1}}
+                        editable = {true}
+                    />
+                    <View>
+                        <TouchableOpacity title='Click Me!' onPress={() => console.log('Clicked')} />
+                    </View>                 
                     <View style={styles.subTitleContainer}>
                         <Text style={styles.subTitle}>Yes...</Text>
+                        <TouchableHighlight onPress={() => this.clickedJoin()}>
+                            <View>
+                              <Text>Join</Text>
+                            </View>
+                        </TouchableHighlight>
                     </View>
                 </View> 
             </MapView.Callout>

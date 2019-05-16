@@ -17,7 +17,9 @@ import {
   Text,
   Button,
   View,
-  StatusBar
+  StatusBar,
+  TouchableOpacity,
+  Image,
 } from 'react-native'
 
 
@@ -45,7 +47,9 @@ class MapScreen extends Component {
     ready: false,
     region: "",
     city: "",
-    canCreateQueueAtLocation: false
+    canCreateQueueAtLocation: false,
+    queueClicked: false,
+    currentQueue: {},
   };  
 
 
@@ -92,7 +96,43 @@ class MapScreen extends Component {
     this.watcher.remove();
   }
 
- 
+  markerClicked = (queueInfo) => {
+    this.setState({queueClicked: !this.state.queueClicked});
+    this.setState({currentQueue: queueInfo});
+  }
+
+  joinQueue = () => {
+    console.log("queue joined button pressed");
+  }
+
+  markerClickedPopup = () => {
+    if(this.state.queueClicked){
+      return(
+        <View style={styles.moreQueueInfo}>
+          <Text style={styles.moreInfoText}>Queue Name: {this.state.currentQueue.name}</Text>
+          <Text style={styles.moreInfoText}>Current Song: {this.state.currentQueue.currentSong}</Text>
+          <View style={styles.rowFlex}>
+            <Image
+              style={styles.groupIcon}
+              source={require('../../../assets/groupIcon.png')}
+            />
+            <Text style={styles.moreInfoText}>{this.state.currentQueue.numMembers}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() => this.joinQueue()}
+          >
+            <Text style={styles.joinButtonText}>Join</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }else{
+      return (
+          <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
+      );
+    }
+  }
+
 
   //called when we physically move on map
   onNewPosition = (position: Position) => {
@@ -174,8 +214,12 @@ class MapScreen extends Component {
           title={point.id}
           pinColor={"#4CFF4F"}
           opacity={0.5}
+          onPress={() => this.markerClicked(point)}
         >
-          <QueueDetails numMembers={point.numMembers} name={point.id} coordinate={point.coords} />
+         <MapView.Callout tooltip={true}>
+          <Text>{point.id}</Text>
+         </MapView.Callout>
+          {/* <QueueDetails numMembers={point.numMembers} name={point.id} coordinate={point.coords} /> */}
         </MapView.Marker>
         <MapView.Circle
           center={point.coords}
@@ -277,8 +321,8 @@ class MapScreen extends Component {
               {/* <View style={styles.createAndCenterView}>
                 <Text style={styles.createQueue} onPress={this.createQueue} >Create</Text>
               </View> */}
-              <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
             </View>
+              {this.markerClickedPopup()}
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
                     Back  
@@ -384,5 +428,34 @@ const styles = StyleSheet.create({
   usernameText: {
     color: 'grey'
   },
-
+  moreQueueInfo: {
+    flex: 1,
+    backgroundColor: 'white',
+    height: 10,
+  },
+  joinButton: {
+    backgroundColor: '#1c06e2',
+    alignItems: 'center',
+    padding: 10,
+    margin:10,
+    borderRadius:10,
+  },
+  joinButtonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontWeight:'bold',
+    fontSize: 24
+  },
+  moreInfoText: {
+    textAlign: 'center',
+    fontSize: 22,
+  },
+  rowFlex: {
+    flexDirection: 'row',
+  },
+  groupIcon: {
+    height: 30,
+    width: 30,
+    marginLeft: 40
+  }
 });
