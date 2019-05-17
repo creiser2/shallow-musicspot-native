@@ -16,9 +16,6 @@ export const updateMap = (mapData) => {
 
 export const createQueue = (coords, radius=100, hostname, region, city, name, currentSong) => {
     return (dispatch) => {
-        //this is for now
-        name= "default-queue";
-        currentSong= "insert song";
         //add queuelocation table
         db.collection('queueLocation').doc(region).collection(city).add({
             coords: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude),

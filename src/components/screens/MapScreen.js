@@ -6,7 +6,7 @@ import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
 import QueueDetails from '../customScreens/QueueDetails';
 
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
-import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
+import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
 import { destroyUser, updateCoords, joinQueue } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
@@ -20,6 +20,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  TextInput,
 } from 'react-native'
 
 
@@ -50,6 +51,9 @@ class MapScreen extends Component {
     canCreateQueueAtLocation: false,
     queueClicked: false,
     currentQueue: {},
+    addingQueueForm: false,
+    insertQueueName: "",
+    insertCurrSong: ""
   };  
 
 
@@ -103,36 +107,6 @@ class MapScreen extends Component {
 
   joinQueue = () => {
     this.props.joinQueue(this.state.currentQueue.id,this.props.user.uid, this.state.region, this.state.city, this.props.navigation.navigate('QueueScreen'));
-  }
-
-  markerClickedPopup = () => {
-    if(this.state.queueClicked){
-      let objIndex = this.props.renderRegions.findIndex((obj => obj.id == this.state.currentQueue.id));
-      let queueClicked = this.props.renderRegions[objIndex];
-      return(
-        <View style={styles.moreQueueInfo}>
-          <Text style={styles.moreInfoText}>Queue Name: {queueClicked.name}</Text>
-          <Text style={styles.moreInfoText}>Current Song: {queueClicked.currentSong}</Text>
-          <View style={styles.rowFlex}>
-            <Image
-              style={styles.groupIcon}
-              source={require('../../../assets/groupIcon.png')}
-            />
-            <Text style={styles.moreInfoText}>{queueClicked.numMembers}</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.joinButton}
-            onPress={() => this.joinQueue()}
-          >
-            <Text style={styles.joinButtonText}>Join</Text>
-          </TouchableOpacity>
-        </View>
-      )
-    }else{
-      return (
-          <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
-      );
-    }
   }
 
 
@@ -260,19 +234,105 @@ class MapScreen extends Component {
     //if logged into spotify this is different
     [latitude, longitude] = [this.props.user.location.latitude, this.props.user.location.longitude]
     try {
+
+      //NEED TO MAKE THIS ASYNC
+      this.setState({addingQueueForm: true});
+
       const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
 
       this.setState({
         region: strLoc[0].region,
-        city: strLoc[0].city
+        city: strLoc[0].city,
       })
-      //the name will be from a form and current song somewhere else but this will be changed
-      var name= "Johnny's Queue";
-      var currentSong= "Closer";
-      this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city, name, currentSong);
 
     } catch(error) {
       console.log("error getting new geocode")
+    }
+  }
+
+  markerClickedPopup = () => {
+    if(this.state.queueClicked){
+      let objIndex = this.props.renderRegions.findIndex((obj => obj.id == this.state.currentQueue.id));
+      let queueClicked = this.props.renderRegions[objIndex];
+      return(
+        <View style={styles.moreQueueInfo}>
+          <Text style={styles.moreInfoText}>Queue Name: {queueClicked.name}</Text>
+          <Text style={styles.moreInfoText}>Current Song: {queueClicked.currentSong}</Text>
+          <View style={styles.rowFlex}>
+            <Image
+              style={styles.groupIcon}
+              source={require('../../../assets/groupIcon.png')}
+            />
+            <Text style={styles.moreInfoText}>{queueClicked.numMembers}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() => this.joinQueue()}
+          >
+            <Text style={styles.joinButtonText}>Join</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }else if(this.state.addingQueueForm){
+      //the name will be from a form and current song somewhere else but this will be changed
+      return (
+        <View>
+          <TextInput
+            style={styles.inputQueueNameAndSong}
+            enablesReturnKeyAutomatically={true}
+            selectTextOnFocus={true}
+            placeholder="Insert Queue Name"
+            onChangeText={(insertQueueName) => this.setState({insertQueueName})}
+            value={this.state.insertQueueName}
+          />
+          <TextInput
+            style={styles.inputQueueNameAndSong}
+            enablesReturnKeyAutomatically={true}
+            selectTextOnFocus={true}
+            onChangeText={(insertCurrSong) => this.setState({insertCurrSong})}
+            placeholder="Insert Current Song"
+            value={this.state.insertCurrSong}
+          />
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() =>  this.submitNewQueueAndClose()}
+          >
+            <Text style={styles.joinButtonText}>Done</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() => this.setState({addingQueueForm:false})}
+          >
+            <Text style={styles.joinButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }else{
+      return (
+          <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
+      );
+    }
+  }
+
+  submitNewQueueAndClose = () => {
+    this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city, this.state.insertQueueName, this.state.insertCurrSong);
+    this.setState({addingQueueForm:false});
+  }
+
+  addQueueForm = () => {
+    if(this.state.addingQueueForm){
+      return (
+        <View>
+          <Text>Adding Queue Info</Text>
+          <Button
+            onPress={() => this.setState({addingQueueForm: false})}
+            title="Close"
+            color="#841584"
+          />
+        </View>
+      )
+    }else{
+      return
     }
   }
 
@@ -316,7 +376,7 @@ class MapScreen extends Component {
                   showsMyLocationButton={true}
                   onChange={(event) => this.handleMapViewChange(event)}
                   >             
-                {this.renderRelevantQueues()}     
+                {this.renderRelevantQueues()}
               </MapView>
               {/* <View style={styles.createAndCenterView}>
                 <Text style={styles.createQueue} onPress={this.createQueue} >Create</Text>
@@ -458,5 +518,15 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     marginLeft: 40
+  },
+  inputQueueNameAndSong: {
+    height: 50, 
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 5,
+    margin: 5,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
   }
 });
