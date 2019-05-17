@@ -52,6 +52,7 @@ export default mapReducer = (state = defaultState, action) => {
             }
         case "ADD_QUEUE_TO_MAP":
             let tempState = state.renderRegions ? state.renderRegions : []
+            console.log("Name: "+ action.payload.name+ " Curr Song:" +action.payload.currentSong);
             tempState.push({
                 id: action.payload.id,
                 coords: {
@@ -59,7 +60,9 @@ export default mapReducer = (state = defaultState, action) => {
                     longitude: action.payload.coords.longitude
                 },
                 radius: action.payload.radius,
-                numMembers: 1
+                numMembers: 1,
+                currentSong: action.payload.currentSong,
+                name: action.payload.name
             })
             //we also need to trigger the map to re render
             return {

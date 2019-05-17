@@ -109,6 +109,7 @@ class MapScreen extends Component {
     if(this.state.queueClicked){
       let objIndex = this.props.renderRegions.findIndex((obj => obj.id == this.state.currentQueue.id));
       let queueClicked = this.props.renderRegions[objIndex];
+      console.log(JSON.stringify(this.props.renderRegions[objIndex]));
       return(
         <View style={styles.moreQueueInfo}>
           <Text style={styles.moreInfoText}>Queue Name: {queueClicked.name}</Text>
@@ -266,8 +267,10 @@ class MapScreen extends Component {
         region: strLoc[0].region,
         city: strLoc[0].city
       })
-
-      this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city)
+      //the name will be from a form and current song somewhere else but this will be changed
+      var name= "Johnny's Queue";
+      var currentSong= "Closer";
+      this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city, name, currentSong);
 
     } catch(error) {
       console.log("error getting new geocode")
@@ -355,7 +358,7 @@ const mdp = (dispatch) => {
     destroyUser: () => dispatch(destroyUser()),
     updateCoords: (coords) => dispatch(updateCoords(coords)),
     updateMap: (mapData) => dispatch(updateMap(mapData)),
-    createQueue: (coords, radius, hostname, region, city) => dispatch(createQueue(coords, radius, hostname, region, city)),
+    createQueue: (coords, radius, hostname, region, city, name, currentSong) => dispatch(createQueue(coords, radius, hostname, region, city, name, currentSong)),
     getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
     joinQueue: (queueId, userId, region, city, nextFunc) => dispatch(joinQueue(queueId, userId, region, city, nextFunc))
   }

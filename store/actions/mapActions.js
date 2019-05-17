@@ -14,15 +14,18 @@ export const updateMap = (mapData) => {
     }
 }
 
-export const createQueue = (coords, radius=100, hostname, region, city) => {
+export const createQueue = (coords, radius=100, hostname, region, city, name, currentSong) => {
     return (dispatch) => {
+        //this is for now
+        name= "default-queue";
+        currentSong= "insert song";
         //add queuelocation table
         db.collection('queueLocation').doc(region).collection(city).add({
             coords: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude),
             radius: radius,
             numMembers: 1,
-            name: "default-queue",
-            currentSong: ""
+            name: name,
+            currentSong: currentSong
         }).then((res) => {
             db.collection('queueContributors').doc(res.id).collection('users').doc(hostname).set({
                 numVotes: 0
@@ -35,7 +38,7 @@ export const createQueue = (coords, radius=100, hostname, region, city) => {
             })
             dispatch({type: "CREATE_QUEUE", payload: {id: res.id}})
             //optimistically render the queue you just created
-            dispatch({type: "ADD_QUEUE_TO_MAP", payload: {id: res.id, coords: coords, radius: radius}})
+            dispatch({type: "ADD_QUEUE_TO_MAP", payload: {id: res.id, coords: coords, radius: radius, name:name, currentSong: currentSong}})
         }).catch((err) => {
             console.log("collection add failed")
         })
@@ -75,7 +78,9 @@ export const getQueuesByCity = (region="anonymous", city="anonymous") => {
                         longitude: doc.data().coords._long
                     },
                     radius: doc.data().radius,
-                    numMembers: doc.data().numMembers
+                    numMembers: doc.data().numMembers,
+                    currentSong: doc.data().currentSong,
+                    name: doc.data().name
                 })
             })
             dispatch({type: "GET_QUEUES_BY_CITY", payload: positionArry})
