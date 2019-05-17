@@ -109,7 +109,6 @@ class MapScreen extends Component {
     if(this.state.queueClicked){
       let objIndex = this.props.renderRegions.findIndex((obj => obj.id == this.state.currentQueue.id));
       let queueClicked = this.props.renderRegions[objIndex];
-      console.log(JSON.stringify(this.props.renderRegions[objIndex]));
       return(
         <View style={styles.moreQueueInfo}>
           <Text style={styles.moreInfoText}>Queue Name: {queueClicked.name}</Text>
@@ -215,7 +214,7 @@ class MapScreen extends Component {
       <View key={iterator++}>
         <MapView.Marker
           coordinate={point.coords}
-          title={point.id}
+          //title={point.id}
           pinColor={"#4CFF4F"}
           opacity={0.5}
           onPress={() => this.markerClicked(point)}
