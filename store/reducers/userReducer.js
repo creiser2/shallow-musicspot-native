@@ -3,7 +3,17 @@ const defaultState = {
     guestCreationFailed: false,
     user: {
         username: null,
+        //the location of the user, constantly updated
+        //default to san francisco
+        location: {
+            latitude: 37.774,
+            longitude: -122.431
+        },
         uid: null
+    },
+    queue: {
+        isHost: false,
+        id: null
     }
 }
 
@@ -25,6 +35,17 @@ export default userReducer = (state = defaultState, action) => {
             return {
                 ...state, guestCreationFailed: true
             }
+        case "UPDATE_COORDS": 
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    location: {
+                        latitude: action.payload.latitude,
+                        longitude:  action.payload.longitude
+                    }
+                }
+            }
         case "SET_USERNAME":
             return {
                 ...state,
@@ -39,6 +60,14 @@ export default userReducer = (state = defaultState, action) => {
                 user: {
                     ...state.user,
                     uid: action.payload
+                }
+            }
+        case "CREATE_QUEUE":
+            return {
+                ...state,
+                queue: {
+                    isHost: true,
+                    id: action.payload.id
                 }
             }
         //resets all user settings to default

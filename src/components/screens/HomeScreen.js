@@ -10,6 +10,9 @@ import MapScreen from './MapScreen';
 import { addGuest } from '../../../store/actions/userActions';
 import { db } from '../../../FirebaseConfig';
 import firebase from 'firebase';
+import axios from 'axios';
+import {WebView} from 'react-native';
+
 
 
 import {
@@ -23,10 +26,9 @@ import {
 
 class HomeScreen extends Component {
   state = {
-
+    requestURL: null,
+    showSpotifyLogin: false
   }
-
-
 
   componentDidMount = () => {
     // await Font.loadAsync({
@@ -40,14 +42,43 @@ class HomeScreen extends Component {
     this.setState({
       WelcomeClicked: !this.state.WelcomeClicked
     })
-    console.log("WELCOMESTATE: ", this.state.WelcomeClicked)
   }
 
-
+  //Begin Spotify Auth
   spotifyLogoClick = () => {
-    //this._getUsersFromTest();
+    console.log("clicked")
+    axios.get('https://accounts.spotify.com/authorize', {
+    params: {
+        client_id: '57d4048f0a944cc7b74afc0609746fa8',
+        response_type: 'code',
+        redirect_uri: 'localhost:19002',
+        show_dialog: true
+      }
+    })
+    .then(res => {
+      this.setState({
+        requestURL: res.request.responseURL,
+        showSpotifyLogin: true
+      });
+      console.log("RES: ", res.request.responseURL)
+    })
+    .catch(err => console.log("ERR: ", err))
 
-    //this._addUserToTest("Tony", 132)
+    
+    // .then(req => 
+    // axios({
+    //   method: 'post',
+    //   url: `https://accounts.spotify.com/api/token`,
+    //   data: { // in axios data is the body request
+    //     grant_type: 'authorization_code',
+    //     code: req.query.code, // code I'm receiving from https://accounts.spotify.com/authorize
+    //     redirect_uri: 'http://localhost:19002/'
+    //   },
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': 'Basic ' + Buffer.from(`57d4048f0a944cc7b74afc0609746fa8:f1768d96ad574a8784317dca580cd471`).toString('base64') // client id and secret from env
+    //   }
+    // }))
   }
 
   handleGuestClicked = () => {
@@ -59,6 +90,37 @@ class HomeScreen extends Component {
       return <Text style={styles.title}>Error Creating Account</Text>
     } 
     return null
+  }
+
+  renderSpotifyRequestPage = () => {
+    if(this.state.showSpotifyLogin) {
+      console.log("State:", this.state.requestURL);
+      return (
+        <WebView
+          source={{uri: this.state.requestURL}}
+          style={{marginTop: 20}}
+        />
+      )
+    } else {
+        return (
+          <View style={styles.container}>
+                  <View style={styles.topBar}>
+                    <Text style={styles.title}>
+                      QueueMe
+                    </Text>
+                  
+                  <Text style={styles.info}> >>Login or Continue as Guest</Text>
+                </View>
+                <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
+                  <SpotifyLogo spotifyLogoClick={() => this.spotifyLogoClick()}/>
+                  <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.handleGuestClicked()}/>
+                </View>
+                <View style={styles.bottomBar}>
+                    {this.renderAccountCreationFailed()}
+                </View>
+          </View>
+        )
+    }
   }
 
 
@@ -73,22 +135,7 @@ class HomeScreen extends Component {
     //once logged into spotify, conditionally render homescreen components
       return (
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
-          <View style={styles.container}>
-            <View style={styles.topBar}>
-              <Text style={styles.title}>
-                QueueMe
-              </Text>
-            
-            <Text style={styles.info}> >>Login or Continue as Guest</Text>
-          </View>
-          <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#333333'}}>
-            <SpotifyLogo spotifyLogoClick={() => this.spotifyLogoClick()}/>
-            <GuestSvg backgroundColor={HOMESCREEN_BACKGROUND} guestLogoClick={() => this.handleGuestClicked()}/>
-          </View>
-          <View style={styles.bottomBar}>
-              {accountCreationFailed}
-          </View>
-        </View>
+            {this.renderSpotifyRequestPage()}
         </SafeAreaView>
       );
     }

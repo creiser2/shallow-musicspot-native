@@ -8,6 +8,7 @@
     "debug": "open 'rndebugger://set-debugger-loc?host=localhost&port=19001'"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "expo": "^32.0.0",
     "firebase": "^5.9.4",
     "react": "16.5.0",

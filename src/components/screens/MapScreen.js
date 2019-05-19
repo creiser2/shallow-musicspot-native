@@ -2,17 +2,25 @@ import React, { Component } from 'react';
 import { Permissions, Location, MapView, TaskManager } from 'expo';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
+import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
+import QueueDetails from '../customScreens/QueueDetails';
+
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
-import {HOMESCREEN_BACKGROUND} from '../../../constants/colors';
-import { destroyUser } from '../../../store/actions/userActions';
+import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
+import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
+import { destroyUser, updateCoords, joinQueue } from '../../../store/actions/userActions';
+import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
 
 
 import {
-  AppRegistry,
   StyleSheet,
   Text,
+  Button,
   View,
-  StatusBar
+  StatusBar,
+  TouchableOpacity,
+  Image,
+  TextInput,
 } from 'react-native'
 
 
@@ -38,12 +46,23 @@ class MapScreen extends Component {
 
   state = {
     ready: false,
-    longitude: null,
-    latitude: null,
     region: "",
     city: "",
+<<<<<<< HEAD
+  };  
+=======
+    canCreateQueueAtLocation: false,
+    queueClicked: false,
+    currentQueue: {},
+    addingQueueForm: false,
+    insertQueueName: "",
+    insertCurrSong: ""
   };  
 
+>>>>>>> master
+
+  //to remove our watcher, for now we do not want to keep watching location after the component unmounts, but this will change later
+  watcher: { remove: () => void };
 
   //to remove our watcher, for now we do not want to keep watching location after the component unmounts, but this will change later
   watcher: { remove: () => void };
@@ -54,8 +73,9 @@ class MapScreen extends Component {
 
       //get initial location to render in map, this will be later updated by our watcher
       const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync();
-      //get city and state
+      //get city and region/state
       const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
+<<<<<<< HEAD
       this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region, longitude, latitude });
 
       //start watching position
@@ -64,6 +84,29 @@ class MapScreen extends Component {
       //the onNewPosition function will be called for each new position captured after 1 second
       this.watcher = await Location.watchPositionAsync(options, this.onNewPosition);
       
+=======
+
+      //snap map to user location
+      this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
+      
+      //update in redux the user position
+      this.props.updateCoords({latitude, longitude})
+
+      
+      this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
+      
+      //start watching position
+      const options = { enableHighAccuracy: true, timeInterval: 1000, distanceInterval: 1 };
+      
+      //get all cities based on city and region
+      this.props.getQueuesByCity(this.state.region, this.state.city)
+      
+      //the onNewPosition function will be called for each new position captured after 1 second
+      this.watcher = await Location.watchPositionAsync(options, this.onNewPosition); 
+      
+      
+
+>>>>>>> master
     } else {
       alert("We couldn't get your location");
       this.props.destroyUser();
@@ -75,11 +118,24 @@ class MapScreen extends Component {
     this.watcher.remove();
   }
 
+<<<<<<< HEAD
  
+=======
+  markerClicked = (queueInfo) => {
+    this.setState({queueClicked: !this.state.queueClicked});
+    this.setState({currentQueue: queueInfo});
+  }
+
+  joinQueue = () => {
+    this.props.joinQueue(this.state.currentQueue.id,this.props.user.uid, this.state.region, this.state.city, this.props.navigation.navigate('QueueScreen'));
+  }
+
+>>>>>>> master
 
   //called when we physically move on map
   onNewPosition = (position: Position) => {
     //animate the map to track your movements away from mapview
+<<<<<<< HEAD
     this.map.current.animateToCoordinate(position.coords, 1000);
     //set the state of the application
     this.setState({
@@ -105,16 +161,236 @@ class MapScreen extends Component {
   }
 
 
+=======
+    //set coordinates in redux, no action for this as of now
+    this.props.updateCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
+    this.checkQueueCreationAbility(this.props.user.location.latitude, this.props.user.location.longitude)
+  }
+
+
+  //this function checks to see if a user can create a queue at their current location
+  // if they are too close to another queue, it will fail
+  checkQueueCreationAbility = (latitude, longitude) => {
+    //set availability = not null
+    let availability = !!this.props.renderRegions
+
+    //if availability not null (= [] or [1,2,3])
+    if(availability) {
+      this.props.renderRegions.forEach((region) => {
+        const roundedLat = Math.round((region.coords.latitude*1000))/1000
+        const roundedLong = Math.round((region.coords.longitude*1000))/1000
+        const userPropsRoundedLat = Math.round((latitude*1000))/1000
+        const userPropsRoundedLong = Math.round((longitude*1000))/1000
+        if((roundedLat == userPropsRoundedLat) && (roundedLong == userPropsRoundedLong)) {
+          availability = false
+        } 
+      })
+    }
+  
+    if(availability != this.state.canCreateQueueAtLocation) {
+      this.setState({
+        canCreateQueueAtLocation: availability
+      })
+    }
+  }
+
+
+
+>>>>>>> master
   //this could contain bugs, we are setting the redux state of our user to initial state if they click back button
   handleBackButtonClicked = () => {
     this.props.destroyUser();
     this.props.navigation.navigate('HomeScreen');
   }
 
+  //when you scroll away or zoom out this function is called
+  handleMapViewChange = (event) => {
+    //we will save the information about our map in redux
+    //redux setting the state of all of these map attributes
+    const {latitude, longitude, latitudeDelta, longitudeDelta} = event.nativeEvent.region;
+
+    this.props.updateMap({
+      latitude,
+      longitude,
+      latitudeDelta,
+      longitudeDelta
+    })
+  }
+
+  //this is where the queues are physically mapped to our UI from redux
+  renderRelevantQueues = () => {
+    //if there are no redux regions just return null
+    if(!this.props.renderRegions) {
+      return null
+    } 
+    else if(this.props.renderRegions.length == 0) {
+      return null
+    }
+
+
+    //set create queue at location svg color if they are too close to a marker
+    [latitude, longitude] = [this.props.user.location.latitude, this.props.user.location.longitude]    
+    this.checkQueueCreationAbility(latitude, longitude)
+
+    let iterator = 0;
+    //going to need to add other fields to the render regions
+    return this.props.renderRegions.map(point => (
+      <View key={iterator++}>
+        <MapView.Marker
+          coordinate={point.coords}
+          //title={point.id}
+          pinColor={"#4CFF4F"}
+          opacity={0.5}
+          onPress={() => this.markerClicked(point)}
+        />
+        <MapView.Circle
+          center={point.coords}
+          radius={point.radius}
+          strokeWidth = { 1 }
+          strokeColor = { '#1a66ff' }
+          fillColor = { 'rgba(63, 63, 191, 0.26)' }
+        />
+      </View>
+    ))
+  }
+
+
+  //this function decides whether or not to render the little return to home
+  //target svg 
+  renderReturnToCurrentLocationSvg = () => {
+    //basically, if the map redux doesnt match the position redux, we have the button
+    //round to four decimals
+    const roundedLat = Math.round((this.props.reduxMap.latitude*500))/500
+    const roundedLong = Math.round((this.props.reduxMap.longitude*500))/500
+    const userPropsRoundedLat = Math.round((this.props.user.location.latitude*500))/500
+    const userPropsRoundedLong = Math.round((this.props.user.location.longitude*500))/500
+    
+
+    if((roundedLat != userPropsRoundedLat) || (roundedLong != userPropsRoundedLong)) {
+      return (
+        <Text style={styles.returnToHome} onPress={this.snapMapViewToUser} >Return to home</Text>
+      )
+    } 
+    return null
+  }
+
+
+
+   createQueueClicked = async () => {  
+     //if the user cannot create a queue, just return
+    if(!this.state.canCreateQueueAtLocation) {
+      return
+    }
+    //if logged into spotify this is different
+    [latitude, longitude] = [this.props.user.location.latitude, this.props.user.location.longitude]
+    try {
+
+      //NEED TO MAKE THIS ASYNC
+      this.setState({addingQueueForm: true});
+
+      const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
+
+      this.setState({
+        region: strLoc[0].region,
+        city: strLoc[0].city,
+      })
+
+    } catch(error) {
+      console.log("error getting new geocode")
+    }
+  }
+
+  markerClickedPopup = () => {
+    if(this.state.queueClicked){
+      let objIndex = this.props.renderRegions.findIndex((obj => obj.id == this.state.currentQueue.id));
+      let queueClicked = this.props.renderRegions[objIndex];
+      return(
+        <View style={styles.moreQueueInfo}>
+          <Text style={styles.moreInfoText}>Queue Name: {queueClicked.name}</Text>
+          <Text style={styles.moreInfoText}>Current Song: {queueClicked.currentSong}</Text>
+          <View style={styles.rowFlex}>
+            <Image
+              style={styles.groupIcon}
+              source={require('../../../assets/groupIcon.png')}
+            />
+            <Text style={styles.moreInfoText}>{queueClicked.numMembers}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() => this.joinQueue()}
+          >
+            <Text style={styles.joinButtonText}>Join</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }else if(this.state.addingQueueForm){
+      //the name will be from a form and current song somewhere else but this will be changed
+      return (
+        <View>
+          <TextInput
+            style={styles.inputQueueNameAndSong}
+            enablesReturnKeyAutomatically={true}
+            selectTextOnFocus={true}
+            placeholder="Insert Queue Name"
+            onChangeText={(insertQueueName) => this.setState({insertQueueName})}
+            value={this.state.insertQueueName}
+          />
+          <TextInput
+            style={styles.inputQueueNameAndSong}
+            enablesReturnKeyAutomatically={true}
+            selectTextOnFocus={true}
+            onChangeText={(insertCurrSong) => this.setState({insertCurrSong})}
+            placeholder="Insert Current Song"
+            value={this.state.insertCurrSong}
+          />
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() =>  this.submitNewQueueAndClose()}
+          >
+            <Text style={styles.joinButtonText}>Done</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() => this.setState({addingQueueForm:false})}
+          >
+            <Text style={styles.joinButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }else{
+      return (
+          <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
+      );
+    }
+  }
+
+  submitNewQueueAndClose = () => {
+    this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city, this.state.insertQueueName, this.state.insertCurrSong);
+    this.setState({addingQueueForm:false});
+  }
+
+  addQueueForm = () => {
+    if(this.state.addingQueueForm){
+      return (
+        <View>
+          <Text>Adding Queue Info</Text>
+          <Button
+            onPress={() => this.setState({addingQueueForm: false})}
+            title="Close"
+            color="#841584"
+          />
+        </View>
+      )
+    }else{
+      return
+    }
+  }
+
+
 
 
   render() {
-    const { ready, longitude, latitude } = this.state;
+    const { ready } = this.state;
     if(!ready) {
       return (
         <View style={styles.container}>
@@ -134,6 +410,7 @@ class MapScreen extends Component {
                   {this.props.user.uid}
                 </Text>
             </View>
+<<<<<<< HEAD
             <MapView 
                 ref={this.map}
                 style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
@@ -161,9 +438,34 @@ class MapScreen extends Component {
                 fillColor = { 'rgba(63, 63, 191, 0.26)' }
               />
             </MapView>
+=======
+            <View style={styles.mapContainer}>
+              <MapView 
+                  ref={this.map}
+                  style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
+                  initialRegion={{
+                    latitude: this.props.reduxMap.latitude,
+                    longitude: this.props.reduxMap.longitude,
+                    latitudeDelta: this.props.reduxMap.latitudeDelta,
+                    longitudeDelta: this.props.reduxMap.longitudeDelta,
+                  }}
+                  showsCompass={true}
+                  showsScale={true}
+                  showsUserLocation={true}
+                  showsMyLocationButton={true}
+                  onChange={(event) => this.handleMapViewChange(event)}
+                  >             
+                {this.renderRelevantQueues()}
+              </MapView>
+              {/* <View style={styles.createAndCenterView}>
+                <Text style={styles.createQueue} onPress={this.createQueue} >Create</Text>
+              </View> */}
+            </View>
+              {this.markerClickedPopup()}
+>>>>>>> master
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
-                    Back
+                    Back  
                 </Text>
             </View>
           </View>
@@ -173,6 +475,7 @@ class MapScreen extends Component {
   }
 }
 
+<<<<<<< HEAD
 TaskManager.defineTask("HANDLE_REGION", ({ data: { eventType, region }, error }) => {
   if (error) {
     // Error occurred - check `error.message` for more details.
@@ -186,6 +489,8 @@ TaskManager.defineTask("HANDLE_REGION", ({ data: { eventType, region }, error })
 	  return "exited"
 	}
 });
+=======
+>>>>>>> master
 
 //Redux setup
 
@@ -193,8 +498,10 @@ TaskManager.defineTask("HANDLE_REGION", ({ data: { eventType, region }, error })
 const msp = (state) => {
   //since we have multiple reducers, we need to reference our user reducer
   const userState = state.user
+  const mapState = state.map
   return {
-    ...userState
+    ...userState,
+    ...mapState
   }
 }
 
@@ -203,7 +510,12 @@ const mdp = (dispatch) => {
   //since we have multiple reducers, we need to reference our user reducer
   
   return {
-    destroyUser: () => dispatch(destroyUser())
+    destroyUser: () => dispatch(destroyUser()),
+    updateCoords: (coords) => dispatch(updateCoords(coords)),
+    updateMap: (mapData) => dispatch(updateMap(mapData)),
+    createQueue: (coords, radius, hostname, region, city, name, currentSong) => dispatch(createQueue(coords, radius, hostname, region, city, name, currentSong)),
+    getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
+    joinQueue: (queueId, userId, region, city, nextFunc) => dispatch(joinQueue(queueId, userId, region, city, nextFunc))
   }
 }
 
@@ -219,9 +531,25 @@ const styles = StyleSheet.create({
     height: 200,
     backgroundColor: HOMESCREEN_BACKGROUND,
   },
+  mapContainer: {
+    flex: 1
+  },
   map: {
     flex: 1,
-    flexDirection: 'column'
+  },
+  returnToHome: {
+    color: 'white',
+    fontSize: 30,
+    marginLeft: '30%'
+  },
+  createAndCenterView: {
+    position: 'absolute',
+    bottom: 0
+  },
+  createQueue: {
+    color: 'white',
+    fontSize: 30,
+    marginLeft: '50%',
   },
   loadingTxt: {
     textAlign: 'center', // <-- the magic
@@ -241,14 +569,14 @@ const styles = StyleSheet.create({
   bottomBar: {
     height: '10%',
     backgroundColor:  HOMESCREEN_BACKGROUND,
+    flexDirection: 'row',
     borderTopColor: 'grey',
     borderTopWidth: 1,
-    justifyContent: 'center',
   },
   backText: {
     color: 'white',
-    marginLeft: 20,
-    fontSize: 30
+    fontSize: 30,
+    marginLeft: 0
   },
   cityText: {
     color: 'white',
@@ -256,5 +584,45 @@ const styles = StyleSheet.create({
   },
   usernameText: {
     color: 'grey'
+  },
+  moreQueueInfo: {
+    flex: 1,
+    backgroundColor: 'white',
+    height: 10,
+  },
+  joinButton: {
+    backgroundColor: '#1c06e2',
+    alignItems: 'center',
+    padding: 10,
+    margin:10,
+    borderRadius:10,
+  },
+  joinButtonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontWeight:'bold',
+    fontSize: 24
+  },
+  moreInfoText: {
+    textAlign: 'center',
+    fontSize: 22,
+  },
+  rowFlex: {
+    flexDirection: 'row',
+  },
+  groupIcon: {
+    height: 30,
+    width: 30,
+    marginLeft: 40
+  },
+  inputQueueNameAndSong: {
+    height: 50, 
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 5,
+    margin: 5,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
   }
 });
