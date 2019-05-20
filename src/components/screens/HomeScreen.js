@@ -51,7 +51,7 @@ class HomeScreen extends Component {
     params: {
         client_id: '57d4048f0a944cc7b74afc0609746fa8',
         response_type: 'code',
-        redirect_uri: 'localhost:19002',
+        redirect_uri: 'localhost:19003',
         show_dialog: true
       }
     })
@@ -60,7 +60,13 @@ class HomeScreen extends Component {
         requestURL: res.request.responseURL,
         showSpotifyLogin: true
       });
-      console.log("RES: ", res.request.responseURL)
+      console.log("\nhello\n")
+      fetch("https://localhost:9292/api/token", {
+        method: "POST",
+        body: JSON.stringify({
+          code: res
+        })
+      }).then(res => console.log("\nRESPONSE", res.json()));
     })
     .catch(err => console.log("ERR: ", err))
 

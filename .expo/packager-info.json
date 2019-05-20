@@ -1,19 +1,9 @@
 {
-  "packagerPort": 19001,
-  "packagerPid": 18076,
-  "devToolsPort": 19002,
-<<<<<<< HEAD
+  "devToolsPort": 19003,
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": "https://gc-2vf.anonymous.shallow-musicspot.exp.direct",
-  "packagerNgrokUrl": "https://packager.gc-2vf.anonymous.shallow-musicspot.exp.direct",
-  "ngrokPid": 54111,
-  "webpackServerPort": null
-=======
-  "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://gc-2vf.anonymous.shallow-musicspot.exp.direct",
-  "packagerNgrokUrl": "https://packager.gc-2vf.anonymous.shallow-musicspot.exp.direct",
-  "ngrokPid": 18096
->>>>>>> master
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }

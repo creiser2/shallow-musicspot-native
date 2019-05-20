@@ -48,9 +48,6 @@ class MapScreen extends Component {
     ready: false,
     region: "",
     city: "",
-<<<<<<< HEAD
-  };  
-=======
     canCreateQueueAtLocation: false,
     queueClicked: false,
     currentQueue: {},
@@ -59,13 +56,11 @@ class MapScreen extends Component {
     insertCurrSong: ""
   };  
 
->>>>>>> master
 
   //to remove our watcher, for now we do not want to keep watching location after the component unmounts, but this will change later
   watcher: { remove: () => void };
 
-  //to remove our watcher, for now we do not want to keep watching location after the component unmounts, but this will change later
-  watcher: { remove: () => void };
+
 
   async componentDidMount() {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -75,16 +70,6 @@ class MapScreen extends Component {
       const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync();
       //get city and region/state
       const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
-<<<<<<< HEAD
-      this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region, longitude, latitude });
-
-      //start watching position
-      const options = { enableHighAccuracy: true, timeInterval: 1000, distanceInterval: 1 };
-
-      //the onNewPosition function will be called for each new position captured after 1 second
-      this.watcher = await Location.watchPositionAsync(options, this.onNewPosition);
-      
-=======
 
       //snap map to user location
       this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
@@ -106,7 +91,6 @@ class MapScreen extends Component {
       
       
 
->>>>>>> master
     } else {
       alert("We couldn't get your location");
       this.props.destroyUser();
@@ -118,9 +102,6 @@ class MapScreen extends Component {
     this.watcher.remove();
   }
 
-<<<<<<< HEAD
- 
-=======
   markerClicked = (queueInfo) => {
     this.setState({queueClicked: !this.state.queueClicked});
     this.setState({currentQueue: queueInfo});
@@ -130,38 +111,10 @@ class MapScreen extends Component {
     this.props.joinQueue(this.state.currentQueue.id,this.props.user.uid, this.state.region, this.state.city, this.props.navigation.navigate('QueueScreen'));
   }
 
->>>>>>> master
 
   //called when we physically move on map
   onNewPosition = (position: Position) => {
     //animate the map to track your movements away from mapview
-<<<<<<< HEAD
-    this.map.current.animateToCoordinate(position.coords, 1000);
-    //set the state of the application
-    this.setState({
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude
-    })
-
-    //begin geofencing based on current regions
-    //These regions will be stored in redux, and we will fetch them with an action such as "GET_REGIONS"
-    //For now we will apply this to our test region
-    //we are basically checking to see if our location is in one of the above regions
-    const regions = [
-      {
-        latitude: 45.886834, 
-        longitude: 5.124,
-        radius: 100,
-        notifyOnEnter: true,
-        notifyOnExit: true
-      }
-    ]
-    Location.startGeofencingAsync("HANDLE_REGION", regions)
-    
-  }
-
-
-=======
     //set coordinates in redux, no action for this as of now
     this.props.updateCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
     this.checkQueueCreationAbility(this.props.user.location.latitude, this.props.user.location.longitude)
@@ -196,7 +149,6 @@ class MapScreen extends Component {
 
 
 
->>>>>>> master
   //this could contain bugs, we are setting the redux state of our user to initial state if they click back button
   handleBackButtonClicked = () => {
     this.props.destroyUser();
@@ -410,35 +362,6 @@ class MapScreen extends Component {
                   {this.props.user.uid}
                 </Text>
             </View>
-<<<<<<< HEAD
-            <MapView 
-                ref={this.map}
-                style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
-                initialRegion={{
-                latitude,
-                longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.001,
-              }}
-              showsScale={true}
-              showsUserLocation={true}
-            > 
-              <MapView.Marker
-                coordinate={{latitude: 45.886834,  longitude: longitude}}
-                title={this.props.isGuest.toString()}
-                description={"great job"}
-                opacity={0.5}
-                pinColor={"#4CFF4F"}
-              />
-              <MapView.Circle
-                center = {{latitude: 45.886834,  longitude: longitude} }
-                radius = { 100 }
-                strokeWidth = { 1 }
-                strokeColor = { '#1a66ff' }
-                fillColor = { 'rgba(63, 63, 191, 0.26)' }
-              />
-            </MapView>
-=======
             <View style={styles.mapContainer}>
               <MapView 
                   ref={this.map}
@@ -462,7 +385,6 @@ class MapScreen extends Component {
               </View> */}
             </View>
               {this.markerClickedPopup()}
->>>>>>> master
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
                     Back  
@@ -475,22 +397,6 @@ class MapScreen extends Component {
   }
 }
 
-<<<<<<< HEAD
-TaskManager.defineTask("HANDLE_REGION", ({ data: { eventType, region }, error }) => {
-  if (error) {
-    // Error occurred - check `error.message` for more details.
-    return;
-  }
-	if (eventType === Location.GeofencingEventType.Enter) {
-    console.log("entered")
-    return "entered"
-	} else if (eventType === Location.GeofencingEventType.Exit) {
-    console.log("exited")
-	  return "exited"
-	}
-});
-=======
->>>>>>> master
 
 //Redux setup
 
