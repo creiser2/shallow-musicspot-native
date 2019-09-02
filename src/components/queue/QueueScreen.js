@@ -24,6 +24,12 @@ export default class QueueScreen extends Component {
                     >
                         <Text style={styles.joinButtonText}>Back</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.joinButton}
+                        onPress={() => this.props.navigation.navigate('QueueSearch')}
+                    >
+                        <Text style={styles.joinButtonText}>Queue Search</Text>
+                    </TouchableOpacity>
                 </View> 
         );
     }

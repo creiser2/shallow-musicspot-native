@@ -19,7 +19,7 @@ import {
 } from 'react-native'
 
 
-class Settings extends Component {
+class QueueSearch extends Component {
   state = {
 
   }
@@ -31,7 +31,7 @@ class Settings extends Component {
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
           <View style={styles.container}>
             <View style={styles.topBar}>
-              <Text style={styles.title}>Settings</Text>
+              <Text style={styles.title}>Queue Search</Text>
             </View>
           </View>
         </SafeAreaView>
@@ -46,7 +46,6 @@ const msp = (state) => {
   let userState = state.user
   return {
     isGuest: userState.isGuest,
-    guestCreationFailed: userState.guestCreationFailed
   }
 }
 
@@ -57,7 +56,7 @@ const mdp = (dispatch) => {
   }
 }
 
-export default connect(msp, mdp)(Settings)
+export default connect(msp, mdp)(QueueSearch)
 
 const styles = StyleSheet.create({
   container: {
