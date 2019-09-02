@@ -14,7 +14,7 @@ import firebase from 'firebase';
 
 import {
   AppRegistry,
-  StyleSheet,
+  StyleSheet, 
   TouchableOpacity,
   Text,
   View,
