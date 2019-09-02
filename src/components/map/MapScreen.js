@@ -356,6 +356,11 @@ class MapScreen extends Component {
                 <Text style={styles.cityText}>
                     {this.state.city}, {this.state.region}
                 </Text>
+                  <TouchableOpacity
+                    style={styles.joinButton}
+                    onPress={() => this.props.navigation.navigate('Settings')}>
+                      <Text style={styles.joinButtonText}>Settings</Text>
+                  </TouchableOpacity>
                 <Text style={styles.usernameText}>
                   {this.props.user.uid}
                 </Text>
