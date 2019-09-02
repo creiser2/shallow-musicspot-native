@@ -6,7 +6,7 @@ import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
 import SpotifyLogo from '../../../assets/svg/SpotifyLogo';
 import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
-import MapScreen from './MapScreen';
+import MapScreen from '../map/MapScreen';
 import { addGuest } from '../../../store/actions/userActions';
 import { db } from '../../../FirebaseConfig';
 import firebase from 'firebase';
