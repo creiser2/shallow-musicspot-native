@@ -1,6 +1,7 @@
 import { db } from '../../FirebaseConfig';
 import firebase from 'firebase';
 import 'firebase/firestore';
+import firebaseSession from '../../src/api/FirebaseSession';
 
 /*
     -This action is tied to all updates on the mapview
