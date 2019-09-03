@@ -28,6 +28,11 @@ class Settings extends Component {
           <View style={styles.container}>
             <View style={styles.topBar}>
               <Text style={styles.title}>Settings</Text>
+              <TouchableOpacity
+                style={styles.joinButton}
+                onPress={() => this.props.navigation.navigate('MapScreen')}>
+                    <Text style={styles.joinButtonText}>Back to Map Screen</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </SafeAreaView>
