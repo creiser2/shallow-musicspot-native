@@ -44,10 +44,8 @@ class Settings extends Component {
 
 //mapStateToProps
 const msp = (state) => {
-  let userState = state.user
   return {
-    isGuest: userState.isGuest,
-    guestCreationFailed: userState.guestCreationFailed
+
   }
 }
 
