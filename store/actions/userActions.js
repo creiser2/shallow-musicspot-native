@@ -1,5 +1,4 @@
-import { db } from '../../FirebaseConfig';
-import firebase from 'firebase';
+
 import { 
     loginGuestUser,
     addUserToQueue,
@@ -7,9 +6,9 @@ import {
     updateQueueNumMembers
 } from '../../src/api/FirebaseSession'
 
+//dispatch will send action to reducer
+//we can therefore halt the dispatch until our db call
 export const addGuest = () => {
-    //dispatch will send action to reducer
-    //we can therefore halt the dispatch until our db call
     return (dispatch) => {
         loginGuestUser().then((res) => {
             let uid = res.user.uid
@@ -20,9 +19,8 @@ export const addGuest = () => {
     }
 };
 
-
+//maybe? do a new dispatch to update important regions on this
 export const updateCoords = (coords) => {
-    //maybe? do a new dispatch to update important regions on this
     return (dispatch) => {
         dispatch({type: "UPDATE_COORDS", payload: coords})
     }
@@ -33,17 +31,17 @@ export const joinQueue = (queueId, userId, region, city, nextFunc) => {
     return (dispatch) => {
 
         addUserToQueue(queueId, userId, region, city).then((res) => {
+            console.log("Join Queue success")
             dispatch({type: "JOIN_QUEUE", payload: queueId})
         }).catch((err) => {
-            console.log("Join/add user failed.");
+            console.log(err);
         })
 
     }
 }
 
-
+//firebase call to remove anonymous user?
 export const destroyUser = () => {
-    //firebase call to remove anonymous user?
     return(dispatch) => {
         dispatch({type: 'DESTROY_USER'})
     }
