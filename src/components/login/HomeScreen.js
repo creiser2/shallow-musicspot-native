@@ -8,9 +8,6 @@ import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from '../map/MapScreen';
 import { addGuest } from '../../../store/actions/userActions';
-import { db } from '../../../FirebaseConfig';
-import firebase from 'firebase';
-import spotifySession from '../../api/SpotifySession';
 
 import {
   AppRegistry,

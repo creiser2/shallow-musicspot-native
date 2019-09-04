@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../../constants/api/spotify';
 import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
-import { db } from '../../../FirebaseConfig';
-import firebase from 'firebase';
 
 
 import {
