@@ -31,10 +31,9 @@ export const joinQueue = (queueId, userId, region, city, nextFunc) => {
     return (dispatch) => {
 
         addUserToQueue(queueId, userId, region, city).then((res) => {
-            console.log("Join Queue success")
             dispatch({type: "JOIN_QUEUE", payload: queueId})
         }).catch((err) => {
-            console.log(err);
+            
         })
 
     }
