@@ -358,7 +358,6 @@ class MapScreen extends Component {
                     {this.state.city}, {this.state.region}
                 </Text>
                   <TouchableOpacity
-                    class="float-right"
                     style={styles.settingsButton}
                     onPress={() => this.props.navigation.navigate('Settings')}>
                       <Text style={styles.joinButtonText}>Settings</Text>
