@@ -40,10 +40,10 @@ export const deleteQueue = (queueId, region, city) => {
 
 export const getQueuesByCity = (region="anonymous", city="anonymous") => {
     return (dispatch) => {
-        listenForQueuesInRegion(region, city).then((res) => {
-            dispatch({type: "GET_QUEUES_BY_CITY", payload: res})
-        }).catch((err) => {
-
-        })
+        listenForQueuesInRegion(region, city).onSnapshot(function(querySnapshot) {
+            payload = decodeLocationQueues(querySnapshot);
+            dispatch({type: "GET_QUEUES_BY_CITY", payload: payload})
+        }, function(error) {
+            
     }
 }

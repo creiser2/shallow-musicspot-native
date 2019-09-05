@@ -106,24 +106,23 @@ const deleteQueueContributors = (queueId) => {
 
 export const listenForQueuesInRegion = (region, city) => {
     return new Promise(function(resolve, reject) {
-        db.collection('queueLocation').doc(region).collection(city).onSnapshot(function(querySnapshot) {
-            let positionArry = []
-            querySnapshot.forEach((doc) => {
-                positionArry.push({
-                    id: doc.id,
-                    coords: {
-                        latitude: doc.data().coords._lat,
-                        longitude: doc.data().coords._long
-                    },
-                    radius: doc.data().radius,
-                    numMembers: doc.data().numMembers,
-                    currentSong: doc.data().currentSong,
-                    name: doc.data().name
-                })
-            })
-            resolve(positionArry)
-        }, function(error) {
-            reject(Error("Listen for queue locations failed"))
-        });
+    return db.collection('queueLocation').doc(region).collection(city)
+}
+
+export const decodeLocationQueues = (querySnapshot) => {
+    let positionArry = []
+    querySnapshot.forEach((doc) => {
+        positionArry.push({
+            id: doc.id,
+            coords: {
+                latitude: doc.data().coords._lat,
+                longitude: doc.data().coords._long
+            },
+            radius: doc.data().radius,
+            numMembers: doc.data().numMembers,
+            currentSong: doc.data().currentSong,
+            name: doc.data().name
+        })
     })
+    return positionArry;
 }
