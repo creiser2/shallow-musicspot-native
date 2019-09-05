@@ -1,4 +1,5 @@
 
+import { showInternetWarning } from '../../src/components/common/CustomToast'
 import { 
     startQueue,
     destroyQueue,
@@ -23,7 +24,7 @@ export const createQueue = (coords, radius=100, hostname, region, city, name, cu
             dispatch({type: "CREATE_QUEUE", payload: {id: res.id}})
             dispatch({type: "ADD_QUEUE_TO_MAP", payload: {id: res.id, coords: coords, radius: radius, name:name, currentSong: currentSong}})
         }).catch((err) => {
-            
+            showInternetWarning()
         })
     }
 }
@@ -33,7 +34,7 @@ export const deleteQueue = (queueId, region, city) => {
         destroyQueue().then((res) => {
             dispatch({type: "DELETE_QUEUE", payload: {id: queueId}})
         }).catch((err) => {
-
+            showInternetWarning()
         })
     }
 }
@@ -43,7 +44,7 @@ export const getQueuesByCity = (region="anonymous", city="anonymous") => {
         listenForQueuesInRegion(region, city).then((res) => {
             dispatch({type: "GET_QUEUES_BY_CITY", payload: res})
         }).catch((err) => {
-
+            showInternetWarning()
         })
     }
 }

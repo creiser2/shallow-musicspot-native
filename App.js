@@ -16,6 +16,7 @@ import rootReducer from './store/reducers/rootReducer';
 //when someone figures out how to configure these devtools
 import { composeWithDevTools } from 'redux-devtools-extension';
 import ReduxThunk from 'redux-thunk';
+import { Root } from 'native-base';
 
 /** What is redux?
  * Store - holds our state - THERE IS ONLY ONE STATE
@@ -39,7 +40,9 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <AppNavigator/>
+        <Root>
+          <AppNavigator/>
+        </Root>
       </Provider>
     );
   }
