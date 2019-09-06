@@ -358,7 +358,7 @@ class MapScreen extends Component {
                     {this.state.city}, {this.state.region}
                 </Text>
                   <TouchableOpacity
-                    style={styles.settingsButton}
+                    style={styles.joinButton}
                     onPress={() => this.props.navigation.navigate('Settings')}>
                       <Text style={styles.joinButtonText}>Settings</Text>
                   </TouchableOpacity>
@@ -507,19 +507,11 @@ const styles = StyleSheet.create({
     margin:10,
     borderRadius:10,
   },
-  settingsButton: {
-    backgroundColor: '#1c06e2',
-    alignItems: 'center',
-    height:15,
-    margin: 5,
-    borderRadius:10,
-    alignSelf:"flex-end",
-  },
   joinButtonText: {
     textAlign: 'center',
     color: 'white',
     fontWeight:'bold',
-    fontSize: 12
+    fontSize: 24
   },
   moreInfoText: {
     textAlign: 'center',
