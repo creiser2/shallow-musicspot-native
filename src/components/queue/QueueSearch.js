@@ -27,6 +27,11 @@ class QueueSearch extends Component {
           <View style={styles.container}>
             <View style={styles.topBar}>
               <Text style={styles.title}>Queue Search</Text>
+              <TouchableOpacity
+                style={styles.joinButton}
+                onPress={() => this.props.navigation.navigate('QueueScreen')}>
+                    <Text style={styles.joinButtonText}>Back to Queue Search</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </SafeAreaView>
@@ -38,9 +43,7 @@ class QueueSearch extends Component {
 
 //mapStateToProps
 const msp = (state) => {
-  let userState = state.user
   return {
-    isGuest: userState.isGuest,
   }
 }
 

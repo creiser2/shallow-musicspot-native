@@ -28,6 +28,11 @@ class Settings extends Component {
           <View style={styles.container}>
             <View style={styles.topBar}>
               <Text style={styles.title}>Settings</Text>
+              <TouchableOpacity
+                style={styles.joinButton}
+                onPress={() => this.props.navigation.navigate('MapScreen')}>
+                    <Text style={styles.joinButtonText}>Back to Map Screen</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </SafeAreaView>
@@ -39,10 +44,7 @@ class Settings extends Component {
 
 //mapStateToProps
 const msp = (state) => {
-  let userState = state.user
   return {
-    isGuest: userState.isGuest,
-    guestCreationFailed: userState.guestCreationFailed
   }
 }
 
