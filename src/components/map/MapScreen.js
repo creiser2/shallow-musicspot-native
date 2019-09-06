@@ -3,7 +3,7 @@ import { Permissions, Location, MapView } from 'expo';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
-import QueueDetails from '../queue/QueueDetails';
+import QueueDetail from './QueueDetail';
 import PlaybackView from '../common/PlaybackView';
 
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
