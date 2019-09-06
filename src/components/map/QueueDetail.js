@@ -13,7 +13,7 @@ import {
     TextInput
   } from 'react-native'
 
-export default class QueueDetails extends Component {
+export default class QueueDetail extends Component {
     clickedJoin = () => {
         console.log("joined clicked");
     }
