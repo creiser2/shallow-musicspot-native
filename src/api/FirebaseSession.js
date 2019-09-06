@@ -105,7 +105,6 @@ const deleteQueueContributors = (queueId) => {
 }
 
 export const listenForQueuesInRegion = (region, city) => {
-    return new Promise(function(resolve, reject) {
     return db.collection('queueLocation').doc(region).collection(city)
 }
 
