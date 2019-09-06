@@ -112,7 +112,6 @@ const deleteQueueContributors = (queueId) => {
 
 export const locationsInCity = (region, city) => {
     return queueLocations.where("region", "==", region).where("city", "==", city)
-    //.whereEqualTo("region", region).whereEqualTo("city", city)
 }
 
 export const decodeLocationQueues = (querySnapshot) => {
