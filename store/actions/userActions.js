@@ -29,13 +29,11 @@ export const updateCoords = (coords) => {
 //user id gets added to the user list, and changes the page to the new queue page
 export const joinQueue = (queueId, userId, region, city, nextFunc) => {
     return (dispatch) => {
-
         addUserToQueue(queueId, userId, region, city).then((res) => {
             dispatch({type: "JOIN_QUEUE", payload: queueId})
         }).catch((err) => {
-            
-        })
 
+        })
     }
 }
 
