@@ -1,4 +1,5 @@
 
+import { showInternetWarning } from '../../src/components/common/CustomToast'
 import { 
     loginGuestUser,
     addUserToQueue,
@@ -15,6 +16,7 @@ export const addGuest = () => {
             dispatch({type: 'MAKE_GUEST', payload: uid})
         }).catch((err) => {
             dispatch({type: 'MAKE_GUEST_ERROR'})
+            showInternetWarning()
         })
     }
 };
@@ -32,7 +34,7 @@ export const joinQueue = (queueId, userId, region, city, nextFunc) => {
         addUserToQueue(queueId, userId, region, city).then((res) => {
             dispatch({type: "JOIN_QUEUE", payload: queueId})
         }).catch((err) => {
-
+            showInternetWarning()
         })
     }
 }
