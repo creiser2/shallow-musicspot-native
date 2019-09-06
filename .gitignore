@@ -1,3 +1,5 @@
 node_modules
 FirebaseConfig
 spotify_secrets
+.expo/settings.json
+.expo/packager-info.json

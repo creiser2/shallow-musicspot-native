@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+//import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
-import { AUTHORIZE_SPOTIFY, HEADERS } from '../../../constants/api/spotify';
 import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
-
 
 import {
   AppRegistry,
@@ -14,7 +12,7 @@ import {
 } from 'react-native'
 
 
-class QueueSearch extends Component {
+class PlaybackView extends Component {
   state = {
 
   }
@@ -26,32 +24,13 @@ class QueueSearch extends Component {
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
           <View style={styles.container}>
             <View style={styles.topBar}>
-              <Text style={styles.title}>Queue Search</Text>
+              <Text style={styles.title}>PlaybackView</Text>
             </View>
           </View>
         </SafeAreaView>
       );
     }
   }
-
-//Redux setup
-
-//mapStateToProps
-const msp = (state) => {
-  let userState = state.user
-  return {
-    isGuest: userState.isGuest,
-  }
-}
-
-//mapDispatchToProps
-const mdp = (dispatch) => { 
-  return {
-
-  }
-}
-
-export default connect(msp, mdp)(QueueSearch)
 
 const styles = StyleSheet.create({
   container: {
