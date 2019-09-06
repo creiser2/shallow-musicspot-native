@@ -104,7 +104,7 @@ const deleteQueueContributors = (queueId) => {
     return db.collection('queueContributors').doc(queueId).delete()
 }
 
-export const listenForQueuesInRegion = (region, city) => {
+export const locationsInCity = (region, city) => {
     return db.collection('queueLocation').doc(region).collection(city)
 }
 
