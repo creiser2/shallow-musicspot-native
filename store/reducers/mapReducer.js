@@ -11,6 +11,7 @@ Storing this information will do a couple things for us
 */
 
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../constants/map-constants';
+
 const defaultState = {
     // this.map in frontend will somewhat mirror this 
     //default to san francisco
@@ -41,6 +42,14 @@ export default mapReducer = (state = defaultState, action) => {
                     longitudeDelta: action.payload.longitudeDelta
                 }
             }
+        case "UPDATE_GEOCODE":
+            console.log("trying to update city and region")
+            return {
+                ...state,
+                ready: true,
+                city: action.payload.city,
+                region: action.payload.region,
+            }
         case "DESTROY_REDUX_MAP":
             return {
                 defaultState
@@ -52,7 +61,6 @@ export default mapReducer = (state = defaultState, action) => {
             }
         case "ADD_QUEUE_TO_MAP":
             let tempState = state.renderRegions ? state.renderRegions : []
-            console.log("Name: "+ action.payload.name+ " Curr Song:" +action.payload.currentSong);
             tempState.push({
                 id: action.payload.id,
                 coords: {

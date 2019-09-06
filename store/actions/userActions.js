@@ -5,6 +5,11 @@ import {
     getQueueLocationDoc,
     updateQueueNumMembers
 } from '../../src/api/FirebaseSession'
+import {
+    watcherWithHandler,
+    getCurrentLocation,
+    getGeoCode,
+} from '../../src/api/LocationSession'
 
 //dispatch will send action to reducer
 //we can therefore halt the dispatch until our db call
@@ -20,9 +25,15 @@ export const addGuest = () => {
 };
 
 //maybe? do a new dispatch to update important regions on this
-export const updateCoords = (coords) => {
+export const updateCoords = (payload) => {
     return (dispatch) => {
-        dispatch({type: "UPDATE_COORDS", payload: coords})
+        dispatch({type: "UPDATE_COORDS", payload: payload})
+    }
+}
+
+export const updateGeoCode = (payload) => {
+    return (dispatch) => {
+        dispatch({type: "UPDATE_GEOCODE", payload: payload})
     }
 }
 
@@ -43,3 +54,27 @@ export const destroyUser = () => {
         dispatch({type: 'DESTROY_USER'})
     }
 };
+
+export const beginWatcher = () => {
+    watcherWithHandler(onNewPosition)
+}
+
+export const endWatcher = () => {
+    
+}
+
+const onNewPosition = async (position: Position) => {
+    const strLoc = await getGeoCode(position.coords.longitude, position.coords.latitude)
+    console.log("trying to call dispatch funcs")
+    updateCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
+    //updateGeoCode({city: strLoc[0].city, region: strLoc[0].region})
+    //this.checkQueueCreationAbility(this.props.user.location.latitude, this.props.user.location.longitude)
+  }
+
+export const getPositionOnce = async () => {
+    const location = await getCurrentLocation()
+    const strLoc = await getGeoCode(location.coords.longitude, location.coords.latitude)
+    updateCoords({latitude: location.coords.latitude, longitude: location.coords.longitude})
+    updateGeoCode({city: strLoc[0].city, region: strLoc[0].region})
+    console.log("trying to call dispatch funcs")
+}

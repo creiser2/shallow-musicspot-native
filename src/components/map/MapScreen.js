@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Permissions, Location, MapView } from 'expo';
+import { Permissions, MapView } from 'expo';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
@@ -9,7 +9,7 @@ import PlaybackView from '../common/PlaybackView';
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
-import { destroyUser, updateCoords, joinQueue } from '../../../store/actions/userActions';
+import { destroyUser, updateCoords, joinQueue, beginWatcher, getPositionOnce } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
 import locationSession from '../../api/LocationSession';
 
@@ -38,9 +38,6 @@ type Position = {
     timestamp: number,
 };
 
-      
-
-
 class MapScreen extends Component {
   //this provides us with a reference to our mapview object in code
   map = React.createRef();
@@ -57,9 +54,49 @@ class MapScreen extends Component {
     insertCurrSong: ""
   };  
 
+  //to remove our watcher, for now we do not want to keep watching location after the component unmounts, but this will change later
+  //watcher: { remove: () => void };
+
   async componentDidMount() {
-    const strLoc =  await Location.reverseGeocodeAsync({ latitude: this.props.user.location.latitude, longitude: this.props.user.location.longitude })
-    this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status === 'granted') {
+
+      //get initial location to render in map, this will be later updated by our watcher
+      //const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync();
+      //get city and region/state
+      //const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
+
+      //snap map to user location
+      //this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
+      
+      //update in redux the user position
+      //this.props.updateCoords({latitude, longitude})
+
+      this.setState({ ready: true, city: "f", region: "f" });
+
+      //beginWatcher()
+      getPositionOnce()
+      
+      //start watching position
+      
+      
+      //get all cities based on city and region
+      //this.props.getQueuesByCity(this.state.region, this.state.city)
+      
+      //the onNewPosition function will be called for each new position captured after 1 second
+      //this.watcher = await Location.watchPositionAsync(options, this.onNewPosition); 
+      
+      
+
+    } else {
+      alert("We couldn't get your location");
+      this.props.destroyUser();
+    }
+  }
+
+  //destroy watch position
+  componentWillUnmount() {
+    this.watcher.remove();
   }
 
   markerClicked = (queueInfo) => {
