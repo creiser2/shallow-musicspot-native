@@ -2,16 +2,20 @@ import { db } from '../../FirebaseConfig';
 import firebase from 'firebase';
 import 'firebase/firestore';
 
+const queueLocations = db.collection('queueLocation')
+
+const queueContributors = db.collection('queueContributors')
+
 export const loginGuestUser = () => {
     return firebase.auth().signInAnonymously();
 }
 
-export const addUserToQueue = (queueId, userId, region, city) => {
+export const addUserToQueue = (queueId, userId) => {
     return new Promise(function(resolve, reject) {
         addUserToContributors(queueId, userId).then((res) => {
-            getQueueLocationDoc(region, city, queueId).then((res) => {
+            getQueueLocationDoc(queueId).then((res) => {
                 newNumMembers = res.data().numMembers +1;
-                updateQueueNumMembers(region, city, queueId, newNumMembers).then((res) => {
+                updateQueueNumMembers(queueId, newNumMembers).then((res) => {
                     resolve("User joined queue successfully");
                 }).catch((err) => {
                     reject(Error("Update numMembers failed"))
@@ -26,17 +30,17 @@ export const addUserToQueue = (queueId, userId, region, city) => {
 }
 
 const addUserToContributors = (queueId, userId) => {
-    return db.collection('queueContributors').doc(queueId).collection('users').add({
+    return queueContributors.doc(queueId).collection('users').add({
         userId
     })
 }
 
-const getQueueLocationDoc = (region, city, queueId) => {
-    return db.collection('queueLocation').doc(region).collection(city).doc(queueId).get()
+const getQueueLocationDoc = (queueId) => {
+    return queueLocations.doc(queueId).get()
 }
 
-const updateQueueNumMembers = (region, city, queueId, newNumMembers) => {
-    return db.collection('queueLocation').doc(region).collection(city).doc(queueId).update({
+const updateQueueNumMembers = (queueId, newNumMembers) => {
+    return queueLocations.doc(queueId).update({
         numMembers: newNumMembers,
     })
 }
@@ -61,30 +65,32 @@ export const startQueue = (coords, radius=100, hostname, region, city, name) => 
 }
 
 const postQueue = (coords, radius=100, region, city, name) => {
-    return db.collection('queueLocation').doc(region).collection(city).add({
+    return queueLocations.add({
         coords: new firebase.firestore.GeoPoint(coords.latitude, coords.longitude),
         radius: radius,
         numMembers: 1,
         name: name,
         currentSong: 'empty',
+        region: region,
+        city: city,
     })
 }
 
 const postQueueContributors = (hostname, queueId) => {
-    return db.collection('queueContributors').doc(queueId).collection('users').doc(hostname).set({
+    return queueContributors.doc(queueId).collection('users').doc(hostname).set({
         numVotes: 0
     })
 }
 
 export const updateHost = (hostname, queueId) => {
-    return db.collection('queueContributors').doc(queueId).set({
+    return queueContributors.doc(queueId).set({
         hostId: hostname
     })
 }
 
-export const destroyQueue = (region, city, queueId) => {
+export const destroyQueue = (queueId) => {
     return new Promise(function(resolve, reject) {
-        deleteQueueLocation(region, city, queueId).then((res) => {
+        deleteQueueLocation(queueId).then((res) => {
             deleteQueueContributors(queueId).then((res) => {
                 resolve("Destroyed queue successfully")
             }).catch((err) => {
@@ -96,16 +102,17 @@ export const destroyQueue = (region, city, queueId) => {
     })
 }
 
-const deleteQueueLocation = (region, city, queueId) => {
-    return db.collection('queueLocation').doc(region).collection(city).doc(queueId).delete()
+const deleteQueueLocation = (queueId) => {
+    return queueLocations.doc(queueId).delete()
 }
 
 const deleteQueueContributors = (queueId) => {
-    return db.collection('queueContributors').doc(queueId).delete()
+    return queueContributors.doc(queueId).delete()
 }
 
 export const locationsInCity = (region, city) => {
-    return db.collection('queueLocation').doc(region).collection(city)
+    return queueLocations.where("region", "==", region).where("city", "==", city)
+    //.whereEqualTo("region", region).whereEqualTo("city", city)
 }
 
 export const decodeLocationQueues = (querySnapshot) => {
@@ -120,7 +127,9 @@ export const decodeLocationQueues = (querySnapshot) => {
             radius: doc.data().radius,
             numMembers: doc.data().numMembers,
             currentSong: doc.data().currentSong,
-            name: doc.data().name
+            name: doc.data().name,
+            region: doc.data().region,
+            city: doc.data().city,
         })
     })
     return positionArry;

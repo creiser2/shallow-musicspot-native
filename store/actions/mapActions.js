@@ -29,9 +29,9 @@ export const createQueue = (coords, radius=100, hostname, region, city, name, cu
     }
 }
 
-export const deleteQueue = (queueId, region, city) => {
+export const deleteQueue = (queueId) => {
     return (dispatch) => {
-        destroyQueue().then((res) => {
+        destroyQueue(queueId).then((res) => {
             dispatch({type: "DELETE_QUEUE", payload: {id: queueId}})
         }).catch((err) => {
 

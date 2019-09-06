@@ -107,7 +107,7 @@ class MapScreen extends Component {
   }
 
   joinQueue = () => {
-    this.props.joinQueue(this.state.currentQueue.id,this.props.user.uid, this.state.region, this.state.city, this.props.navigation.navigate('QueueScreen'));
+    this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
   }
 
 
