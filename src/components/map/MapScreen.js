@@ -57,48 +57,9 @@ class MapScreen extends Component {
     insertCurrSong: ""
   };  
 
-
-  //to remove our watcher, for now we do not want to keep watching location after the component unmounts, but this will change later
-  watcher: { remove: () => void };
-
   async componentDidMount() {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status === 'granted') {
-
-      //get initial location to render in map, this will be later updated by our watcher
-      const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync();
-      //get city and region/state
-      const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
-
-      //snap map to user location
-      this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
-      
-      //update in redux the user position
-      this.props.updateCoords({latitude, longitude})
-
-      
-      this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
-      
-      //start watching position
-      const options = { enableHighAccuracy: true, timeInterval: 1000, distanceInterval: 1 };
-      
-      //get all cities based on city and region
-      this.props.getQueuesByCity(this.state.region, this.state.city)
-      
-      //the onNewPosition function will be called for each new position captured after 1 second
-      this.watcher = await Location.watchPositionAsync(options, this.onNewPosition); 
-      
-      
-
-    } else {
-      alert("We couldn't get your location");
-      this.props.destroyUser();
-    }
-  }
-
-  //destroy watch position
-  componentWillUnmount() {
-    this.watcher.remove();
+    const strLoc =  await Location.reverseGeocodeAsync({ latitude: this.props.user.location.latitude, longitude: this.props.user.location.longitude })
+    this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
   }
 
   markerClicked = (queueInfo) => {
@@ -108,15 +69,6 @@ class MapScreen extends Component {
 
   joinQueue = () => {
     this.props.joinQueue(this.state.currentQueue.id,this.props.user.uid, this.state.region, this.state.city, this.props.navigation.navigate('QueueScreen'));
-  }
-
-
-  //called when we physically move on map
-  onNewPosition = (position: Position) => {
-    //animate the map to track your movements away from mapview
-    //set coordinates in redux, no action for this as of now
-    this.props.updateCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
-    this.checkQueueCreationAbility(this.props.user.location.latitude, this.props.user.location.longitude)
   }
 
 
@@ -274,7 +226,7 @@ class MapScreen extends Component {
           </TouchableOpacity>
         </View>
       )
-    }else if(this.state.addingQueueForm){
+    } else if(this.state.addingQueueForm){
       //the name will be from a form and current song somewhere else but this will be changed
       return (
         <View>
