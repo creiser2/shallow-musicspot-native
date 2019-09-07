@@ -9,7 +9,7 @@ import PlaybackView from '../common/PlaybackView';
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
-import { destroyUser, updateCoords, joinQueue} from '../../../store/actions/userActions';
+import { destroyUser, updateCoords, joinQueue } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
 import { getCurrentLocation, getGeoCode } from '../../api/LocationSession';
 
