@@ -1,4 +1,5 @@
 //npm run debug will give redux devtools pop up to view and manage state
+
 import React, { Component } from 'react';
 
 //database
@@ -7,7 +8,6 @@ import 'firebase/firestore';
 
 //navigation
 import AppNavigator from './src/components/AppNavigator';
-import LocationWrapper from './src/components/wrappers/LocationWrapper';
 
 //redux stuff
 import { Provider } from 'react-redux';
@@ -15,7 +15,6 @@ import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './store/reducers/rootReducer';
 //when someone figures out how to configure these devtools
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { Permissions, Location } from 'expo';
 import ReduxThunk from 'redux-thunk';
 
 /** What is redux?
@@ -37,11 +36,10 @@ const store = createStore(
 );
 
 export default class App extends Component {
-  
   render() {
     return (
       <Provider store={store}>
-        <LocationWrapper />
+        <AppNavigator/>
       </Provider>
     );
   }

@@ -60,40 +60,18 @@ class MapScreen extends Component {
   async componentDidMount() {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status === 'granted') {
-
-      //get initial location to render in map, this will be later updated by our watcher
-      //const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync();
-      //get city and region/state
-      //const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
-
-      //snap map to user location
-      //this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
-      
-      //update in redux the user position
       const { coords: { latitude, longitude } } = await getCurrentLocation()
       const strLoc = await getGeoCode(longitude, latitude)
-      
-      //this.props.updateGeoCode({city: strLoc[0].city, region: strLoc[0].region})
-
-      //this.props.updateCoords()
-
       this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
 
-      //beginWatcher()
+      //snap map to user location
+      this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
+      
+      //this.props.updateCoords()
 
-      //getPositionOnce()
-      
-      //start watching position
-      
-      
       //get all cities based on city and region
-      //this.props.getQueuesByCity(this.state.region, this.state.city)
+      this.props.getQueuesByCity(this.state.region, this.state.city)
       
-      //the onNewPosition function will be called for each new position captured after 1 second
-      //this.watcher = await Location.watchPositionAsync(options, this.onNewPosition); 
-      
-      
-
     } else {
       alert("We couldn't get your location");
       this.props.destroyUser();
