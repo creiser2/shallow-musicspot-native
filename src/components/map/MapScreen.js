@@ -54,8 +54,8 @@ class MapScreen extends Component {
     insertCurrSong: ""
   };  
 
-  //to remove our watcher, for now we do not want to keep watching location after the component unmounts, but this will change later
-  //watcher: { remove: () => void };
+  // Reference to async location updates
+  locationWatcher: { remove: () => void };
 
   async componentDidMount() {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -67,7 +67,7 @@ class MapScreen extends Component {
     }
   }
   componentWillUnmount() {
-    this.watcher.remove()
+    this.locationWatcher.remove()
   }
 
   initializeLocation = async () => {
@@ -80,7 +80,7 @@ class MapScreen extends Component {
     // Snap map to location
     this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
     // Begin watching position
-    this.watcher = watcherWithHandler(this.locationUpdateHandler)
+    this.locationWatcher = await watcherWithHandler(this.locationUpdateHandler)
     // Render nearby queues
     this.props.getQueuesByCity(this.state.region, this.state.city)
   }
