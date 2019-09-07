@@ -22,12 +22,9 @@ export const addGuest = () => {
 };
 
 //maybe? do a new dispatch to update important regions on this
-export const updateCoords = () => {
+export const updateCoords = (position) => {
     return (dispatch) => {
-        const onNewPosition = (position: Position) => {
-            dispatch({type: "UPDATE_COORDS", payload: {longitude: position.coords.longitude, latitude: position.coords.latitude}})
-        }
-        watcherWithHandler(onNewPosition)
+        dispatch({type: "UPDATE_COORDS", payload: {longitude: position.coords.longitude, latitude: position.coords.latitude}})
     }
 }
 

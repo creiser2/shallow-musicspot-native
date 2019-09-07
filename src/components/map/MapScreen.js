@@ -11,7 +11,7 @@ import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
 import { destroyUser, updateCoords, joinQueue } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
-import { getCurrentLocation, getGeoCode } from '../../api/LocationSession';
+import { getCurrentLocation, getGeoCode, watcherWithHandler } from '../../api/LocationSession';
 
 import {
   StyleSheet,
@@ -67,7 +67,7 @@ class MapScreen extends Component {
     }
   }
   componentWillUnmount() {
-    //destroy watch position
+    this.watcher.remove()
   }
 
   initializeLocation = async () => {
@@ -80,9 +80,13 @@ class MapScreen extends Component {
     // Snap map to location
     this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
     // Begin watching position
-    this.props.updateCoords()
+    this.watcher = watcherWithHandler(this.locationUpdateHandler)
     // Render nearby queues
     this.props.getQueuesByCity(this.state.region, this.state.city)
+  }
+
+  locationUpdateHandler = (position: Position) => {
+    this.props.updateCoords(position)
   }
 
   markerClicked = (queueInfo) => {
