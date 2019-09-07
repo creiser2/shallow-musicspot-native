@@ -59,7 +59,7 @@ class QueueMapView extends Component {
           //title={point.id}
           pinColor={"#4CFF4F"}
           opacity={0.5}
-          onPress={() => this.markerClicked(point)}
+          onPress={() => this.props.markerClicked(point)}
         />
         <MapView.Circle
           center={point.coords}

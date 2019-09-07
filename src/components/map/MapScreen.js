@@ -326,6 +326,7 @@ class MapScreen extends Component {
               renderRegions = {this.props.renderRegions}
               user = {this.props.user}
               checkQueueCreationAbility = {this.checkQueueCreationAbility}
+              markerClicked = {this.markerClicked}
             />
               {this.markerClickedPopup()}
             <View style={styles.bottomBar}>
