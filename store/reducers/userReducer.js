@@ -36,7 +36,7 @@ export default userReducer = (state = defaultState, action) => {
                 ...state, guestCreationFailed: true
             }
         case "UPDATE_COORDS":
-            console.log("trying to update coords")
+            console.log("reduced called to update coords")
             return {
                 ...state,
                 user: {

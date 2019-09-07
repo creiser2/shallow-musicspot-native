@@ -25,15 +25,18 @@ export const addGuest = () => {
 };
 
 //maybe? do a new dispatch to update important regions on this
-export const updateCoords = (payload) => {
+export const updateCoords = () => {
     return (dispatch) => {
-        dispatch({type: "UPDATE_COORDS", payload: payload})
+        const onNewPosition = (position: Position) => {
+            dispatch({type: "UPDATE_COORDS", payload: {longitude: position.coords.longitude, latitude: position.coords.latitude}})
+        }
+        watcherWithHandler(onNewPosition).remove()
     }
 }
 
-export const updateGeoCode = (payload) => {
+export const updateGeoCode = (city, region) => {
     return (dispatch) => {
-        dispatch({type: "UPDATE_GEOCODE", payload: payload})
+        dispatch({type: "UPDATE_GEOCODE", payload: {city: city, region: region}})
     }
 }
 
@@ -55,21 +58,11 @@ export const destroyUser = () => {
     }
 };
 
-export const beginWatcher = () => {
-    watcherWithHandler(onNewPosition)
-}
-
 export const endWatcher = () => {
     
 }
 
-const onNewPosition = async (position: Position) => {
-    const strLoc = await getGeoCode(position.coords.longitude, position.coords.latitude)
-    console.log("trying to call dispatch funcs")
-    updateCoords({latitude: position.coords.latitude, longitude: position.coords.longitude})
-    //updateGeoCode({city: strLoc[0].city, region: strLoc[0].region})
-    //this.checkQueueCreationAbility(this.props.user.location.latitude, this.props.user.location.longitude)
-  }
+
 
 export const getPositionOnce = async () => {
     const location = await getCurrentLocation()
@@ -77,4 +70,5 @@ export const getPositionOnce = async () => {
     updateCoords({latitude: location.coords.latitude, longitude: location.coords.longitude})
     updateGeoCode({city: strLoc[0].city, region: strLoc[0].region})
     console.log("trying to call dispatch funcs")
+    //this.checkQueueCreationAbility(this.props.user.location.latitude, this.props.user.location.longitude)
 }

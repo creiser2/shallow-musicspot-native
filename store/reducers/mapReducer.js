@@ -43,7 +43,7 @@ export default mapReducer = (state = defaultState, action) => {
                 }
             }
         case "UPDATE_GEOCODE":
-            console.log("trying to update city and region")
+            console.log("reducer for geocode called")
             return {
                 ...state,
                 ready: true,

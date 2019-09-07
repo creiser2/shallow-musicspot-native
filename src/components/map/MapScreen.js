@@ -9,9 +9,9 @@ import PlaybackView from '../common/PlaybackView';
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
-import { destroyUser, updateCoords, joinQueue, beginWatcher, getPositionOnce } from '../../../store/actions/userActions';
+import { destroyUser, updateCoords, joinQueue, beginWatcher, getPositionOnce, updateGeoCode } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
-import locationSession from '../../api/LocationSession';
+import { getCurrentLocation, getGeoCode } from '../../api/LocationSession';
 
 import {
   StyleSheet,
@@ -70,12 +70,18 @@ class MapScreen extends Component {
       //this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
       
       //update in redux the user position
-      //this.props.updateCoords({latitude, longitude})
+      const { coords: { latitude, longitude } } = await getCurrentLocation()
+      const strLoc = await getGeoCode(longitude, latitude)
+      
+      //this.props.updateGeoCode({city: strLoc[0].city, region: strLoc[0].region})
 
-      this.setState({ ready: true, city: "f", region: "f" });
+      //this.props.updateCoords()
+
+      this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
 
       //beginWatcher()
-      getPositionOnce()
+
+      //getPositionOnce()
       
       //start watching position
       
@@ -331,6 +337,8 @@ class MapScreen extends Component {
 
   render() {
     const { ready } = this.state;
+    console.log("Ready:")
+    console.log(ready)
     if(!ready) {
       return (
         <View style={styles.container}>
@@ -414,7 +422,8 @@ const mdp = (dispatch) => {
     updateMap: (mapData) => dispatch(updateMap(mapData)),
     createQueue: (coords, radius, hostname, region, city, name, currentSong) => dispatch(createQueue(coords, radius, hostname, region, city, name, currentSong)),
     getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
-    joinQueue: (queueId, userId, region, city, nextFunc) => dispatch(joinQueue(queueId, userId, region, city, nextFunc))
+    joinQueue: (queueId, userId, region, city, nextFunc) => dispatch(joinQueue(queueId, userId, region, city, nextFunc)),
+    updateGeoCode: (city, region) => dispatch(updateGeoCode(city, region)),
   }
 }
 

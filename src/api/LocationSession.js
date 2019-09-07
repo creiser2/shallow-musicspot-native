@@ -2,7 +2,7 @@
 import { Location } from 'expo';
 
 export const watcherWithHandler = async (onNewPosition) => {
-    const options = { enableHighAccuracy: true, timeInterval: 1000, distanceInterval: 1 };
+    const options = { enableHighAccuracy: true, timeInterval: 3000, distanceInterval: 1 };
     return await Location.watchPositionAsync(options, onNewPosition);
 }
 
