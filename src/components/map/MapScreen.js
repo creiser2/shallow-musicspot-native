@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Permissions, Location, MapView } from 'expo';
+import { Permissions } from 'expo';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
 import QueueDetail from './QueueDetail';
 import PlaybackView from '../common/PlaybackView';
+import QueueMapView from './QueueMapView';
 
-import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
 import { destroyUser, updateCoords, joinQueue } from '../../../store/actions/userActions';
@@ -120,13 +120,12 @@ class MapScreen extends Component {
   }
 
 
-  //this function checks to see if a user can create a queue at their current location
-  // if they are too close to another queue, it will fail
+  // Cecks to see if a user can create a queue at their current location
   checkQueueCreationAbility = (latitude, longitude) => {
-    //set availability = not null
+    // Set availability = not null
     let availability = !!this.props.renderRegions
 
-    //if availability not null (= [] or [1,2,3])
+    // If availability not null (= [] or [1,2,3])
     if(availability) {
       this.props.renderRegions.forEach((region) => {
         const roundedLat = Math.round((region.coords.latitude*1000))/1000
@@ -145,8 +144,6 @@ class MapScreen extends Component {
       })
     }
   }
-
-
 
   //this could contain bugs, we are setting the redux state of our user to initial state if they click back button
   handleBackButtonClicked = () => {
@@ -168,44 +165,6 @@ class MapScreen extends Component {
     })
   }
 
-  //this is where the queues are physically mapped to our UI from redux
-  renderRelevantQueues = () => {
-    //if there are no redux regions just return null
-    if(!this.props.renderRegions) {
-      return null
-    } 
-    else if(this.props.renderRegions.length == 0) {
-      return null
-    }
-
-
-    //set create queue at location svg color if they are too close to a marker
-    [latitude, longitude] = [this.props.user.location.latitude, this.props.user.location.longitude]    
-    this.checkQueueCreationAbility(latitude, longitude)
-
-    let iterator = 0;
-    //going to need to add other fields to the render regions
-    return this.props.renderRegions.map(point => (
-      <View key={iterator++}>
-        <MapView.Marker
-          coordinate={point.coords}
-          //title={point.id}
-          pinColor={"#4CFF4F"}
-          opacity={0.5}
-          onPress={() => this.markerClicked(point)}
-        />
-        <MapView.Circle
-          center={point.coords}
-          radius={point.radius}
-          strokeWidth = { 1 }
-          strokeColor = { '#1a66ff' }
-          fillColor = { 'rgba(63, 63, 191, 0.26)' }
-        />
-      </View>
-    ))
-  }
-
-
   //this function decides whether or not to render the little return to home
   //target svg 
   renderReturnToCurrentLocationSvg = () => {
@@ -224,8 +183,6 @@ class MapScreen extends Component {
     } 
     return null
   }
-
-
 
    createQueueClicked = async () => {  
      //if the user cannot create a queue, just return
@@ -337,9 +294,6 @@ class MapScreen extends Component {
     }
   }
 
-
-
-
   render() {
     const { ready } = this.state;
     if(!ready) {
@@ -366,28 +320,13 @@ class MapScreen extends Component {
                   {this.props.user.uid}
                 </Text>
             </View>
-            <View style={styles.mapContainer}>
-              <MapView 
-                  ref={this.map}
-                  style={styles.map}  provider="google" customMapStyle={NIGHT_MAP_STYLE}
-                  initialRegion={{
-                    latitude: this.props.reduxMap.latitude,
-                    longitude: this.props.reduxMap.longitude,
-                    latitudeDelta: this.props.reduxMap.latitudeDelta,
-                    longitudeDelta: this.props.reduxMap.longitudeDelta,
-                  }}
-                  showsCompass={true}
-                  showsScale={true}
-                  showsUserLocation={true}
-                  showsMyLocationButton={true}
-                  onChange={(event) => this.handleMapViewChange(event)}
-                  >             
-                {this.renderRelevantQueues()}
-              </MapView>
-              {/* <View style={styles.createAndCenterView}>
-                <Text style={styles.createQueue} onPress={this.createQueue} >Create</Text>
-              </View> */}
-            </View>
+            <QueueMapView 
+              reduxMap = {this.props.reduxMap}
+              handleMapViewChange = {this.handleMapViewChange}
+              renderRegions = {this.props.renderRegions}
+              user = {this.props.user}
+              checkQueueCreationAbility = {this.checkQueueCreationAbility}
+            />
               {this.markerClickedPopup()}
             <View style={styles.bottomBar}>
                 <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
@@ -440,12 +379,6 @@ const styles = StyleSheet.create({
   topBar: {
     height: 200,
     backgroundColor: HOMESCREEN_BACKGROUND,
-  },
-  mapContainer: {
-    flex: 1
-  },
-  map: {
-    flex: 1,
   },
   returnToHome: {
     color: 'white',
