@@ -74,9 +74,9 @@ class MapScreen extends Component {
     // Get location once to populate region and city
     const { coords: { latitude, longitude } } = await getCurrentLocation()
     // Geocode the results
-    const strLoc = await getGeoCode(longitude, latitude)
+    const { city, region } = (await getGeoCode(longitude, latitude))[0]
     // Set region and city
-    this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
+    this.setState({ ready: true, city: city, region: region });
     // Snap map to location
     this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
     // Begin watching position
