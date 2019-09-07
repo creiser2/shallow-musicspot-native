@@ -425,7 +425,7 @@ const mdp = (dispatch) => {
     updateMap: (mapData) => dispatch(updateMap(mapData)),
     createQueue: (coords, radius, hostname, region, city, name, currentSong) => dispatch(createQueue(coords, radius, hostname, region, city, name, currentSong)),
     getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
-    joinQueue: (queueId, userId, region, city, nextFunc) => dispatch(joinQueue(queueId, userId, region, city, nextFunc))
+    joinQueue: (queueId, userId, nextFunc) => dispatch(joinQueue(queueId, userId, nextFunc))
   }
 }
 
