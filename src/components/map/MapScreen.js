@@ -420,8 +420,6 @@ const styles = StyleSheet.create({
   usernameText: {
     color: 'grey'
   },
-  
-  
   settingsButton: {
     backgroundColor: '#1c06e2',
     alignItems: 'center',
@@ -430,9 +428,4 @@ const styles = StyleSheet.create({
     borderRadius:10,
     alignSelf:"flex-end",
   },
-  
-  
-  
-  
-  
 });
