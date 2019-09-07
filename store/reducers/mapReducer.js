@@ -42,14 +42,6 @@ export default mapReducer = (state = defaultState, action) => {
                     longitudeDelta: action.payload.longitudeDelta
                 }
             }
-        case "UPDATE_GEOCODE":
-            console.log("reducer for geocode called")
-            return {
-                ...state,
-                ready: true,
-                city: action.payload.city,
-                region: action.payload.region,
-            }
         case "DESTROY_REDUX_MAP":
             return {
                 defaultState
