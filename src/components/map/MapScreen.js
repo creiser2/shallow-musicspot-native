@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Permissions } from 'expo';
+import { Permissions, Location } from 'expo';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
