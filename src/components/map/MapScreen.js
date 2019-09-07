@@ -317,8 +317,6 @@ class MapScreen extends Component {
 
   render() {
     const { ready } = this.state;
-    console.log("Ready:")
-    console.log(ready)
     if(!ready) {
       return (
         <View style={styles.container}>
