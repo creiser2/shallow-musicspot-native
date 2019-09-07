@@ -9,7 +9,7 @@ import PlaybackView from '../common/PlaybackView';
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
-import { destroyUser, updateCoords, joinQueue, beginWatcher, getPositionOnce, updateGeoCode } from '../../../store/actions/userActions';
+import { destroyUser, updateCoords, joinQueue} from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
 import { getCurrentLocation, getGeoCode } from '../../api/LocationSession';
 
@@ -60,27 +60,29 @@ class MapScreen extends Component {
   async componentDidMount() {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status === 'granted') {
-      const { coords: { latitude, longitude } } = await getCurrentLocation()
-      const strLoc = await getGeoCode(longitude, latitude)
-      this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
-
-      //snap map to user location
-      this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
-      
-      //this.props.updateCoords()
-
-      //get all cities based on city and region
-      this.props.getQueuesByCity(this.state.region, this.state.city)
-      
+      this.initializeLocation()
     } else {
-      alert("We couldn't get your location");
+      // Toast
       this.props.destroyUser();
     }
   }
-
-  //destroy watch position
   componentWillUnmount() {
-    this.watcher.remove();
+    //destroy watch position
+  }
+
+  initializeLocation = async () => {
+    // Get location once to populate region and city
+    const { coords: { latitude, longitude } } = await getCurrentLocation()
+    // Geocode the results
+    const strLoc = await getGeoCode(longitude, latitude)
+    // Set region and city
+    this.setState({ ready: true, city: strLoc[0].city, region: strLoc[0].region });
+    // Snap map to location
+    this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
+    // Begin watching position
+    this.props.updateCoords()
+    // Render nearby queues
+    this.props.getQueuesByCity(this.state.region, this.state.city)
   }
 
   markerClicked = (queueInfo) => {
