@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SafeAreaView, WebView } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../../constants/api/spotify';
 import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
 import SpotifyLogo from '../../../assets/svg/SpotifyLogo';
@@ -8,8 +8,8 @@ import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from '../map/MapScreen';
 import { addGuest } from '../../../store/actions/userActions';
-
-//import InAppBrowser from 'react-native-inappbrowser-reborn';
+import { AuthSession } from 'expo';
+import axios from 'axios';
 
 import {
   AppRegistry,
@@ -19,16 +19,13 @@ import {
   View,
 } from 'react-native'
 
-const url = "https://us-central1-queueme-back.cloudfunctions.net/redirect";
-
 class HomeScreen extends Component {
 
   
   state = {
-
+    userInfo: null,
+    didError: false
   }
-
-
 
   componentDidMount = () => {
     // await Font.loadAsync({
@@ -38,18 +35,30 @@ class HomeScreen extends Component {
     // this.setState({ fontLoaded: true });
   }
 
-  
-
   handleWelcomeClicked = () => {
     this.setState({
       WelcomeClicked: !this.state.WelcomeClicked
     })
   }
 
-
-  spotifyLogoClick = () => {
-    
-
+  spotifyLogoClick = async () => {
+    let redirectUrl = AuthSession.getRedirectUrl();
+    console.log("Your redirect url:", redirectUrl)
+    let results = await AuthSession.startAsync({
+      authUrl:
+      `https://accounts.spotify.com/authorize?client_id=57d4048f0a944cc7b74afc0609746fa8&redirect_uri=${encodeURIComponent(redirectUrl)}&scope=user-read-email&response_type=token`
+    });
+    if (results.type !== 'success') {
+      this.setState({ didError: true });
+    } else {
+      const userInfo = await axios.get(`https://api.spotify.com/v1/me`, {
+        headers: {
+          "Authorization": `Bearer ${results.params.access_token}`
+        }
+      });
+      console.log("Your access token:", results.params.access_token)
+      this.setState({ userInfo: userInfo.data });
+    }
   }
 
   handleGuestClicked = () => {
@@ -63,10 +72,6 @@ class HomeScreen extends Component {
     return null
   }
 
-
-  
-
-
   render() {
     let accountCreationFailed = this.renderAccountCreationFailed();
     if(this.props.isGuest) {
@@ -75,10 +80,6 @@ class HomeScreen extends Component {
     //once logged into spotify, conditionally render homescreen components
       return (
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
-          <WebView
-          source={{uri: url}}
-          style={{marginTop: 20}}
-          />
           <View style={styles.container}>
             <View style={styles.topBar}>
               <Text style={styles.title}>
