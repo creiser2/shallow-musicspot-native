@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, WebView } from 'react-native';
 import { AUTHORIZE_SPOTIFY, HEADERS } from '../../../constants/api/spotify';
 import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
 import SpotifyLogo from '../../../assets/svg/SpotifyLogo';
@@ -8,6 +8,8 @@ import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from '../map/MapScreen';
 import { addGuest } from '../../../store/actions/userActions';
+
+//import InAppBrowser from 'react-native-inappbrowser-reborn';
 
 import {
   AppRegistry,
@@ -17,8 +19,11 @@ import {
   View,
 } from 'react-native'
 
+const url = "https://us-central1-queueme-back.cloudfunctions.net/redirect";
 
 class HomeScreen extends Component {
+
+  
   state = {
 
   }
@@ -33,6 +38,8 @@ class HomeScreen extends Component {
     // this.setState({ fontLoaded: true });
   }
 
+  
+
   handleWelcomeClicked = () => {
     this.setState({
       WelcomeClicked: !this.state.WelcomeClicked
@@ -42,6 +49,7 @@ class HomeScreen extends Component {
 
   spotifyLogoClick = () => {
     
+
   }
 
   handleGuestClicked = () => {
@@ -67,6 +75,10 @@ class HomeScreen extends Component {
     //once logged into spotify, conditionally render homescreen components
       return (
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
+          <WebView
+          source={{uri: url}}
+          style={{marginTop: 20}}
+          />
           <View style={styles.container}>
             <View style={styles.topBar}>
               <Text style={styles.title}>
