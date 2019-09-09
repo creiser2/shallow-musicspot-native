@@ -28,6 +28,12 @@ export const updateCoords = (position) => {
     }
 }
 
+export const setSpotifyToken = (token) => {
+    return (dispatch) => {
+        dispatch({type: "SET_SPOTIFY_TOKEN", payload: token})
+    }
+}
+
 //user id gets added to the user list, and changes the page to the new queue page
 export const joinQueue = (queueId, userId, nextFunc) => {
     return (dispatch) => {

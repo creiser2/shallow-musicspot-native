@@ -7,7 +7,7 @@ import SpotifyLogo from '../../../assets/svg/SpotifyLogo';
 import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from '../map/MapScreen';
-import { addGuest } from '../../../store/actions/userActions';
+import { addGuest, setSpotifyToken } from '../../../store/actions/userActions';
 import { AuthSession } from 'expo';
 import axios from 'axios';
 
@@ -56,8 +56,10 @@ class HomeScreen extends Component {
           "Authorization": `Bearer ${results.params.access_token}`
         }
       });
+      this.props.setSpotifyToken(results.params.access_token);
       console.log("Your access token:", results.params.access_token)
       this.setState({ userInfo: userInfo.data });
+      this.props.navigation.navigate('MapScreen');
     }
   }
 
@@ -107,6 +109,7 @@ class HomeScreen extends Component {
 const msp = (state) => {
   let userState = state.user
   return {
+    spotify_access_token: userState.spotify_access_token,
     isGuest: userState.isGuest,
     guestCreationFailed: userState.guestCreationFailed
   }
@@ -115,7 +118,8 @@ const msp = (state) => {
 //mapDispatchToProps
 const mdp = (dispatch) => { 
   return {
-    addGuest: () => dispatch(addGuest())
+    addGuest: () => dispatch(addGuest()),
+    setSpotifyToken: (token) => dispatch(setSpotifyToken(token))
   }
 }
 
