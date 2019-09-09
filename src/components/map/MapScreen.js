@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native';
 import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
 import QueueDetail from './QueueDetail';
 import PlaybackView from '../common/PlaybackView';
+import { Icon } from 'native-base'
 
 import {DAY_MAP_STYLE, NIGHT_MAP_STYLE} from '../../../constants/mapstyles';
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
@@ -357,11 +358,11 @@ class MapScreen extends Component {
                 <Text style={styles.cityText}>
                     {this.state.city}, {this.state.region}
                 </Text>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={styles.settingsButton}
-                    onPress={() => this.props.navigation.navigate('Settings')}>
-                      <Text style={styles.joinButtonText}>Settings</Text>
-                  </TouchableOpacity>
+                    onPress={() => this.props.navigation.navigate('Settings')}> 
+                  </TouchableOpacity> */}
+                  <Icon style={styles.settingsIcon} name='settings' onPress={() => this.props.navigation.navigate('Settings')}/>
                 <Text style={styles.usernameText}>
                   {this.props.user.uid}
                 </Text>
@@ -507,13 +508,9 @@ const styles = StyleSheet.create({
     margin:10,
     borderRadius:10,
   },
-  settingsButton: {
-    backgroundColor: '#1c06e2',
-    alignItems: 'center',
-    height:15,
-    margin: 5,
-    borderRadius:10,
+  settingsIcon: {
     alignSelf:"flex-end",
+    marginRight: 5,
   },
   joinButtonText: {
     textAlign: 'center',
