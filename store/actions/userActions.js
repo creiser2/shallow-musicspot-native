@@ -3,11 +3,11 @@ import { showInternetWarning } from '../../src/components/common/CustomToast'
 import { 
     loginGuestUser,
     addUserToQueue,
-    getQueueLocationDoc,
-    updateQueueNumMembers
 } from '../../src/api/FirebaseSession'
+import {
+    watcherWithHandler,
+} from '../../src/api/LocationSession'
 
-//dispatch will send action to reducer
 //we can therefore halt the dispatch until our db call
 export const addGuest = () => {
     return (dispatch) => {
@@ -22,9 +22,9 @@ export const addGuest = () => {
 };
 
 //maybe? do a new dispatch to update important regions on this
-export const updateCoords = (coords) => {
+export const updateCoords = (position) => {
     return (dispatch) => {
-        dispatch({type: "UPDATE_COORDS", payload: coords})
+        dispatch({type: "UPDATE_COORDS", payload: {longitude: position.coords.longitude, latitude: position.coords.latitude}})
     }
 }
 
