@@ -8,6 +8,8 @@ import GuestSvg from  '../../../assets/svg/GuestSvg';
 import { Font } from 'expo';
 import MapScreen from '../map/MapScreen';
 import { addGuest } from '../../../store/actions/userActions';
+import { AuthSession } from 'expo';
+import axios from 'axios';
 
 import {
   AppRegistry,
@@ -17,13 +19,13 @@ import {
   View,
 } from 'react-native'
 
-
 class HomeScreen extends Component {
+
+  
   state = {
-
+    userInfo: null,
+    didError: false
   }
-
-
 
   componentDidMount = () => {
     // await Font.loadAsync({
@@ -39,9 +41,24 @@ class HomeScreen extends Component {
     })
   }
 
-
-  spotifyLogoClick = () => {
-    
+  spotifyLogoClick = async () => {
+    let redirectUrl = AuthSession.getRedirectUrl();
+    console.log("Your redirect url:", redirectUrl)
+    let results = await AuthSession.startAsync({
+      authUrl:
+      `https://accounts.spotify.com/authorize?client_id=57d4048f0a944cc7b74afc0609746fa8&redirect_uri=${encodeURIComponent(redirectUrl)}&scope=user-read-email&response_type=token`
+    });
+    if (results.type !== 'success') {
+      this.setState({ didError: true });
+    } else {
+      const userInfo = await axios.get(`https://api.spotify.com/v1/me`, {
+        headers: {
+          "Authorization": `Bearer ${results.params.access_token}`
+        }
+      });
+      console.log("Your access token:", results.params.access_token)
+      this.setState({ userInfo: userInfo.data });
+    }
   }
 
   handleGuestClicked = () => {
@@ -54,10 +71,6 @@ class HomeScreen extends Component {
     } 
     return null
   }
-
-
-  
-
 
   render() {
     let accountCreationFailed = this.renderAccountCreationFailed();

@@ -107,7 +107,7 @@ class MapScreen extends Component {
   }
 
   joinQueue = () => {
-    this.props.joinQueue(this.state.currentQueue.id,this.props.user.uid, this.state.region, this.state.city, this.props.navigation.navigate('QueueScreen'));
+    this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
   }
 
 
@@ -265,7 +265,7 @@ class MapScreen extends Component {
           </TouchableOpacity>
         </View>
       )
-    }else{
+    } else  {
       return (
           <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
       );
@@ -329,10 +329,8 @@ class MapScreen extends Component {
               markerClicked = {this.markerClicked}
             />
               {this.markerClickedPopup()}
-            <View style={styles.bottomBar}>
-                <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
-                    Back  
-                </Text>
+            <View style={styles.playbackContainer}>
+            <PlaybackView/>
             </View>
           </View>
         </SafeAreaView>
@@ -365,7 +363,7 @@ const mdp = (dispatch) => {
     updateMap: (mapData) => dispatch(updateMap(mapData)),
     createQueue: (coords, radius, hostname, region, city, name, currentSong) => dispatch(createQueue(coords, radius, hostname, region, city, name, currentSong)),
     getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
-    joinQueue: (queueId, userId, region, city, nextFunc) => dispatch(joinQueue(queueId, userId, region, city, nextFunc))
+    joinQueue: (queueId, userId, nextFunc) => dispatch(joinQueue(queueId, userId, nextFunc))
   }
 }
 
@@ -410,17 +408,12 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
     borderBottomWidth: 1
   },
-  bottomBar: {
+  playbackContainer: {
     height: '10%',
     backgroundColor:  HOMESCREEN_BACKGROUND,
     flexDirection: 'row',
     borderTopColor: 'grey',
     borderTopWidth: 1,
-  },
-  backText: {
-    color: 'white',
-    fontSize: 30,
-    marginLeft: 0
   },
   cityText: {
     color: 'white',
