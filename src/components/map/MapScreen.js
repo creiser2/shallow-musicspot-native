@@ -146,14 +146,6 @@ class MapScreen extends Component {
     }
   }
 
-
-
-  //this could contain bugs, we are setting the redux state of our user to initial state if they click back button
-  handleBackButtonClicked = () => {
-    this.props.destroyUser();
-    this.props.navigation.navigate('HomeScreen');
-  }
-
   //when you scroll away or zoom out this function is called
   handleMapViewChange = (event) => {
     //we will save the information about our map in redux
@@ -308,7 +300,7 @@ class MapScreen extends Component {
           </TouchableOpacity>
         </View>
       )
-    }else{
+    } else  {
       return (
           <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
       );
@@ -389,10 +381,8 @@ class MapScreen extends Component {
               </View> */}
             </View>
               {this.markerClickedPopup()}
-            <View style={styles.bottomBar}>
-                <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
-                    Back  
-                </Text>
+            <View style={styles.playbackContainer}>
+            <PlaybackView/>
             </View>
           </View>
         </SafeAreaView>
@@ -476,17 +466,12 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
     borderBottomWidth: 1
   },
-  bottomBar: {
+  playbackContainer: {
     height: '10%',
     backgroundColor:  HOMESCREEN_BACKGROUND,
     flexDirection: 'row',
     borderTopColor: 'grey',
     borderTopWidth: 1,
-  },
-  backText: {
-    color: 'white',
-    fontSize: 30,
-    marginLeft: 0
   },
   cityText: {
     color: 'white',
