@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
-
+import PlaybackView from '../common/PlaybackView';
 
 import {
     StyleSheet,
@@ -30,6 +30,9 @@ export default class QueueScreen extends Component {
                     >
                         <Text style={styles.joinButtonText}>Queue Search</Text>
                     </TouchableOpacity>
+                    <View style={styles.playbackContainer}>
+                      <PlaybackView/>
+                    </View>
                 </View> 
         );
     }
@@ -59,4 +62,11 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
     fontSize: 24
   },
+  playbackContainer: {
+    height: '10%',
+    backgroundColor:  HOMESCREEN_BACKGROUND,
+    flexDirection: 'row',
+    borderTopColor: 'grey',
+    borderTopWidth: 1,
+  }
 });
