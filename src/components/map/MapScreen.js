@@ -300,7 +300,7 @@ class MapScreen extends Component {
           </TouchableOpacity>
         </View>
       )
-    }else{
+    } else  {
       return (
           <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
       );
@@ -382,7 +382,7 @@ class MapScreen extends Component {
             </View>
               {this.markerClickedPopup()}
             <View style={styles.playbackContainer}>
-              <PlaybackView/>
+            <PlaybackView/>
             </View>
           </View>
         </SafeAreaView>
