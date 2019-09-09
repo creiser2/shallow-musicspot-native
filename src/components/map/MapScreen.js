@@ -382,7 +382,7 @@ class MapScreen extends Component {
             </View>
               {this.markerClickedPopup()}
             <View style={styles.playbackContainer}>
-            <PlaybackView/>
+              <PlaybackView/>
             </View>
           </View>
         </SafeAreaView>
