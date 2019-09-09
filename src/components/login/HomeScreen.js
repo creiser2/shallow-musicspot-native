@@ -42,26 +42,33 @@ class HomeScreen extends Component {
   }
 
   spotifyLogoClick = async () => {
-    let redirectUrl = AuthSession.getRedirectUrl();
-    console.log("Your redirect url:", redirectUrl)
-    let results = await AuthSession.startAsync({
-      authUrl:
-      `https://accounts.spotify.com/authorize?client_id=57d4048f0a944cc7b74afc0609746fa8&redirect_uri=${encodeURIComponent(redirectUrl)}&scope=user-read-email&response_type=token`
-    });
-    if (results.type !== 'success') {
-      this.setState({ didError: true });
-    } else {
-      const userInfo = await axios.get(`https://api.spotify.com/v1/me`, {
-        headers: {
-          "Authorization": `Bearer ${results.params.access_token}`
-        }
+    //only reauthenticate if the access token is null
+    console.log("Access Token:", this.props.spotify_access_token)
+    if(!this.props.spotify_access_token){
+      let redirectUrl = AuthSession.getRedirectUrl();
+      console.log("Your redirect url:", redirectUrl)
+      let results = await AuthSession.startAsync({
+        authUrl:
+        `https://accounts.spotify.com/authorize?client_id=57d4048f0a944cc7b74afc0609746fa8&redirect_uri=${encodeURIComponent(redirectUrl)}&scope=user-read-email,user-modify-playback-state&response_type=token`
       });
-      this.props.setSpotifyToken(results.params.access_token);
-      console.log("Your access token:", results.params.access_token)
-      this.setState({ userInfo: userInfo.data });
+      if (results.type !== 'success') {
+        this.setState({ didError: true });
+      } else {
+        const userInfo = await axios.get(`https://api.spotify.com/v1/me`, {
+          headers: {
+            "Authorization": `Bearer ${results.params.access_token}`
+          }
+        });
+        this.props.setSpotifyToken(results.params.access_token);
+        console.log("Your access token:", results.params.access_token)
+        this.setState({ userInfo: userInfo.data });
+        this.props.navigation.navigate('MapScreen');
+      }
+    }else{
       this.props.navigation.navigate('MapScreen');
     }
   }
+
 
   handleGuestClicked = () => {
     this.props.addGuest()
