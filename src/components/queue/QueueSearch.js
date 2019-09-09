@@ -33,10 +33,10 @@ class QueueSearch extends Component {
     tempSongArray=[];
     searchResults.data.tracks.items.map((song) => {
       //console.log(JSON.stringify(song));
-      if(song.images){
-        var tempSong = new Song(song.id, song.name, song.artists[0].id,song.uri,song.duration_ms,song.explicit,song.images[0].url)
+      if(song.album.images){
+        var tempSong = new Song(song.id, song.name, song.artists[0].id, song.artists[0].name, song.uri,song.duration_ms,song.explicit,song.album.images[0].url)
       }else{
-        var tempSong = new Song(song.id, song.name, song.artists[0].id,song.uri,song.duration_ms,song.explicit, defaultImage)
+        var tempSong = new Song(song.id, song.name, song.artists[0].id,song.artists[0].name, song.uri,song.duration_ms,song.explicit, defaultImage)
       }
       tempSongArray.push(tempSong)
     });
@@ -62,7 +62,7 @@ class QueueSearch extends Component {
             <Thumbnail source={{uri: song.imageURL}} />
           </View>
            <View style={styles.title}>
-            <Text style={styles.titleText}>{song.name} -{song.artistId}</Text>
+            <Text style={styles.titleText}>{song.name} -{song.artistName}</Text>
           </View> 
            <View style={styles.time}>
             <Text style={styles.timeText}>{song.numVotes}</Text>
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     height: 100,
-    width: '100%',
+    width: '85%',
     marginLeft: 15,
     marginRight: 15
   },

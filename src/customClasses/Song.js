@@ -1,8 +1,9 @@
 export default class Song {
-    constructor(id, name, artistId, uri, duration_ms, explicit, imageURL) {
+    constructor(id, name, artistId, artistName, uri, duration_ms, explicit, imageURL) {
         this.id = id;
         this.name = name;
         this.artistId = artistId;
+        this.artistName = artistName;
         this.uri = uri;
         this.duration_ms = duration_ms;
         this.explicit = explicit;
