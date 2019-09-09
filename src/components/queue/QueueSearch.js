@@ -22,6 +22,7 @@ class QueueSearch extends Component {
 
   }
   render() {
+    console.log("Props token search:", this.props.user.spotify_access_token)
       return (
         <SafeAreaView style={{flex: 1, backgroundColor: HOMESCREEN_BACKGROUND}}>
           <View style={styles.container}>
@@ -41,9 +42,13 @@ class QueueSearch extends Component {
 
 //Redux setup
 
-//mapStateToProps
 const msp = (state) => {
+  //since we have multiple reducers, we need to reference our user reducer
+  const userState = state.user
+  const mapState = state.map
   return {
+    ...userState,
+    ...mapState
   }
 }
 

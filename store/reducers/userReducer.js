@@ -9,7 +9,8 @@ const defaultState = {
             latitude: 37.774,
             longitude: -122.431
         },
-        uid: null
+        uid: null,
+        spotify_access_token: null
     },
     queue: {
         isHost: false,
@@ -52,6 +53,17 @@ export default userReducer = (state = defaultState, action) => {
                 user: {
                     ...state.user,
                     username: action.payload
+                }
+            }
+
+        case "SET_SPOTIFY_TOKEN":
+            return {
+                ...state,
+                isGuest:false,
+                user: {
+                    ...state.user,
+                    spotify_access_token: action.payload
+
                 }
             }
         case "SET_UID":
