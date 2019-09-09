@@ -11,7 +11,7 @@ import {
 
 const imageUri = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRQgZ48o39T52Ycjne2VfHtDdR08ftNInjPaTuwFzWyWEKdJJgg'
 const timeString = '1:04 | 2:32'
-const songString = 'Lil Wayne - 500 Degreez     '
+const songString = '500 Degreez - Lil Wayne     '
 
 class PlaybackView extends Component {
   state = {
