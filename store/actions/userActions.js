@@ -3,11 +3,11 @@ import { showInternetWarning } from '../../src/components/common/CustomToast'
 import { 
     loginGuestUser,
     addUserToQueue,
-    getQueueLocationDoc,
-    updateQueueNumMembers
 } from '../../src/api/FirebaseSession'
+import {
+    watcherWithHandler,
+} from '../../src/api/LocationSession'
 
-//dispatch will send action to reducer
 //we can therefore halt the dispatch until our db call
 export const addGuest = () => {
     return (dispatch) => {
@@ -22,9 +22,9 @@ export const addGuest = () => {
 };
 
 //maybe? do a new dispatch to update important regions on this
-export const updateCoords = (coords) => {
+export const updateCoords = (position) => {
     return (dispatch) => {
-        dispatch({type: "UPDATE_COORDS", payload: coords})
+        dispatch({type: "UPDATE_COORDS", payload: {longitude: position.coords.longitude, latitude: position.coords.latitude}})
     }
 }
 
@@ -35,9 +35,9 @@ export const setSpotifyToken = (token) => {
 }
 
 //user id gets added to the user list, and changes the page to the new queue page
-export const joinQueue = (queueId, userId, region, city, nextFunc) => {
+export const joinQueue = (queueId, userId, nextFunc) => {
     return (dispatch) => {
-        addUserToQueue(queueId, userId, region, city).then((res) => {
+        addUserToQueue(queueId, userId).then((res) => {
             dispatch({type: "JOIN_QUEUE", payload: queueId})
         }).catch((err) => {
             showInternetWarning()
