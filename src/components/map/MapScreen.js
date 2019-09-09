@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Permissions, Location, MapView } from 'expo';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
+import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
 import QueueDetail from './QueueDetail';
 import PlaybackView from '../common/PlaybackView';
 
@@ -19,6 +20,7 @@ import {
   View,
   StatusBar,
   TouchableOpacity,
+  Image,
   TextInput,
 } from 'react-native'
 
@@ -144,14 +146,6 @@ class MapScreen extends Component {
     }
   }
 
-
-
-  //this could contain bugs, we are setting the redux state of our user to initial state if they click back button
-  handleBackButtonClicked = () => {
-    this.props.destroyUser();
-    this.props.navigation.navigate('HomeScreen');
-  }
-
   //when you scroll away or zoom out this function is called
   handleMapViewChange = (event) => {
     //we will save the information about our map in redux
@@ -233,6 +227,7 @@ class MapScreen extends Component {
     //if logged into spotify this is different
     [latitude, longitude] = [this.props.user.location.latitude, this.props.user.location.longitude]
     try {
+
       //NEED TO MAKE THIS ASYNC
       this.setState({addingQueueForm: true});
 
@@ -248,10 +243,94 @@ class MapScreen extends Component {
     }
   }
 
+  markerClickedPopup = () => {
+    if(this.state.queueClicked){
+      let objIndex = this.props.renderRegions.findIndex((obj => obj.id == this.state.currentQueue.id));
+      let queueClicked = this.props.renderRegions[objIndex];
+      return(
+        <View style={styles.moreQueueInfo}>
+          <Text style={styles.moreInfoText}>Queue Name: {queueClicked.name}</Text>
+          <Text style={styles.moreInfoText}>Current Song: {queueClicked.currentSong}</Text>
+          <View style={styles.rowFlex}>
+            <Image
+              style={styles.groupIcon}
+              source={require('../../../assets/groupIcon.png')}
+            />
+            <Text style={styles.moreInfoText}>{queueClicked.numMembers}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() => this.joinQueue()}
+          >
+            <Text style={styles.joinButtonText}>Join</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }else if(this.state.addingQueueForm){
+      //the name will be from a form and current song somewhere else but this will be changed
+      return (
+        <View>
+          <TextInput
+            style={styles.inputQueueNameAndSong}
+            enablesReturnKeyAutomatically={true}
+            selectTextOnFocus={true}
+            placeholder="Insert Queue Name"
+            onChangeText={(insertQueueName) => this.setState({insertQueueName})}
+            value={this.state.insertQueueName}
+          />
+          <TextInput
+            style={styles.inputQueueNameAndSong}
+            enablesReturnKeyAutomatically={true}
+            selectTextOnFocus={true}
+            onChangeText={(insertCurrSong) => this.setState({insertCurrSong})}
+            placeholder="Insert Current Song"
+            value={this.state.insertCurrSong}
+          />
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() =>  this.submitNewQueueAndClose()}
+          >
+            <Text style={styles.joinButtonText}>Done</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={() => this.setState({addingQueueForm:false})}
+          >
+            <Text style={styles.joinButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    } else  {
+      return (
+          <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
+      );
+    }
+  }
+
   submitNewQueueAndClose = () => {
     this.props.createQueue(this.props.user.location, 100, this.props.user.uid, this.state.region, this.state.city, this.state.insertQueueName, this.state.insertCurrSong);
     this.setState({addingQueueForm:false});
   }
+
+  addQueueForm = () => {
+    if(this.state.addingQueueForm){
+      return (
+        <View>
+          <Text>Adding Queue Info</Text>
+          <Button
+            onPress={() => this.setState({addingQueueForm: false})}
+            title="Close"
+            color="#841584"
+          />
+        </View>
+      )
+    }else{
+      return
+    }
+  }
+
+
+
 
   render() {
     const { ready } = this.state;
@@ -301,23 +380,9 @@ class MapScreen extends Component {
                 <Text style={styles.createQueue} onPress={this.createQueue} >Create</Text>
               </View> */}
             </View>
-            <QueueDetail
-              queueClicked = {this.state.queueClicked}
-              renderRegions = {this.props.renderRegions}
-              currentQueue = {this.state.currentQueue}
-              joinQueue = {this.joinQueue}
-              updateQueueName = {(insertQueueName) => this.setState({insertQueueName})}
-              updateSongName = {(insertCurrSong) => this.setState({insertCurrSong})}
-              updateAddingQueueForm = {(addingQueueForm) => this.setState({addingQueueForm: addingQueueForm})}
-              canCreateQueueAtLocation = {this.state.canCreateQueueAtLocation}
-              addingQueueForm = {this.state.addingQueueForm}
-              createQueueClicked = {this.createQueueClicked}
-              submitNewQueueAndClose = {this.submitNewQueueAndClose}
-            />
-            <View style={styles.bottomBar}>
-                <Text style={styles.backText} onPress={() => this.handleBackButtonClicked()}>
-                    Back  
-                </Text>
+              {this.markerClickedPopup()}
+            <View style={styles.playbackContainer}>
+            <PlaybackView/>
             </View>
           </View>
         </SafeAreaView>
@@ -401,17 +466,12 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
     borderBottomWidth: 1
   },
-  bottomBar: {
+  playbackContainer: {
     height: '10%',
     backgroundColor:  HOMESCREEN_BACKGROUND,
     flexDirection: 'row',
     borderTopColor: 'grey',
     borderTopWidth: 1,
-  },
-  backText: {
-    color: 'white',
-    fontSize: 30,
-    marginLeft: 0
   },
   cityText: {
     color: 'white',
@@ -419,6 +479,18 @@ const styles = StyleSheet.create({
   },
   usernameText: {
     color: 'grey'
+  },
+  moreQueueInfo: {
+    flex: 1,
+    backgroundColor: 'white',
+    height: 10,
+  },
+  joinButton: {
+    backgroundColor: '#1c06e2',
+    alignItems: 'center',
+    padding: 10,
+    margin:10,
+    borderRadius:10,
   },
   settingsButton: {
     backgroundColor: '#1c06e2',
@@ -428,4 +500,32 @@ const styles = StyleSheet.create({
     borderRadius:10,
     alignSelf:"flex-end",
   },
+  joinButtonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontWeight:'bold',
+    fontSize: 12
+  },
+  moreInfoText: {
+    textAlign: 'center',
+    fontSize: 22,
+  },
+  rowFlex: {
+    flexDirection: 'row',
+  },
+  groupIcon: {
+    height: 30,
+    width: 30,
+    marginLeft: 40
+  },
+  inputQueueNameAndSong: {
+    height: 50, 
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 5,
+    margin: 5,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+  }
 });
