@@ -26,13 +26,7 @@ class QueueSearch extends Component {
 
   }
   componentDidMount = async () => {
-    let searchURL = `https://api.spotify.com/v1/me/player/play?q=0d1841b0976bae2a3a310dd74c0f3df354899bc8`
-      const searchResults = await axios.put(searchURL, {"uris": ["spotify:track:4pYd8dIohiqc3KsxSRqf0w"]}, {
-        headers: {
-          "Authorization": `Bearer ${this.props.user.spotify_access_token}`
-        },
-      });
-      console.log("res:",JSON.stringify(searchResults));
+    
   }
 
   playSong = async (uri) => {
