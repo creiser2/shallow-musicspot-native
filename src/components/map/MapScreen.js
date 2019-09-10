@@ -10,8 +10,9 @@ import QueueMapView from './QueueMapView';
 
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
-import { destroyUser, updateCoords, joinQueue, setCurrentQueueId, leaveQueue } from '../../../store/actions/userActions';
-import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
+import { destroyUser, updateCoords, setCurrentQueueId, leaveQueue } from '../../../store/actions/userActions';
+import { joinQueue, createQueue } from '../../../store/actions/queueActions';
+import { updateMap, getQueuesByCity } from '../../../store/actions/mapActions';
 import { getCurrentLocation, getGeoCode, watcherWithHandler } from '../../api/LocationSession';
 
 import {
@@ -179,9 +180,10 @@ class MapScreen extends Component {
 
    createQueueClicked = async () => {
      //if the user cannot create a queue, just return
-    if(!this.state.canCreateQueueAtLocation) {
-      return
-    }
+    
+    // if(!this.state.canCreateQueueAtLocation) {
+    //   return
+    // }
     //if logged into spotify this is different
     [latitude, longitude] = [this.props.user.location.latitude, this.props.user.location.longitude]
     try {
@@ -260,7 +262,7 @@ class MapScreen extends Component {
       )
     } else  {
       return (
-          <NewQueueSvg canCreateQueueAtLocation={this.state.canCreateQueueAtLocation} createQueueClicked={() => this.createQueueClicked()}/>
+          <NewQueueSvg canCreateQueueAtLocation={true} createQueueClicked={() => this.createQueueClicked()}/>
       );
     }
   }
@@ -271,7 +273,7 @@ class MapScreen extends Component {
   }
 
   addQueueForm = () => {
-    if(this.state.addingQueueForm){
+    if(this.state.addingQueueForm)  {
       return (
         <View>
           <Text>Adding Queue Info</Text>
@@ -340,9 +342,11 @@ const msp = (state) => {
   //since we have multiple reducers, we need to reference our user reducer
   const userState = state.user
   const mapState = state.map
+  const queueState = state.queue
   return {
     ...userState,
-    ...mapState
+    ...mapState,
+    ...queueState
   }
 }
 
