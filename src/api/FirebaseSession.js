@@ -29,10 +29,33 @@ export const addUserToQueue = (queueId, userId) => {
     });
 }
 
+export const removeUserFromQueue = (queueId, userId) => {
+    return new Promise(function(resolve, reject) {
+        removeUserFromContributors(queueId, userId).then((res) => {
+            console.log(res)
+            getQueueLocationDoc(queueId).then((res) => {
+                newNumMembers = res.data().numMembers - 1;
+                updateQueueNumMembers(queueId, newNumMembers).then((res) => {
+                    resolve("User left queue successfully");
+                }).catch((err) => {
+                    reject(Error("Update numMembers failed"))
+                })
+            }).catch((err) => {
+                reject(Error("Get queue location doc failed"))
+            })
+        }).catch((err) => {
+            reject(Error("Delete user from contributors failed"))
+        })
+    });
+}
+
+const removeUserFromContributors = (queueId, userId) => {
+    console.log("hit this", queueId)
+    return queueContributors.doc(queueId).collection('users').doc(userId).delete()
+}
+
 const addUserToContributors = (queueId, userId) => {
-    return queueContributors.doc(queueId).collection('users').add({
-        userId
-    })
+    return queueContributors.doc(queueId).collection('users').doc(userId).set({})
 }
 
 const getQueueLocationDoc = (queueId) => {

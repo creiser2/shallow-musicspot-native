@@ -67,6 +67,14 @@ export default userReducer = (state = defaultState, action) => {
 
                 }
             }
+        case "LEAVE_QUEUE":
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    currentQueueId: 0
+                }
+            }
         case "JOIN_QUEUE":
             return {
                 ...state,
