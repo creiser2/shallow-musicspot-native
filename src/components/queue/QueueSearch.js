@@ -25,8 +25,25 @@ class QueueSearch extends Component {
     searchResults: [],
 
   }
-  componentDidMount = () => {
+  componentDidMount = async () => {
+    let searchURL = `https://api.spotify.com/v1/me/player/play?q=0d1841b0976bae2a3a310dd74c0f3df354899bc8`
+      const searchResults = await axios.put(searchURL, {"uris": ["spotify:track:4pYd8dIohiqc3KsxSRqf0w"]}, {
+        headers: {
+          "Authorization": `Bearer ${this.props.user.spotify_access_token}`
+        },
+      });
+      console.log("res:",JSON.stringify(searchResults));
+  }
 
+  playSong = async (uri) => {
+    let searchURL = `https://api.spotify.com/v1/me/player/play`
+    let body = ' "uris" : ['+uri+']'
+        const searchResults = await axios.put(searchURL, {body}, {
+          headers: {
+            "Authorization": `Bearer ${this.props.user.spotify_access_token}`
+          },
+        });
+       console.log("res:",JSON.stringify(searchResults));
   }
 
   parseJsonToSongs = (searchResults) => {
@@ -67,6 +84,12 @@ class QueueSearch extends Component {
            <View style={styles.time}>
             <Text style={styles.timeText}>{song.numVotes}</Text>
            </View>
+           <TouchableOpacity
+                style={styles.joinButton}
+                onPress={() => this.playSong(song.uri)}>
+                    <Text style={styles.joinButtonText}>Play Song</Text>
+              </TouchableOpacity>
+
       </View>
     
   
