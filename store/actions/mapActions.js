@@ -19,16 +19,6 @@ export const updateMap = (mapData) => {
     }
 }
 
-export const deleteQueue = (queueId) => {
-    return (dispatch) => {
-        destroyQueue(queueId).then((res) => {
-            dispatch({type: "DELETE_QUEUE", payload: {id: queueId}})
-        }).catch((err) => {
-            showInternetWarning()
-        })
-    }
-}
-
 export const getQueuesByCity = (region="anonymous", city="anonymous") => {
     return (dispatch) => {
         locationsInCity(region, city).onSnapshot(function(querySnapshot) {

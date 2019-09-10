@@ -35,17 +35,6 @@ export const setSpotifyToken = (token) => {
     }
 }
 
-//user id gets added to the user list, and changes the page to the new queue page
-export const joinQueue = (queueId, userId, nextFunc) => {
-    return (dispatch) => {
-        addUserToQueue(queueId, userId).then((res) => {
-            dispatch({type: "JOIN_QUEUE", payload: queueId})
-        }).catch((err) => {
-            console.log(err)
-            showInternetWarning()
-        })
-    }
-}
 
 export const leaveQueue = (queueId, userId) => {
     return (dispatch) => {
