@@ -19,17 +19,6 @@ export const updateMap = (mapData) => {
     }
 }
 
-export const createQueue = (coords, radius=100, hostname, region, city, name, currentSong) => {
-    return (dispatch) => {
-        startQueue(coords, radius=100, hostname, region, city, name).then((res) => {
-            dispatch({type: "CREATE_QUEUE", payload: {id: res.id}})
-            dispatch({type: "ADD_QUEUE_TO_MAP", payload: {id: res.id, coords: coords, radius: radius, name:name, currentSong: currentSong}})
-        }).catch((err) => {
-            showInternetWarning()
-        })
-    }
-}
-
 export const deleteQueue = (queueId) => {
     return (dispatch) => {
         destroyQueue(queueId).then((res) => {

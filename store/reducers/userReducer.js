@@ -11,11 +11,6 @@ const defaultState = {
         },
         uid: null,
         spotify_access_token: null,
-        currentQueueId: 0
-    },
-    queue: {
-        isHost: false,
-        id: null
     }
 }
 
@@ -75,28 +70,12 @@ export default userReducer = (state = defaultState, action) => {
                     currentQueueId: 0
                 }
             }
-        case "JOIN_QUEUE":
-            return {
-                ...state,
-                user: {
-                    ...state.user,
-                    currentQueueId: action.payload
-                }
-            }
         case "SET_UID":
             return {
                 ...state,
                 user: {
                     ...state.user,
                     uid: action.payload
-                }
-            }
-        case "CREATE_QUEUE":
-            return {
-                ...state,
-                queue: {
-                    isHost: true,
-                    id: action.payload.id
                 }
             }
         //resets all user settings to default
