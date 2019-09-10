@@ -10,7 +10,7 @@ import QueueMapView from './QueueMapView';
 
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
-import { destroyUser, updateCoords, joinQueue } from '../../../store/actions/userActions';
+import { destroyUser, updateCoords, joinQueue, setCurrentQueueId } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
 import { getCurrentLocation, getGeoCode, watcherWithHandler } from '../../api/LocationSession';
 
@@ -96,7 +96,16 @@ class MapScreen extends Component {
   }
 
   joinQueue = () => {
-    this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
+    if(this.props.user.currentQueueId != this.state.currentQueue.id){
+      this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
+    }else{
+      //means the user is in another queue
+      if(this.props.user.currentQueueId!=0){
+
+      }
+      console.log("already in the queue");
+      this.props.navigation.navigate('QueueScreen')
+    }
   }
 
 
@@ -344,7 +353,7 @@ const mdp = (dispatch) => {
     updateMap: (mapData) => dispatch(updateMap(mapData)),
     createQueue: (coords, radius, hostname, region, city, name, currentSong) => dispatch(createQueue(coords, radius, hostname, region, city, name, currentSong)),
     getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
-    joinQueue: (queueId, userId, nextFunc) => dispatch(joinQueue(queueId, userId, nextFunc))
+    joinQueue: (queueId, userId, nextFunc) => dispatch(joinQueue(queueId, userId, nextFunc)),
   }
 }
 
