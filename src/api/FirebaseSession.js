@@ -6,6 +6,8 @@ const queueLocations = db.collection('queueLocation')
 
 const queueContributors = db.collection('queueContributors')
 
+const queueVotes = db.collection('queueVotes')
+
 export const loginGuestUser = () => {
     return firebase.auth().signInAnonymously();
 }
@@ -155,4 +157,10 @@ export const decodeLocationQueues = (querySnapshot) => {
         })
     })
     return positionArry;
+}
+
+export const updateSongs = (queueId, songs) => {
+    queueVotes.doc(queueId).update({
+        songs: songs
+    })
 }
