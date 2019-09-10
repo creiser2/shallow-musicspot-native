@@ -76,7 +76,7 @@ export const startQueue = (coords, radius=100, hostname, region, city, name) => 
             queueId = res.id;
             postQueueContributors(hostname, queueId).then((res) => {
                 updateHost(hostname, queueId).then((res) => {
-                    resolve("Queue started successfully")
+                    resolve({id: queueId})
                 }).catch((err) => {
                     reject(Error("Host add failed"))
                 })
