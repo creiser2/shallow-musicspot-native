@@ -10,7 +10,7 @@ import QueueMapView from './QueueMapView';
 
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
 import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
-import { destroyUser, updateCoords, joinQueue, setCurrentQueueId } from '../../../store/actions/userActions';
+import { destroyUser, updateCoords, joinQueue, setCurrentQueueId, leaveQueue } from '../../../store/actions/userActions';
 import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
 import { getCurrentLocation, getGeoCode, watcherWithHandler } from '../../api/LocationSession';
 
@@ -96,13 +96,16 @@ class MapScreen extends Component {
   }
 
   joinQueue = () => {
-    if(this.props.user.currentQueueId != this.state.currentQueue.id){
+    //means the user is in another queue
+    if (this.props.user.currentQueueId == 0) {
       this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
-    }else{
-      //means the user is in another queue
-      if(this.props.user.currentQueueId!=0){
-
-      }
+    }
+    else if (this.props.user.currentQueueId != this.state.currentQueue.id) {
+      console.log("mapscreen", this.props)
+      this.props.leaveQueue(this.props.user.currentQueueId, this.props.user.uid)
+      this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
+    }
+    else {
       console.log("already in the queue");
       this.props.navigation.navigate('QueueScreen')
     }
@@ -354,6 +357,7 @@ const mdp = (dispatch) => {
     createQueue: (coords, radius, hostname, region, city, name, currentSong) => dispatch(createQueue(coords, radius, hostname, region, city, name, currentSong)),
     getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
     joinQueue: (queueId, userId, nextFunc) => dispatch(joinQueue(queueId, userId, nextFunc)),
+    leaveQueue: (queueId, userId) => dispatch(leaveQueue(queueId, userId))
   }
 }
 

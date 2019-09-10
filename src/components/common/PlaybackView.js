@@ -23,17 +23,17 @@ class PlaybackView extends Component {
   render() {
       return (
         
-            <View style={styles.container}>
-                <View style={styles.thumbnail}>
-                  <Thumbnail source={{uri: imageUri}} />
-                </View>
-                <View style={styles.title}>
-                  <Text style={styles.titleText}>{songString}</Text>
-                </View>
-                <View style={styles.time}>
-                  <Text style={styles.timeText}>{timeString}</Text>
-                </View>
+        <View style={styles.container}>
+            <View style={styles.thumbnail}>
+              <Thumbnail source={{uri: imageUri}} />
             </View>
+            <View style={styles.title}>
+              <Text style={styles.titleText}>{songString}</Text>
+            </View>
+            <View style={styles.time}>
+              <Text style={styles.timeText}>{timeString}</Text>
+            </View>
+        </View>
           
         
       );

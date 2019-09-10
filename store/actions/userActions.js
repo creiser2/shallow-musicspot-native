@@ -3,6 +3,7 @@ import { showInternetWarning } from '../../src/components/common/CustomToast'
 import { 
     loginGuestUser,
     addUserToQueue,
+    removeUserFromQueue,
 } from '../../src/api/FirebaseSession'
 import {
     watcherWithHandler,
@@ -40,8 +41,20 @@ export const joinQueue = (queueId, userId, nextFunc) => {
         addUserToQueue(queueId, userId).then((res) => {
             dispatch({type: "JOIN_QUEUE", payload: queueId})
         }).catch((err) => {
+            console.log(err)
             showInternetWarning()
         })
+    }
+}
+
+export const leaveQueue = (queueId, userId) => {
+    return (dispatch) => {
+        removeUserFromQueue(queueId, userId).then((res) => {
+            dispatch({type: "LEAVE_QUEUE", payload: queueId})
+        }).catch((err) => {
+            showInternetWarning()
+        })
+        
     }
 }
 
