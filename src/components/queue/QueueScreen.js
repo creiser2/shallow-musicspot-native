@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
 import PlaybackView from '../common/PlaybackView';
+import { connect } from 'react-redux';
 
 import {
     StyleSheet,
@@ -12,31 +13,48 @@ import {
     TextInput
   } from 'react-native'
 
-export default class QueueScreen extends Component {
+class QueueScreen extends Component {
     render() {
         const props = this.props
         return (
-                <View style={styles.container}>
-                    <Text style={styles.test}>Qeueu Screen</Text>
-                    <TouchableOpacity
-                        style={styles.joinButton}
-                        onPress={() => this.props.navigation.navigate('MapScreen')}
-                    >
-                        <Text style={styles.joinButtonText}>Back</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.joinButton}
-                        onPress={() => this.props.navigation.navigate('QueueSearch')}
-                    >
-                        <Text style={styles.joinButtonText}>Queue Search</Text>
-                    </TouchableOpacity>
-                    <View style={styles.playbackContainer}>
-                      <PlaybackView/>
-                    </View>
-                </View> 
+          <View style={styles.container}>
+              <Text style={styles.test}>Qeueu Screen</Text>
+              <TouchableOpacity
+                  style={styles.joinButton}
+                  onPress={() => this.props.navigation.navigate('MapScreen')}
+              >
+                  <Text style={styles.joinButtonText}>Back</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.joinButton}
+                  onPress={() => this.props.navigation.navigate('QueueSearch')}
+              >
+                  <Text style={styles.joinButtonText}>Queue Search</Text>
+              </TouchableOpacity>
+              <View style={styles.playbackContainer}>
+                <PlaybackView 
+                  songs = {this.props.songs}
+                  inQueue = {this.props.queueId}/>
+              </View>
+          </View>  
         );
     }
 }
+
+const msp = (state) => {
+  const queueState = state.queue
+  return {
+    ...queueState
+  }
+}
+
+const mdp = (dispatch) => {
+  return {
+    
+  }
+}
+
+export default connect(msp, mdp)(QueueScreen)
 
 const styles = StyleSheet.create({
   container: {

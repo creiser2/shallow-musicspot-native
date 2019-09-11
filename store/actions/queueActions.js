@@ -7,6 +7,8 @@ import {
     locationsInCity,
     decodeLocationQueues,
     updateSongs,
+    listenToSongs,
+    parseSongsFromDoc
 } from '../../src/api/FirebaseSession'
 import { showInternetWarning } from '../../src/components/common/CustomToast'
 
@@ -14,6 +16,7 @@ import { showInternetWarning } from '../../src/components/common/CustomToast'
 export const joinQueue = (queueId, userId, nextFunc) => {
     return (dispatch) => {
         addUserToQueue(queueId, userId).then((res) => {
+            nextFunc
             dispatch({type: "JOIN_QUEUE", payload: queueId})
         }).catch((err) => {
             console.log(err)
@@ -44,11 +47,13 @@ export const deleteQueue = (queueId) => {
     }
 }
 
-export const updateQueueSongs = (queueId, songs) => {
+export const listenToQueueSongs = (queueId) => {
     return (dispatch) => {
-        updateSongs(queueId, songs).then((res) => {
+        listenToSongs(queueId).onSnapshot(function(snap) {
+            if (!snap || !snap.data()) { return }
+            songs = parseSongsFromDoc(snap)
             dispatch({type: "UPDATE_SONGS", payload: {songs}})
-        }).catch((err) => {
+        }, function(error) {
             showInternetWarning()
         })
     }
