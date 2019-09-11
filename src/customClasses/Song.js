@@ -18,4 +18,18 @@ export default class Song {
     downVote() {
         return --this.numVotes;
     }
+
+    toJSON() {
+        return {
+            id: this.id,
+            name: this.name,
+            artistId: this.artistId,
+            artistName: this.artistName,
+            uri: this.uri,
+            duration_ms: this.duration_ms,
+            explicit: this.explicit,
+            imageURL: this.imageURL,
+            numVotes: this.numVotes
+        }
+    }
 }

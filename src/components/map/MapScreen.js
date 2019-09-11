@@ -64,7 +64,7 @@ class MapScreen extends Component {
     if (status === 'granted') {
       this.initializeLocation()
     } else {
-      // Toast
+      console.log("No location permissions")
       this.props.destroyUser();
     }
   }
@@ -98,11 +98,10 @@ class MapScreen extends Component {
 
   joinQueue = () => {
     //means the user is in another queue
-    if (this.props.user.currentQueueId == 0) {
+    if (this.props.user.currentQueueId == null) {
       this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
     }
     else if (this.props.user.currentQueueId != this.state.currentQueue.id) {
-      console.log("mapscreen", this.props)
       this.props.leaveQueue(this.props.user.currentQueueId, this.props.user.uid)
       this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
     }
@@ -191,7 +190,7 @@ class MapScreen extends Component {
       //NEED TO MAKE THIS ASYNC
       this.setState({addingQueueForm: true});
 
-      const strLoc =  await Location.reverseGeocodeAsync({ latitude, longitude })
+      const strLoc = await getGeoCode(longitude, latitude)
 
       this.setState({
         region: strLoc[0].region,

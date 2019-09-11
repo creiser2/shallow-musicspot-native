@@ -6,6 +6,7 @@ import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
 import axios from 'axios';
 import Song from '../../customClasses/Song'
 import { Thumbnail } from 'native-base';
+import { updateQueueSongs } from '../../../store/actions/queueActions';
 
 
 import {
@@ -29,14 +30,20 @@ class QueueSearch extends Component {
     
   }
 
-  playSong = async (uri) => {
-    let searchURL = `https://api.spotify.com/v1/me/player/play`
-        const searchResults = await axios.put(searchURL, {"uris": [uri]}, {
-          headers: {
-            "Authorization": `Bearer ${this.props.user.spotify_access_token}`
-          },
-        });
-       console.log("res:",JSON.stringify(searchResults));
+  playSearchedSong = async (song) => {
+    let playerURL = `https://api.spotify.com/v1/me/player/play`
+    const searchResults = await axios.put(playerURL, {"uris": [song.uri]}, {
+      headers: {
+        "Authorization": `Bearer ${this.props.user.spotify_access_token}`
+      },
+    });
+
+    // Update Firebase songs table and Redux
+    let newSongs = [song].concat(this.props.songs)
+    let jsonSongs = newSongs.map(function(x) {
+      return x.toJSON();
+    })
+    this.props.updateQueueSongs(this.props.queueId, jsonSongs)
   }
 
   parseJsonToSongs = (searchResults) => {
@@ -64,7 +71,6 @@ class QueueSearch extends Component {
   }
 
   renderSongObj = (song) => {
-    //console.log("Song:",song.name);
     return (
         
       <View key={song.id} style={styles.songContainer}>
@@ -79,7 +85,7 @@ class QueueSearch extends Component {
            </View>
            <TouchableOpacity
                 style={styles.joinButton}
-                onPress={() => this.playSong(song.uri)}>
+                onPress={() => this.playSearchedSong(song)}>
                     <Text style={styles.joinButtonText}>Play Song</Text>
               </TouchableOpacity>
 
@@ -134,16 +140,18 @@ const msp = (state) => {
   //since we have multiple reducers, we need to reference our user reducer
   const userState = state.user
   const mapState = state.map
+  const queueState = state.queue
   return {
     ...userState,
-    ...mapState
+    ...mapState,
+    ...queueState
   }
 }
 
 //mapDispatchToProps
 const mdp = (dispatch) => { 
   return {
-
+    updateQueueSongs: (queueId, songs) => dispatch(updateQueueSongs(queueId, songs))
   }
 }
 

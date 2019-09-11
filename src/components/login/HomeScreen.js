@@ -43,7 +43,6 @@ class HomeScreen extends Component {
 
   spotifyLogoClick = async () => {
     //only reauthenticate if the access token is null
-    console.log("Access Token:", this.props.spotify_access_token)
     if(!this.props.spotify_access_token){
       let redirectUrl = AuthSession.getRedirectUrl();
       console.log("Your redirect url:", redirectUrl)
@@ -60,8 +59,8 @@ class HomeScreen extends Component {
           }
         });
         this.props.setSpotifyToken(results.params.access_token);
-        console.log("Your access token:", results.params.access_token)
         this.setState({ userInfo: userInfo.data });
+        this.props.addGuest()
         this.props.navigation.navigate('MapScreen');
       }
     }else{
