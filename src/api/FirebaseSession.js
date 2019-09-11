@@ -20,13 +20,13 @@ export const addUserToQueue = (queueId, userId) => {
                 updateQueueNumMembers(queueId, newNumMembers).then((res) => {
                     resolve("User joined queue successfully");
                 }).catch((err) => {
-                    reject(Error("Update numMembers failed"))
+                    reject(err)
                 })
             }).catch((err) => {
-                reject(Error("Get queue location doc failed"))
+                reject(err)
             })
         }).catch((err) => {
-            reject(Error("Add users to contributors failed"))
+            reject(err)
         })
     });
 }
@@ -34,7 +34,6 @@ export const addUserToQueue = (queueId, userId) => {
 export const removeUserFromQueue = (queueId, userId) => {
     return new Promise(function(resolve, reject) {
         removeUserFromContributors(queueId, userId).then((res) => {
-            console.log(res)
             getQueueLocationDoc(queueId).then((res) => {
                 newNumMembers = res.data().numMembers - 1;
                 updateQueueNumMembers(queueId, newNumMembers).then((res) => {
@@ -52,7 +51,6 @@ export const removeUserFromQueue = (queueId, userId) => {
 }
 
 const removeUserFromContributors = (queueId, userId) => {
-    console.log("hit this", queueId)
     return queueContributors.doc(queueId).collection('users').doc(userId).delete()
 }
 
@@ -65,9 +63,9 @@ const getQueueLocationDoc = (queueId) => {
 }
 
 const updateQueueNumMembers = (queueId, newNumMembers) => {
-    return queueLocations.doc(queueId).update({
+    return queueLocations.doc(queueId).set({
         numMembers: newNumMembers,
-    })
+    }, { merge: true })
 }
 
 export const startQueue = (coords, radius=100, hostname, region, city, name) => {
@@ -160,7 +158,7 @@ export const decodeLocationQueues = (querySnapshot) => {
 }
 
 export const updateSongs = (queueId, songs) => {
-    queueVotes.doc(queueId).update({
+    return queueVotes.doc(queueId).set({
         songs: songs
-    })
+    }, { merge: true })
 }

@@ -1,3 +1,4 @@
+
 const defaultState = {
     isHost: false,
     queueId: null,
@@ -20,6 +21,11 @@ export default queueReducer = (state = defaultState, action) => {
                 ...state,
                 queueId: action.payload,
                 isHost: true
+            }
+        case "UPDATE_SONGS":
+            return {
+                ...state,
+                songs: action.payload
             }
         default: 
             return state

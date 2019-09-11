@@ -6,7 +6,7 @@ import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
 import axios from 'axios';
 import Song from '../../customClasses/Song'
 import { Thumbnail } from 'native-base';
-import { updateSongs } from '../../api/FirebaseSession';
+import { updateQueueSongs } from '../../../store/actions/queueActions';
 
 
 import {
@@ -39,9 +39,11 @@ class QueueSearch extends Component {
     });
 
     // Update Firebase songs table
-    let newSongs = [song].concat(songs)
-    updateSongs(this.props.queueId)
-
+    let newSongs = [song].concat(this.props.songs)
+    let jsonSongs = newSongs.map(function(x) {
+      return x.toJSON();
+    })
+    this.props.updateQueueSongs(this.props.queueId, jsonSongs)
   }
 
   parseJsonToSongs = (searchResults) => {
@@ -138,16 +140,18 @@ const msp = (state) => {
   //since we have multiple reducers, we need to reference our user reducer
   const userState = state.user
   const mapState = state.map
+  const queueState = state.queue
   return {
     ...userState,
-    ...mapState
+    ...mapState,
+    ...queueState
   }
 }
 
 //mapDispatchToProps
 const mdp = (dispatch) => { 
   return {
-
+    updateQueueSongs: (queueId, songs) => dispatch(updateQueueSongs(queueId, songs))
   }
 }
 

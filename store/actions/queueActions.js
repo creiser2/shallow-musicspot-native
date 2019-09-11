@@ -6,7 +6,9 @@ import {
     destroyQueue,
     locationsInCity,
     decodeLocationQueues,
+    updateSongs,
 } from '../../src/api/FirebaseSession'
+import { showInternetWarning } from '../../src/components/common/CustomToast'
 
 //user id gets added to the user list, and changes the page to the new queue page
 export const joinQueue = (queueId, userId, nextFunc) => {
@@ -36,6 +38,16 @@ export const deleteQueue = (queueId) => {
     return (dispatch) => {
         destroyQueue(queueId).then((res) => {
             dispatch({type: "DELETE_QUEUE", payload: {id: queueId}})
+        }).catch((err) => {
+            showInternetWarning()
+        })
+    }
+}
+
+export const updateQueueSongs = (queueId, songs) => {
+    return (dispatch) => {
+        updateSongs(queueId, songs).then((res) => {
+            dispatch({type: "UPDATE_SONGS", payload: {songs}})
         }).catch((err) => {
             showInternetWarning()
         })
