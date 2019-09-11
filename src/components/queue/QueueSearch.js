@@ -38,7 +38,7 @@ class QueueSearch extends Component {
       },
     });
 
-    // Update Firebase songs table
+    // Update Firebase songs table and Redux
     let newSongs = [song].concat(this.props.songs)
     let jsonSongs = newSongs.map(function(x) {
       return x.toJSON();
