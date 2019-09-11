@@ -6,7 +6,7 @@ import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
 import axios from 'axios';
 import Song from '../../customClasses/Song'
 import { Thumbnail } from 'native-base';
-import { updateQueueSongs } from '../../../store/actions/queueActions';
+import { updateSongs } from '../../api/FirebaseSession';
 
 
 import {
@@ -27,23 +27,28 @@ class QueueSearch extends Component {
 
   }
   componentDidMount = async () => {
-    
+
   }
 
   playSearchedSong = async (song) => {
     let playerURL = `https://api.spotify.com/v1/me/player/play`
-    const searchResults = await axios.put(playerURL, {"uris": [song.uri]}, {
+    const res = await axios.put(playerURL, {"uris": [song.uri]}, {
       headers: {
         "Authorization": `Bearer ${this.props.user.spotify_access_token}`
       },
     });
-
-    // Update Firebase songs table and Redux
-    let newSongs = [song].concat(this.props.songs)
+    var newSongs;
+    if (!this.props.songs.songs) {
+      newSongs = [song]
+    }
+    else {
+      newSongs = [song, ...this.props.songs.songs]
+    }
     let jsonSongs = newSongs.map(function(x) {
       return x.toJSON();
     })
-    this.props.updateQueueSongs(this.props.queueId, jsonSongs)
+    // Update Firebase songs table. Redux listens
+    updateSongs(this.props.queueId, jsonSongs)
   }
 
   parseJsonToSongs = (searchResults) => {
@@ -151,7 +156,7 @@ const msp = (state) => {
 //mapDispatchToProps
 const mdp = (dispatch) => { 
   return {
-    updateQueueSongs: (queueId, songs) => dispatch(updateQueueSongs(queueId, songs))
+    
   }
 }
 

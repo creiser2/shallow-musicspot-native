@@ -14,6 +14,7 @@ import { destroyUser, updateCoords, setCurrentQueueId, leaveQueue } from '../../
 import { joinQueue, createQueue } from '../../../store/actions/queueActions';
 import { updateMap, getQueuesByCity } from '../../../store/actions/mapActions';
 import { getCurrentLocation, getGeoCode, watcherWithHandler } from '../../api/LocationSession';
+import { listenToQueueSongs } from '../../../store/actions/queueActions';
 
 import {
   StyleSheet,
@@ -106,9 +107,9 @@ class MapScreen extends Component {
       this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
     }
     else {
-      console.log("already in the queue");
       this.props.navigation.navigate('QueueScreen')
     }
+    this.props.listenToQueueSongs(this.state.currentQueue.id)
   }
 
 
@@ -324,7 +325,9 @@ class MapScreen extends Component {
             />
               {this.markerClickedPopup()}
             <View style={styles.playbackContainer}>
-            <PlaybackView/>
+            <PlaybackView
+              songs = {this.props.songs}
+            />
             </View>
           </View>
         </SafeAreaView>
@@ -360,7 +363,8 @@ const mdp = (dispatch) => {
     createQueue: (coords, radius, hostname, region, city, name, currentSong) => dispatch(createQueue(coords, radius, hostname, region, city, name, currentSong)),
     getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
     joinQueue: (queueId, userId, nextFunc) => dispatch(joinQueue(queueId, userId, nextFunc)),
-    leaveQueue: (queueId, userId) => dispatch(leaveQueue(queueId, userId))
+    leaveQueue: (queueId, userId) => dispatch(leaveQueue(queueId, userId)),
+    listenToQueueSongs: (queueId) => dispatch(listenToQueueSongs(queueId))
   }
 }
 

@@ -9,11 +9,7 @@ import {
   View,
 } from 'react-native'
 
-const imageUri = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRQgZ48o39T52Ycjne2VfHtDdR08ftNInjPaTuwFzWyWEKdJJgg'
-const timeString = '1:04 | 2:32'
-const songString = '500 Degreez - Lil Wayne     '
-
-class PlaybackView extends Component {
+export default class PlaybackView extends Component {
   state = {
 
   }
@@ -21,8 +17,12 @@ class PlaybackView extends Component {
 
   }
   render() {
+    if(this.props.songs.songs && this.props.songs.songs.length > 0) {
+      const song = this.props.songs.songs[0]
+      const imageUri = song.explicit //bug
+      const timeString = '1:04 | 2:32'
+      const songString = song.name + " " + song.artistName
       return (
-        
         <View style={styles.container}>
             <View style={styles.thumbnail}>
               <Thumbnail source={{uri: imageUri}} />
@@ -34,11 +34,13 @@ class PlaybackView extends Component {
               <Text style={styles.timeText}>{timeString}</Text>
             </View>
         </View>
-          
-        
       );
     }
+    else {
+      return null;
+    }
   }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -70,5 +72,3 @@ const styles = StyleSheet.create({
     opacity: 0.7
   }
 });
-
-export default PlaybackView;

@@ -1,6 +1,7 @@
 import { db } from '../../FirebaseConfig';
 import firebase from 'firebase';
 import 'firebase/firestore';
+import Song from '../customClasses/Song'
 
 const queueLocations = db.collection('queueLocation')
 
@@ -161,4 +162,23 @@ export const updateSongs = (queueId, songs) => {
     return queueVotes.doc(queueId).set({
         songs: songs
     }, { merge: true })
+}
+
+export const listenToSongs = (queueId) => {
+    return queueVotes.doc(queueId)
+}
+
+const defaultImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRQgZ48o39T52Ycjne2VfHtDdR08ftNInjPaTuwFzWyWEKdJJgg'
+
+export const parseSongsFromDoc = (doc) => {
+    tempSongArray=[];
+    doc.data().songs.map((song) => {
+      if(song.imageURL) {
+        var tempSong = new Song(id = song.id, name = song.name, artistId = song.artistId, artistName = song.artistName, duration_ms = song.duration_ms, explicit = song.explicit, imageURL = song.imageURL)
+      } else {
+        var tempSong = new Song(id = song.id, name = song.name, artistId = song.artistId, artistName = song.artistName, duration_ms = song.duration_ms, explicit = song.explicit, imageURL = defaultImage)
+      }
+      tempSongArray.push(tempSong)
+    });
+    return tempSongArray;
 }

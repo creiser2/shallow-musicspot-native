@@ -27,8 +27,8 @@ export default class Song {
             artistName: this.artistName,
             uri: this.uri,
             duration_ms: this.duration_ms,
-            explicit: this.explicit,
-            imageURL: this.imageURL,
+            explicit: (this.explicit == null ? "" : this.explicit),
+            imageURL: (this.imageURL == null ? "" : this.imageURL),
             numVotes: this.numVotes
         }
     }
