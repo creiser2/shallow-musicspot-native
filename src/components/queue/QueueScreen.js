@@ -4,20 +4,57 @@ import PlaybackView from '../common/PlaybackView';
 
 import {
     StyleSheet,
-    Text,
-    Button,
     View,
     TouchableHighlight,
     TouchableOpacity,
     TextInput
   } from 'react-native'
 
+  import {
+     Container,
+     Header,
+     Content,
+     Card, 
+     CardItem, 
+     Thumbnail, 
+     Text, 
+     Button, 
+     Icon, 
+     Left, 
+     Body, 
+     Right } from 'native-base';
+
+
+
 export default class QueueScreen extends Component {
     render() {
         const props = this.props
         return (
-                <View style={styles.container}>
-                    <Text style={styles.test}>Qeueu Screen</Text>
+            <Container>
+               <Header />
+                 <Content>
+                     <Card>
+                       <CardItem>
+                          <Left>
+                            <Thumbnail source={{uri: 'Image URL'}} />
+                            <Body>
+                                <Text>NativeBase</Text>
+                                <Text note>GeekyAnts</Text>
+                            </Body>
+                           </Left>
+                           <Right>
+                              <Button transparent>
+                                 <Icon active name="chevron-up" />
+                                 <Text>+5</Text>
+                                 <Icon active name="chevron-down" />
+                              </Button>
+                           </Right>
+                        </CardItem>
+                     </Card>
+                 </Content>
+             </Container>
+           <View style={styles.container}>
+                    <Text style={styles.test}>Queue Screen</Text>
                     <TouchableOpacity
                         style={styles.joinButton}
                         onPress={() => this.props.navigation.navigate('MapScreen')}

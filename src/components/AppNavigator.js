@@ -6,9 +6,9 @@ import QueueSearch from './queue/QueueSearch';
 import Settings from './settings/Settings';
 
 const AppNavigator = createStackNavigator({
+    QueueScreen : { screen: QueueScreen },
     HomeScreen: { screen: HomeScreen },
     MapScreen : { screen: MapScreen },
-    QueueScreen : { screen: QueueScreen },
     QueueSearch : { screen: QueueSearch },
     Settings : { screen: Settings }
   },  

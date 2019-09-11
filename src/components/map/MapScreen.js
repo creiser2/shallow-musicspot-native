@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { Permissions, MapView } from 'expo';
+import { Permissions, View } from 'expo';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import NewQueueSvg from '../../../assets/svg/NewQueueSvg';
 import QueueDetail from './QueueDetail';
 import PlaybackView from '../common/PlaybackView';
 import { Icon } from 'native-base';
-import QueueMapView from './QueueMapView';
+import QueueView from './QueueView';
 
 import {HOMESCREEN_BACKGROUND, WHITE} from '../../../constants/colors';
-import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/map-constants';
+import { DEFAULT_LATITUDE_DELTA, DEFAULT_LONGITUDE_DELTA } from '../../../constants/-constants';
 import { destroyUser, updateCoords, joinQueue, setCurrentQueueId, leaveQueue } from '../../../store/actions/userActions';
-import { updateMap, createQueue, getQueuesByCity } from '../../../store/actions/mapActions';
+import { update, createQueue, getQueuesByCity } from '../../../store/actions/Actions';
 import { getCurrentLocation, getGeoCode, watcherWithHandler } from '../../api/LocationSession';
 
 import {
@@ -39,9 +39,9 @@ type Position = {
     timestamp: number,
 };
 
-class MapScreen extends Component {
-  //this provides us with a reference to our mapview object in code
-  map = React.createRef();
+class Screen extends Component {
+  //this provides us with a reference to our view object in code
+   = React.createRef();
 
   state = {
     ready: false,
@@ -78,8 +78,8 @@ class MapScreen extends Component {
     const { city, region } = (await getGeoCode(longitude, latitude))[0]
     // Set region and city
     this.setState({ ready: true, city: city, region: region });
-    // Snap map to location
-    this.props.updateMap({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
+    // Snap  to location
+    this.props.update({latitude, longitude, latitudeDelta: DEFAULT_LATITUDE_DELTA, longitudeDelta: DEFAULT_LONGITUDE_DELTA})
     // Begin watching position
     this.locationWatcher = await watcherWithHandler(this.locationUpdateHandler)
     // Render nearby queues
@@ -101,7 +101,7 @@ class MapScreen extends Component {
       this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
     }
     else if (this.props.user.currentQueueId != this.state.currentQueue.id) {
-      console.log("mapscreen", this.props)
+      console.log("screen", this.props)
       this.props.leaveQueue(this.props.user.currentQueueId, this.props.user.uid)
       this.props.joinQueue(this.state.currentQueue.id, this.props.user.uid, this.props.navigation.navigate('QueueScreen'));
     }
@@ -145,12 +145,12 @@ class MapScreen extends Component {
   }
 
   //when you scroll away or zoom out this function is called
-  handleMapViewChange = (event) => {
-    //we will save the information about our map in redux
-    //redux setting the state of all of these map attributes
+  handleViewChange = (event) => {
+    //we will save the information about our  in redux
+    //redux setting the state of all of these  attributes
     const {latitude, longitude, latitudeDelta, longitudeDelta} = event.nativeEvent.region;
 
-    this.props.updateMap({
+    this.props.update({
       latitude,
       longitude,
       latitudeDelta,
@@ -161,17 +161,17 @@ class MapScreen extends Component {
   //this function decides whether or not to render the little return to home
   //target svg
   renderReturnToCurrentLocationSvg = () => {
-    //basically, if the map redux doesnt match the position redux, we have the button
+    //basically, if the  redux doesnt match the position redux, we have the button
     //round to four decimals
-    const roundedLat = Math.round((this.props.reduxMap.latitude*500))/500
-    const roundedLong = Math.round((this.props.reduxMap.longitude*500))/500
+    const roundedLat = Math.round((this.props.redux.latitude*500))/500
+    const roundedLong = Math.round((this.props.redux.longitude*500))/500
     const userPropsRoundedLat = Math.round((this.props.user.location.latitude*500))/500
     const userPropsRoundedLong = Math.round((this.props.user.location.longitude*500))/500
 
 
     if((roundedLat != userPropsRoundedLat) || (roundedLong != userPropsRoundedLong)) {
       return (
-        <Text style={styles.returnToHome} onPress={this.snapMapViewToUser} >Return to home</Text>
+        <Text style={styles.returnToHome} onPress={this.snapViewToUser} >Return to home</Text>
       )
     }
     return null
@@ -292,7 +292,7 @@ class MapScreen extends Component {
     if(!ready) {
       return (
         <View style={styles.container}>
-          <Text style={styles.loadingTxt}>Loading Maps...</Text>
+          <Text style={styles.loadingTxt}>Loading s...</Text>
         </View>
       );
     } else {
@@ -313,9 +313,9 @@ class MapScreen extends Component {
                   {this.props.user.uid}
                 </Text>
             </View>
-            <QueueMapView
-              reduxMap = {this.props.reduxMap}
-              handleMapViewChange = {this.handleMapViewChange}
+            <QueueView
+              redux = {this.props.redux}
+              handleViewChange = {this.handleViewChange}
               renderRegions = {this.props.renderRegions}
               user = {this.props.user}
               checkQueueCreationAbility = {this.checkQueueCreationAbility}
@@ -335,25 +335,25 @@ class MapScreen extends Component {
 
 //Redux setup
 
-//mapStateToProps
+//StateToProps
 const msp = (state) => {
   //since we have multiple reducers, we need to reference our user reducer
   const userState = state.user
-  const mapState = state.map
+  const State = state.
   return {
     ...userState,
-    ...mapState
+    ...State
   }
 }
 
-//mapDispatchToProps
+//DispatchToProps
 const mdp = (dispatch) => {
   //since we have multiple reducers, we need to reference our user reducer
 
   return {
     destroyUser: () => dispatch(destroyUser()),
     updateCoords: (coords) => dispatch(updateCoords(coords)),
-    updateMap: (mapData) => dispatch(updateMap(mapData)),
+    update: (Data) => dispatch(update(Data)),
     createQueue: (coords, radius, hostname, region, city, name, currentSong) => dispatch(createQueue(coords, radius, hostname, region, city, name, currentSong)),
     getQueuesByCity: (region, city) => dispatch(getQueuesByCity(region, city)),
     joinQueue: (queueId, userId, nextFunc) => dispatch(joinQueue(queueId, userId, nextFunc)),
@@ -361,7 +361,7 @@ const mdp = (dispatch) => {
   }
 }
 
-export default connect(msp, mdp)(MapScreen)
+export default connect(msp, mdp)(Screen)
 
 
 const styles = StyleSheet.create({
