@@ -114,6 +114,10 @@ target 'shallow-musicspot-native' do
     :inhibit_warnings => true
 
 
+  pod 'RNSpotify', :path => '../node_modules/rn-spotify-sdk'
+
+  pod 'RNEventEmitter', :path => '../node_modules/react-native-events'
+
   post_install do |installer|
     installer.pods_project.main_group.tab_width = '2';
     installer.pods_project.main_group.indent_width = '2';

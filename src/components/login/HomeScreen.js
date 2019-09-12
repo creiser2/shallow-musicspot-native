@@ -10,6 +10,7 @@ import MapScreen from '../map/MapScreen';
 import { addGuest, setSpotifyToken } from '../../../store/actions/userActions';
 import { AuthSession } from 'expo';
 import axios from 'axios';
+import Spotify from 'rn-spotify-sdk';
 
 import {
   AppRegistry,
@@ -21,7 +22,6 @@ import {
 
 class HomeScreen extends Component {
 
-  
   state = {
     userInfo: null,
     didError: false
