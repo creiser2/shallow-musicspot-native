@@ -3,7 +3,7 @@
   "packagerPid": null,
   "devToolsPort": 19002,
   "expoServerPort": null,
-  "expoServerNgrokUrl": "https://gc-2vf.anonymous.shallow-musicspot-native.exp.direct",
-  "packagerNgrokUrl": "https://packager.gc-2vf.anonymous.shallow-musicspot-native.exp.direct",
-  "ngrokPid": 12756
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }

@@ -5,7 +5,6 @@ import { AUTHORIZE_SPOTIFY, HEADERS } from '../../../constants/api/spotify';
 import { HOMESCREEN_BACKGROUND, WHITE } from '../../../constants/colors';
 import axios from 'axios';
 import Song from '../../customClasses/Song'
-import { Thumbnail } from 'native-base';
 import { updateSongs } from '../../api/FirebaseSession';
 
 
@@ -17,6 +16,19 @@ import {
   TextInput,
   Text,
 } from 'react-native'
+
+import {
+  Container,
+  Header,
+  Content,
+  Card, 
+  CardItem, 
+  Thumbnail, 
+  Button, 
+  Icon, 
+  Left, 
+  Body, 
+  Right } from 'native-base';
 
 const defaultImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRQgZ48o39T52Ycjne2VfHtDdR08ftNInjPaTuwFzWyWEKdJJgg'
 
@@ -66,7 +78,7 @@ class QueueSearch extends Component {
   }
 
   searchSpotify = async () => {
-    let searchURL = `https://api.spotify.com/v1/search?q=${this.state.songSearch}&type=track&limit=3`
+    let searchURL = `https://api.spotify.com/v1/search?q=${this.state.songSearch}&type=track&limit=10`
     const searchResults = await axios.get(searchURL, {
       headers: {
         "Authorization": `Bearer ${this.props.user.spotify_access_token}`
@@ -78,23 +90,26 @@ class QueueSearch extends Component {
   renderSongObj = (song) => {
     return (
         
-      <View key={song.id} style={styles.songContainer}>
-          <View style={styles.thumbnail}>
-            <Thumbnail source={{uri: song.imageURL}} />
-          </View>
-           <View style={styles.title}>
-            <Text style={styles.titleText}>{song.name} -{song.artistName}</Text>
-          </View> 
-           <View style={styles.time}>
-            <Text style={styles.timeText}>{song.numVotes}</Text>
-           </View>
-           <TouchableOpacity
-                style={styles.joinButton}
-                onPress={() => this.playSearchedSong(song)}>
-                    <Text style={styles.joinButtonText}>Play Song</Text>
-              </TouchableOpacity>
-
-      </View>
+      <Card key={song.id}>
+      <CardItem>
+        <Left>
+          <Thumbnail large source={{uri: song.imageURL}} />
+        </Left>
+        <Body>
+         <Text>{song.name}</Text>
+         <Text note>{song.artistName}</Text>
+        </Body>
+        <Right>
+          <Button transparent onPress={() => upVote(song) }>
+            <Icon name="arrow-up" />
+          </Button>   
+          <Text>{song.numVotes}</Text>
+          <Button transparent onPress={() => downVote(song) }>
+            <Icon name="arrow-down" />
+          </Button>
+        </Right>
+      </CardItem>
+    </Card>
     
   
     );
